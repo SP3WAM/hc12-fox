@@ -27,22 +27,6 @@ void si4438_cs_high()
     digitalWrite(SI4438_nSEL, HIGH);
 }
 
-bool si4438_send_command(uint8_t command, uint8_t* args, uint8_t len)
-{
-    si4438_cs_low();
-    SPI_transfer(command);
-
-    for(uint8_t q = 0 ; q < len ; q ++)
-    {
-        SPI_transfer(args[q]);
-    }
-
-    uint8_t cts = SPI_transfer(0xFF);
-    si4438_cs_high();
-
-    return true;
-}
-
 uint8_t si4438_get_response(void* buff, uint8_t len)
 {
     uint8_t cts = 0;
@@ -83,6 +67,28 @@ bool si4438_wait_for_response(void* out, uint8_t outLen)
 	return true;
 }
 
+bool si4438_send_command(uint8_t command, uint8_t* args, uint8_t len)
+{
+    // wait until chip accepts commands
+    if(si4438_wait_for_response(NULL, 0) == false)
+    {
+        return false;
+    }
+
+    si4438_cs_low();
+    SPI_transfer(command);
+
+    for(uint8_t q = 0 ; q < len ; q ++)
+    {
+        SPI_transfer(args[q]);
+    }
+
+    SPI_transfer(0xFF);
+    si4438_cs_high();
+
+    return true;
+}
+
 inline void setProperty(uint16_t prop, uint8_t value)
 {
     uint8_t args[4];
@@ -96,13 +102,11 @@ inline void setProperty(uint16_t prop, uint8_t value)
 
 bool si4438_is_chip_connected()
 {
-    if(si4438_wait_for_response(NULL, 0) == false)
+    // send the command
+    if(si4438_send_command(SI4438_CMD_PART_INFO, NULL, 0) == false)
     {
         return false;
     }
-
-    // send the command
-    si4438_send_command(SI4438_CMD_PART_INFO, NULL, 0);
 
     // get the response
     uint8_t buff[8];
