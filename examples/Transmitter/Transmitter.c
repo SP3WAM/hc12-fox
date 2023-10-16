@@ -5,7 +5,7 @@ bool chipConnected = false;
 
 void setup()
 {
-    delay(1000);
+    delay(3000);
 
     Serial_begin(115200);
     si4438_init_hw();
@@ -22,7 +22,7 @@ void setup()
     Serial_println_s(" OK");
 
     // sending POWER_UP is mandatory otherwise the chip will not accepty any properties
-    Serial_print_s("Sending Si4438 POWER_UP...");
+    Serial_print_s("Sending Si4438 POWER_UP... ");
     if(si4438_power_up() == false)
     {
         Serial_println_s(" failed");
