@@ -12,7 +12,9 @@
 #define SI4438_SDN  PD4
 
 #define SI4438_CMD_PART_INFO 0x01
+#define SI4438_CMD_POWER_UP 0x02	
 #define SI4438_CMD_SET_PROPERTY 0x11
+#define SI4438_CMD_GET_PROPERTY 0x12
 #define SI4438_CMD_READ_CMD_BUFF 0x44
 
 #define SI4438_PROPERTY_PA_PWR_LVL 0x2201
@@ -89,7 +91,7 @@ bool si4438_send_command(uint8_t command, uint8_t* args, uint8_t len)
     return true;
 }
 
-inline void setProperty(uint16_t prop, uint8_t value)
+bool setProperty(uint16_t prop, uint8_t value)
 {
     uint8_t args[4];
     args[0] = prop >> 8; // property group
@@ -97,7 +99,27 @@ inline void setProperty(uint16_t prop, uint8_t value)
     args[2] = prop & 0x00ff; // property number
     args[3] = value;  // property value
 
-    si4438_send_command(SI4438_CMD_SET_PROPERTY, args, 4);
+    return si4438_send_command(SI4438_CMD_SET_PROPERTY, args, 4);
+}
+
+bool getProperty(uint16_t prop, uint8_t* value)
+{
+    uint8_t args[3];
+    args[0] = prop >> 8; // property group
+    args[1] = 1; // just one property
+    args[2] = prop & 0x00ff; // property number
+
+    if(si4438_send_command(SI4438_CMD_GET_PROPERTY, args, 3) == false)
+    {
+        return false;
+    }
+
+    if(si4438_wait_for_response(value, 1) == false)
+    {
+        return false;
+    }
+
+    return true;
 }
 
 bool si4438_is_chip_connected()
@@ -115,12 +137,12 @@ bool si4438_is_chip_connected()
         return false;
     }
 
-    for(uint8_t q = 0 ; q < 8 ; q++)
-    {
-        Serial_print_i(buff[q]);
-        Serial_print_s(" ");
-    }
-    Serial_println_s("");
+    //for(uint8_t q = 0 ; q < 8 ; q++)
+    //{
+    //    Serial_print_i(buff[q]);
+    //    Serial_print_s(" ");
+    //}
+    //Serial_println_s("");
 
     if(buff[1] == 0x44 && buff[2] == 0x38)
     {
@@ -146,10 +168,35 @@ bool si4438_init_hw()
     return true;
 }
 
+bool si4438_power_up()
+{
+    // POWER_UP documentation:
+    // PACH = 0 meaning Copy selected functional image from OTP and boot device
+    // FUNC = 1 meaning Boot main application image
+    // XO_FREQ = 0x01C9C380 (default 30MHz) Frequency of TCXO or external crystal oscillator in Hz.
+    uint8_t args[] = {0x01, 0x00, 0x01, 0xC9, 0xC3, 0x80};
+
+    return si4438_send_command(SI4438_CMD_POWER_UP, args, 6);
+}
+
 bool si4438_set_tx_power(uint8_t pwr)
 {
-    setProperty(SI4438_PROPERTY_PA_PWR_LVL, pwr);
+    if(setProperty(SI4438_PROPERTY_PA_PWR_LVL, pwr) == false)
+    {
+        return false;
+    }
 
-    return true;
+    uint8_t readPwr;
+    if(getProperty(SI4438_PROPERTY_PA_PWR_LVL, &readPwr) == false)
+    {
+        return false;
+    }
+
+    if(pwr == readPwr)
+    {
+        return true;
+    }
+
+    return false;
 }
 

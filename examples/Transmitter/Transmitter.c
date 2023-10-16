@@ -11,19 +11,39 @@ void setup()
     si4438_init_hw();
     delay(1000);
 
+    // at first check if the hardware is connected
+    Serial_print_s("Checking Si4438 hardware...");
     chipConnected = si4438_is_chip_connected();
-    if(chipConnected)
+    if(chipConnected == false)
     {
-        Serial_println_s("Si4438 chip connected.");
+        Serial_println_s(" failed");
+        return;
     }
-    else
+    Serial_println_s(" OK");
+
+    // sending POWER_UP is mandatory otherwise the chip will not accepty any properties
+    Serial_print_s("Sending Si4438 POWER_UP...");
+    if(si4438_power_up() == false)
     {
-        Serial_println_s("Si4438 chip not connected.");
+        Serial_println_s(" failed");
+        return;
     }
+    Serial_println_s(" OK");
+
+    // configure the TX power
+    Serial_print_s("Settingd Si4438 TX power...");
+    if(si4438_set_tx_power(0x01) == false)
+    {
+        Serial_println_s(" failed");
+        return;
+    }
+    Serial_println_s(" OK");
 }
 
 void loop()
 {
+    delay(1000);
+
     Serial_print_i(millis());
     Serial_println_s(" loop()");
 
@@ -34,7 +54,14 @@ void loop()
     else
     {
         Serial_println_s("Si4438 chip not connected.");
+        return;
     }
 
-    delay(1000);
+    Serial_print_s("Settingd Si4438 TX power...");
+    if(si4438_set_tx_power(0x10) == false)
+    {
+        Serial_println_s(" failed");
+        return;
+    }
+    Serial_println_s(" OK");
 }
