@@ -12,7 +12,10 @@
 #define SI4438_SDN  PD4
 
 #define SI4438_CMD_PART_INFO 0x01
+#define SI4438_CMD_SET_PROPERTY 0x11
 #define SI4438_CMD_READ_CMD_BUFF 0x44
+
+#define SI4438_PROPERTY_PA_PWR_LVL 0x2201
 
 void si4438_cs_low()
 {
@@ -22,6 +25,22 @@ void si4438_cs_low()
 void si4438_cs_high()
 {
     digitalWrite(SI4438_nSEL, HIGH);
+}
+
+bool si4438_send_command(uint8_t command, uint8_t* args, uint8_t len)
+{
+    si4438_cs_low();
+    SPI_transfer(command);
+
+    for(uint8_t q = 0 ; q < len ; q ++)
+    {
+        SPI_transfer(args[q]);
+    }
+
+    uint8_t cts = SPI_transfer(0xFF);
+    si4438_cs_high();
+
+    return true;
 }
 
 uint8_t si4438_get_response(void* buff, uint8_t len)
@@ -64,6 +83,17 @@ bool si4438_wait_for_response(void* out, uint8_t outLen)
 	return true;
 }
 
+inline void setProperty(uint16_t prop, uint8_t value)
+{
+    uint8_t args[4];
+    args[0] = prop >> 8; // property group
+    args[1] = 1; // just one property
+    args[2] = prop & 0x00ff; // property number
+    args[3] = value;  // property value
+
+    si4438_send_command(SI4438_CMD_SET_PROPERTY, args, 4);
+}
+
 bool si4438_is_chip_connected()
 {
     if(si4438_wait_for_response(NULL, 0) == false)
@@ -72,9 +102,7 @@ bool si4438_is_chip_connected()
     }
 
     // send the command
-    si4438_cs_low();
-    SPI_transfer(SI4438_CMD_PART_INFO);
-    si4438_cs_high();
+    si4438_send_command(SI4438_CMD_PART_INFO, NULL, 0);
 
     // get the response
     uint8_t buff[8];
@@ -113,3 +141,11 @@ bool si4438_init_hw()
     
     return true;
 }
+
+bool si4438_set_tx_power(uint8_t pwr)
+{
+    setProperty(SI4438_PROPERTY_PA_PWR_LVL, pwr);
+
+    return true;
+}
+
