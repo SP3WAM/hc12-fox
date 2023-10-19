@@ -12,7 +12,7 @@ void setup()
     delay(1000);
 
     // at first check if the hardware is connected
-    Serial_print_s("Checking Si4438 hardware...");
+    Serial_print_s("Si4438 cheking hardware...");
     chipConnected = si4438_is_chip_connected();
     if(chipConnected == false)
     {
@@ -21,9 +21,10 @@ void setup()
     }
     Serial_println_s(" OK");
 
-    // sending POWER_UP is mandatory otherwise the chip will not accepty any properties
-    Serial_print_s("Sending Si4438 POWER_UP... ");
-    if(si4438_power_up() == false)
+    // sending startup config is mandatory (especially POWER_UP which should 
+    // be the first command of this config) 
+    Serial_print_s("Si4438 apply startup config... ");
+    if(si4438_apply_startup_config() == false)
     {
         Serial_println_s(" failed");
         return;

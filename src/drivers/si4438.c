@@ -1,6 +1,8 @@
+#include <string.h>
 #include <SPI.h>
 #include <stdint.h>
 #include "si4438.h"
+#include "../radio_config_Si4438.h"
 
 #define NEW_HC_12 //new version of HC-12 has different pin setting
 
@@ -18,6 +20,8 @@
 #define SI4438_CMD_READ_CMD_BUFF 0x44
 
 #define SI4438_PROPERTY_PA_PWR_LVL 0x2201
+
+static const uint8_t STARTUP_CONFIG[] PROGMEM = RADIO_CONFIGURATION_DATA_ARRAY;
 
 void si4438_cs_low()
 {
@@ -69,7 +73,7 @@ bool si4438_wait_for_response(void* out, uint8_t outLen)
 	return true;
 }
 
-bool si4438_send_command(uint8_t command, uint8_t* args, uint8_t len)
+bool doAPI(uint8_t* data, uint8_t len, uint8_t* out, uint8_t outLen)
 {
     // wait until chip accepts commands
     if(si4438_wait_for_response(NULL, 0) == false)
@@ -78,61 +82,48 @@ bool si4438_send_command(uint8_t command, uint8_t* args, uint8_t len)
     }
 
     si4438_cs_low();
-    SPI_transfer(command);
-
-    for(uint8_t q = 0 ; q < len ; q ++)
+    for(uint8_t i = 0 ; i < len ; i++)
     {
-        SPI_transfer(args[q]);
+        SPI_transfer(data[i]);
     }
-
-    SPI_transfer(0xFF);
     si4438_cs_high();
+
+    if(out != NULL)
+    {
+        return si4438_wait_for_response(out, outLen);
+    }				
 
     return true;
 }
 
 bool setProperty(uint16_t prop, uint8_t value)
 {
-    uint8_t args[4];
-    args[0] = prop >> 8; // property group
-    args[1] = 1; // just one property
-    args[2] = prop & 0x00ff; // property number
-    args[3] = value;  // property value
+    uint8_t cmd[5];
+    cmd[0] = SI4438_CMD_SET_PROPERTY;
+    cmd[1] = prop >> 8; // property group
+    cmd[2] = 1; // just one property
+    cmd[3] = prop & 0x00ff; // property number
+    cmd[4] = value;  // property value
 
-    return si4438_send_command(SI4438_CMD_SET_PROPERTY, args, 4);
+    return doAPI(cmd, sizeof(cmd), NULL, 0);
 }
 
 bool getProperty(uint16_t prop, uint8_t* value)
 {
-    uint8_t args[3];
-    args[0] = prop >> 8; // property group
-    args[1] = 1; // just one property
-    args[2] = prop & 0x00ff; // property number
+    uint8_t cmd[4];
+    cmd[0] = SI4438_CMD_GET_PROPERTY;
+    cmd[1] = prop >> 8; // property group
+    cmd[2] = 1; // just one property
+    cmd[3] = prop & 0x00ff; // property number
 
-    if(si4438_send_command(SI4438_CMD_GET_PROPERTY, args, 3) == false)
-    {
-        return false;
-    }
-
-    if(si4438_wait_for_response(value, 1) == false)
-    {
-        return false;
-    }
-
-    return true;
+    return doAPI(cmd, sizeof(cmd), value, 1);
 }
 
 bool si4438_is_chip_connected()
 {
-    // send the command
-    if(si4438_send_command(SI4438_CMD_PART_INFO, NULL, 0) == false)
-    {
-        return false;
-    }
-
-    // get the response
-    uint8_t buff[8];
-    if(si4438_wait_for_response(buff, 8) == false)
+    uint8_t cmd[1]= { SI4438_CMD_PART_INFO };
+    uint8_t resp[8];
+    if(doAPI(cmd, sizeof(cmd), resp, sizeof(resp)) == false)
     {
         return false;
     }
@@ -144,7 +135,7 @@ bool si4438_is_chip_connected()
     //}
     //Serial_println_s("");
 
-    if(buff[1] == 0x44 && buff[2] == 0x38)
+    if(resp[1] == 0x44 && resp[2] == 0x38)
     {
         return true;
     }
@@ -168,15 +159,18 @@ bool si4438_init_hw()
     return true;
 }
 
-bool si4438_power_up()
+bool si4438_apply_startup_config()
 {
-    // POWER_UP documentation:
-    // PACH = 0 meaning Copy selected functional image from OTP and boot device
-    // FUNC = 1 meaning Boot main application image
-    // XO_FREQ = 0x01C9C380 (default 30MHz) Frequency of TCXO or external crystal oscillator in Hz.
-    uint8_t args[] = {0x01, 0x00, 0x01, 0xC9, 0xC3, 0x80};
+    bool result = false;
+    uint8_t buff[17];
+	for(uint16_t i = 0 ; i < sizeof(STARTUP_CONFIG) ; i++)
+	{
+		memcpy(buff, &STARTUP_CONFIG[i], sizeof(buff));
+		result &= doAPI(&buff[1], buff[0], NULL, 0);
+		i += buff[0];
+	}
 
-    return si4438_send_command(SI4438_CMD_POWER_UP, args, 6);
+    return result;
 }
 
 bool si4438_set_tx_power(uint8_t pwr)

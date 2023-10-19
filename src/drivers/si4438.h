@@ -7,15 +7,9 @@
 
 bool si4438_init_hw();
 
-bool si4438_is_chip_connected();
+bool si4438_apply_startup_config();
 
-/*
- * Power-up device and mode selection. Modes include operational function.
- *
- * Power-up the device with the specified function. Power-up is complete when the CTS bit is set. This command may take
- * longer to set the CTS bit than other commands. Without Power-up the chip will not accept any properties.
- */
-bool si4438_power_up();
+bool si4438_is_chip_connected();
 
 bool si4438_set_freq();
 
