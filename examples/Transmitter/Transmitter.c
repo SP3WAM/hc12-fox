@@ -32,7 +32,7 @@ void setup()
     Serial_println_s(" OK");
 
     // configure the TX power
-    Serial_print_s("Settingd Si4438 TX power...");
+    Serial_print_s("Si4438 setting TX power...");
     if(si4438_set_tx_power(0x01) == false)
     {
         Serial_println_s(" failed");
@@ -58,7 +58,7 @@ void loop()
         return;
     }
 
-    Serial_print_s("Settingd Si4438 TX power...");
+    Serial_print_s("Si4438 setting TX power...");
     if(si4438_set_tx_power(0x10) == false)
     {
         Serial_println_s(" failed");

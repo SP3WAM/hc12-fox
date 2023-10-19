@@ -161,7 +161,7 @@ bool si4438_init_hw()
 
 bool si4438_apply_startup_config()
 {
-    bool result = false;
+    bool result = true;
     uint8_t buff[17];
 	for(uint16_t i = 0 ; i < sizeof(STARTUP_CONFIG) ; i++)
 	{
