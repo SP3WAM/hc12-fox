@@ -208,8 +208,8 @@ bool si4438_init_cw()
     gpioCmd[0] = SI4438_CMD_GPIO_PIN_CFG;
     gpioCmd[1] = 0b01000100; // GPIO0: CMOS input, pull up enabled
     gpioCmd[2] = 0x00; // GPIO1
-    gpioCmd[3] = 0b0000010; // GPIO2: CMOS output driven low, pull up disabled
-    gpioCmd[4] = 0x0000011; // GPIO3: CMOS output driven high, pull up disabled
+    gpioCmd[3] = 0b0000011; // GPIO2: CMOS output driven high, pull up disabled
+    gpioCmd[4] = 0x0000010; // GPIO3: CMOS output driven low, pull up disabled
     gpioCmd[5] = 0x00; // NIRQ
     gpioCmd[6] = 0x00; // SDO
     gpioCmd[7] = 0x00; // GEN_CONFIG
