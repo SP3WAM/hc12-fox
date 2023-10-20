@@ -12,14 +12,18 @@
   #define SI4438_nSEL PD2
 #endif
 #define SI4438_SDN  PD4
+#define SI4438_DIRECT_MODE_TX_PIN PB4 // connected to GPIO0 of Si4438
 
 #define SI4438_CMD_PART_INFO 0x01
 #define SI4438_CMD_POWER_UP 0x02	
 #define SI4438_CMD_SET_PROPERTY 0x11
 #define SI4438_CMD_GET_PROPERTY 0x12
+#define SI4438_CMD_GPIO_PIN_CFG 0x13
+#define SI4438_CMD_START_TX 0x31
 #define SI4438_CMD_READ_CMD_BUFF 0x44
 
 #define SI4438_PROPERTY_PA_PWR_LVL 0x2201
+#define SI44338_PROPERTY_MODEM_MOD_TYPE 0x2002
 
 static const uint8_t STARTUP_CONFIG[] PROGMEM = RADIO_CONFIGURATION_DATA_ARRAY;
 
@@ -194,3 +198,58 @@ bool si4438_set_tx_power(uint8_t pwr)
     return false;
 }
 
+bool si4438_init_cw()
+{
+    // configure GPIO
+    pinMode(SI4438_DIRECT_MODE_TX_PIN, OUTPUT);
+    digitalWrite(SI4438_SDN, LOW);
+    
+    uint8_t gpioCmd[8];
+    gpioCmd[0] = SI4438_CMD_GPIO_PIN_CFG;
+    gpioCmd[1] = 0b01000100; // GPIO0: CMOS input, pull up enabled
+    gpioCmd[2] = 0x00; // GPIO1
+    gpioCmd[3] = 0x00; // GPIO2
+    gpioCmd[4] = 0x00; // GPIO3
+    gpioCmd[5] = 0x00; // SDO
+    gpioCmd[6] = 0x00; // GEN_CONFIG
+
+    if(doAPI(gpioCmd, sizeof(gpioCmd), NULL, 0) == false)
+    {
+        return false;
+    }
+
+    // configure CW Tx mode
+    // TX_DIRECT_MODE_TYPE = 1; Direct mode operates in asynchronous mode, applies to TX only. GFSK is not supported.
+    // TX_DIRECT_MODE_GPIO = 0; TX direct mode uses gpio0 as data source, applies to TX only.
+    // MOD_SOURCE = 1; Modulation source is direct mode pin.
+    // MOD_TYPE = 0; CW
+    uint8_t value = 0b10001000; 
+    if(setProperty(SI44338_PROPERTY_MODEM_MOD_TYPE, value) == false)
+    {
+        return false;
+    }
+
+    // put into TX mode
+    uint8_t startTxCmd[5];
+    startTxCmd[0] = SI4438_CMD_START_TX;
+    startTxCmd[1] = 0; // channel 0
+    startTxCmd[2] = 0;
+    startTxCmd[3] = 0;
+    startTxCmd[4] = 0;
+    if(doAPI(startTxCmd, sizeof(startTxCmd), NULL, 0) == false)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+void si4438_cw_on()
+{
+    digitalWrite(SI4438_SDN, HIGH);
+}
+
+void si4438_cw_off()
+{
+    digitalWrite(SI4438_SDN, LOW);
+}

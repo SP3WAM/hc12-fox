@@ -12,12 +12,11 @@ void setup()
     delay(1000);
 
     // at first check if the hardware is connected
-    Serial_print_s("Si4438 cheking hardware...");
+    Serial_print_s("Si4438 checking hardware...");
     chipConnected = si4438_is_chip_connected();
     if(chipConnected == false)
     {
         Serial_println_s(" failed");
-        return;
     }
     Serial_println_s(" OK");
 
@@ -27,7 +26,6 @@ void setup()
     if(si4438_apply_startup_config() == false)
     {
         Serial_println_s(" failed");
-        return;
     }
     Serial_println_s(" OK");
 
@@ -36,7 +34,14 @@ void setup()
     if(si4438_set_tx_power(0x01) == false)
     {
         Serial_println_s(" failed");
-        return;
+    }
+    Serial_println_s(" OK");
+
+    // Init CW transmission mode
+    Serial_print_s("Si4438 setting CW mode...");
+    if(si4438_init_cw() == false)
+    {
+        Serial_println_s(" failed");
     }
     Serial_println_s(" OK");
 }
@@ -58,11 +63,9 @@ void loop()
         return;
     }
 
-    Serial_print_s("Si4438 setting TX power...");
-    if(si4438_set_tx_power(0x10) == false)
-    {
-        Serial_println_s(" failed");
-        return;
-    }
-    Serial_println_s(" OK");
+    Serial_println_s("Si4438 CW on");
+    si4438_cw_on();
+    delay(1000);
+    Serial_println_s("Si4438 CW off");
+    si4438_cw_off();
 }
