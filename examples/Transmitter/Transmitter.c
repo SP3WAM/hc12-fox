@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "drivers/si4438.h"
+#include "services/fake_f3e.h"
 
 bool chipConnected = false;
 
@@ -39,7 +40,7 @@ void setup()
 
     // Init fake F3E transmission mode
     Serial_print_s("Si4438 setting fake F3E mode...");
-    if(si4438_init_fake_f3e_tx() == false)
+    if(fake_f3e_init_tx() == false)
     {
         Serial_println_s(" failed");
     }
@@ -64,8 +65,8 @@ void loop()
     }
 
     Serial_println_s("Si4438 start fake F3E");
-    si4438_start_fake_f3e_tx();
+    fake_f3e_start_tx();
     delay(1000);
     Serial_println_s("Si4438 stop fake F3E");
-    si4438_stop_fake_f3e_tx();
+    fake_f3e_stop_tx();
 }
