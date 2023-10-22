@@ -37,9 +37,9 @@ void setup()
     }
     Serial_println_s(" OK");
 
-    // Init CW transmission mode
-    Serial_print_s("Si4438 setting CW mode...");
-    if(si4438_init_cw() == false)
+    // Init fake F3E transmission mode
+    Serial_print_s("Si4438 setting fake F3E mode...");
+    if(si4438_init_fake_f3e_tx() == false)
     {
         Serial_println_s(" failed");
     }
@@ -63,9 +63,9 @@ void loop()
         return;
     }
 
-    Serial_println_s("Si4438 CW on");
-    si4438_cw_on();
+    Serial_println_s("Si4438 start fake F3E");
+    si4438_start_fake_f3e_tx();
     delay(1000);
-    Serial_println_s("Si4438 CW off");
-    si4438_cw_off();
+    Serial_println_s("Si4438 stop fake F3E");
+    si4438_stop_fake_f3e_tx();
 }
