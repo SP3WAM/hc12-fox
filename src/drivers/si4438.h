@@ -34,6 +34,10 @@ bool si4438_apply_startup_config();
  */
 bool si4438_set_tx_power(uint8_t pwr);
 
+bool si4438_enter_ready_state();
+
+bool si4438_enter_tx_state();
+
 bool si4438_init_cw();
 
 void si4438_cw_on();

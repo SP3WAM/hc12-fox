@@ -187,15 +187,43 @@ bool si4438_set_tx_power(uint8_t pwr)
     return false;
 }
 
+bool si4438_enter_ready_state()
+{
+    // put into READY state
+    uint8_t cmd[2];
+    cmd[0] = SI4438_CMD_CHANGE_STATE;
+    cmd[1] = 0x03; // READY state.
+    if(doAPI(cmd, sizeof(cmd), NULL, 0) == false)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+bool si4438_enter_tx_state()
+{
+    // put into TX mode
+    uint8_t startTxCmd[5];
+    startTxCmd[0] = SI4438_CMD_START_TX;
+    startTxCmd[1] = 0; // channel 0
+    startTxCmd[2] = 0;
+    startTxCmd[3] = 0;
+    startTxCmd[4] = 0;
+    if(doAPI(startTxCmd, sizeof(startTxCmd), NULL, 0) == false)
+    {
+        return false;
+    }
+
+    return true;
+}
+
 bool si4438_init_cw()
 {
     // configure GPIO
-    pinMode(SI4438_DIRECT_MODE_TX_PIN, OUTPUT);
-    digitalWrite(SI4438_SDN, LOW);
-    
     uint8_t gpioCmd[8];
     gpioCmd[0] = SI4438_CMD_GPIO_PIN_CFG;
-    gpioCmd[1] = 0b01000100; // GPIO0: CMOS input, pull up enabled
+    gpioCmd[1] = 0x00; // GPIO0
     gpioCmd[2] = 0x00; // GPIO1
     gpioCmd[3] = 0b0000011; // GPIO2: CMOS output driven high, pull up disabled
     gpioCmd[4] = 0x0000010; // GPIO3: CMOS output driven low, pull up disabled
@@ -209,11 +237,11 @@ bool si4438_init_cw()
     }
 
     // configure CW Tx mode
-    //   TX_DIRECT_MODE_TYPE[0] = 0b1;   Direct mode operates in asynchronous mode, applies to TX only. GFSK is not supported.
-    // TX_DIRECT_MODE_GPIO[1:0] = 0b00;  TX direct mode uses GPIO0 as data source.
-    //          MOD_SOURCE[1:0] = 0b01;  The modulation is sourced in real-time (i.e., TX Direct Mode) from a GPIO pin, as selected by the TX_DIRECT_MODE_GPIO field.
+    //   TX_DIRECT_MODE_TYPE[0] = 0b0;   not used as we have PSEUDO mode
+    // TX_DIRECT_MODE_GPIO[1:0] = 0b00;  not used as we have PSEUDO mode
+    //          MOD_SOURCE[1:0] = 0b10;  PSEUDO. The modulation is sourced from the internal pseudo-random generator.
     //            MOD_TYPE[2:0] = 0b000; CW
-    uint8_t value = 0b10001000; 
+    uint8_t value = 0b00010000;
     if(setProperty(SI44338_PROPERTY_MODEM_MOD_TYPE, value) == false)
     {
         return false;

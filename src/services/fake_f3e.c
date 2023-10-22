@@ -36,31 +36,10 @@ bool fake_f3e_init_tx()
 
 bool fake_f3e_start_tx()
 {
-    // put into TX mode
-    uint8_t startTxCmd[5];
-    startTxCmd[0] = SI4438_CMD_START_TX;
-    startTxCmd[1] = 0; // channel 0
-    startTxCmd[2] = 0;
-    startTxCmd[3] = 0;
-    startTxCmd[4] = 0;
-    if(doAPI(startTxCmd, sizeof(startTxCmd), NULL, 0) == false)
-    {
-        return false;
-    }
-
-    return true;
+    si4438_enter_tx_state();
 }
 
 bool fake_f3e_stop_tx()
 {
-    // put into READY state
-    uint8_t cmd[2];
-    cmd[0] = SI4438_CMD_CHANGE_STATE;
-    cmd[1] = 0x03; // READY state.
-    if(doAPI(cmd, sizeof(cmd), NULL, 0) == false)
-    {
-        return false;
-    }
-
-    return true;
+    si4438_enter_ready_state();
 }
