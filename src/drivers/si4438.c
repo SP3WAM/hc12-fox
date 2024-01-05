@@ -201,6 +201,9 @@ bool si4438_enter_ready_state()
     return true;
 }
 
+// https://github.com/IU5HKU/Si4463-CW-Beacon/blob/master/src/si4463/si4463.cpp
+// activateTX()
+// 0x31, channel, 0, 0, 0, 0, 0
 bool si4438_enter_tx_state()
 {
     // put into TX mode
