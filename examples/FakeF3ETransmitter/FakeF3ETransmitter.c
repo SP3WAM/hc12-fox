@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "drivers/si4438.h"
 #include "services/fake_f3e.h"
-#include "services/commands.h"
+#include "services/terminal.h"
 
 bool chipConnected = false;
 
@@ -46,12 +46,15 @@ void setup()
         Serial_println_s(" failed");
     }
     Serial_println_s(" OK");
+
+    terminal_init();
 }
 
 void loop()
 {
-    commands_loop();
+    terminal_loop();
 
+/*
     delay(1000);
 
     Serial_print_i(millis());
@@ -72,4 +75,5 @@ void loop()
     delay(1000);
     Serial_println_s("Si4438 stop fake F3E");
     fake_f3e_stop_tx();
+*/
 }
