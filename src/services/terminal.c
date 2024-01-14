@@ -15,11 +15,11 @@ void terminal_loop() {
 		return;
 	}
 
-	char* command = getParam(&terminal_command_params, 0);
+	char* command = command_params_get_param(&terminal_command_params, 0);
 
 	if(strcmp(command, "") == 0)
 	{
-		reset(&terminal_command_params);
+		command_params_reset(&terminal_command_params);
 		terminal_print_terminal_ready();
 
 		return;
@@ -28,7 +28,7 @@ void terminal_loop() {
 	Serial_print_s(command);
 	Serial_println_s(": unknown command");
 
-	reset(&terminal_command_params);
+	command_params_reset(&terminal_command_params);
 	terminal_print_terminal_ready();
 }
 
@@ -40,7 +40,7 @@ bool terminal_read_command(CommandParams* commandParams)
 		// echo the character back to the terminal
 		Serial_write(byte);
 		
-		if(!appendChar(commandParams, byte))
+		if(!command_params_append_char(commandParams, byte))
 		{
 			// some kind of error while apending char
 			Serial_flush();
@@ -53,7 +53,7 @@ bool terminal_read_command(CommandParams* commandParams)
 		
 	}
 
-	return isCommandDetected(commandParams);
+	return command_params_is_command_detected(commandParams);
 }
 
 void terminal_print_terminal_ready()

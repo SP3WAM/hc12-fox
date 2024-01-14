@@ -1,6 +1,6 @@
 #include "command_params.h"
 
-void reset(CommandParams* commandParams)
+void command_params_reset(CommandParams* commandParams)
 {
 	commandParams->readRowIndex = 0;
 	commandParams->readColumnIndex = 0;
@@ -8,22 +8,22 @@ void reset(CommandParams* commandParams)
 	commandParams->commandDetected = false;
 }
 
-uint8_t getNumberOfParameters(CommandParams* commandParams)
+uint8_t command_params_get_number_of_parameters(CommandParams* commandParams)
 {
 	return commandParams->readRowIndex + 1;
 }
 
-char* getParam(CommandParams* commandParams, uint8_t index)
+char* command_params_get_param(CommandParams* commandParams, uint8_t index)
 {
 	return commandParams->readBuffer[index];
 }
 
-bool isCommandDetected(CommandParams* commandParams)
+bool command_params_is_command_detected(CommandParams* commandParams)
 {
 	return commandParams->commandDetected;
 }
 
-bool appendChar(CommandParams* commandParams, char byte)
+bool command_params_append_char(CommandParams* commandParams, char byte)
 {
 	if(byte == ' ' && commandParams->readColumnIndex == 0)
 	{
@@ -66,7 +66,7 @@ bool appendChar(CommandParams* commandParams, char byte)
 		if(commandParams->readRowIndex >= INCOMING_BUFFER_MAX_WORDS_IN_LINE)
 		{
 			// incoming buffer overflow
-			reset(commandParams);
+			command_params_reset(commandParams);
 
 			return false;
 		}
@@ -79,7 +79,7 @@ bool appendChar(CommandParams* commandParams, char byte)
 	if(commandParams->readColumnIndex > INCOMING_BUFFER_MAX_CHARACTERS_IN_WORD)
 	{
 		// incoming buffer overflow
-		reset(commandParams);
+		command_params_reset(commandParams);
 
 		return false;
 	}

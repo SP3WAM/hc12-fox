@@ -14,12 +14,12 @@ typedef struct command_params
 	bool commandDetected;
 } CommandParams;
 
-void reset(CommandParams* commandParams);
+void command_params_reset(CommandParams* commandParams);
 
-uint8_t getNumberOfParameters(CommandParams* commandParams);
+uint8_t command_params_get_number_of_parameters(CommandParams* commandParams);
 
-char* getParam(CommandParams* commandParams, uint8_t index);
+char* command_params_get_param(CommandParams* commandParams, uint8_t index);
 
-bool isCommandDetected(CommandParams* commandParams);
+bool command_params_is_command_detected(CommandParams* commandParams);
 
-bool appendChar(CommandParams* commandParams, char data);
+bool command_params_append_char(CommandParams* commandParams, char data);
