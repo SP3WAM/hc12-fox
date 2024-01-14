@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "drivers/si4438.h"
 #include "services/fake_f3e.h"
+#include "services/commands.h"
 
 bool chipConnected = false;
 
@@ -49,6 +50,8 @@ void setup()
 
 void loop()
 {
+    commands_loop();
+
     delay(1000);
 
     Serial_print_i(millis());

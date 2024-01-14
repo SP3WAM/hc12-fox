@@ -101,7 +101,7 @@ bool setProperty(uint16_t prop, uint8_t value)
     return doAPI(cmd, sizeof(cmd), NULL, 0);
 }
 
-bool getProperty(uint16_t prop, uint8_t* value)
+bool si4438_get_property(uint16_t prop, uint8_t* value)
 {
     uint8_t cmd[4];
     cmd[0] = SI4438_CMD_GET_PROPERTY;
@@ -174,7 +174,7 @@ bool si4438_set_tx_power(uint8_t pwr)
     }
 
     uint8_t readPwr;
-    if(getProperty(SI4438_PROPERTY_PA_PWR_LVL, &readPwr) == false)
+    if(si4438_get_property(SI4438_PROPERTY_PA_PWR_LVL, &readPwr) == false)
     {
         return false;
     }
