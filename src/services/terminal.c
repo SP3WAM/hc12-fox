@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "terminal.h"
+#include "../drivers/si4438.h"
 
 CommandParams terminal_command_params;
 
@@ -16,9 +17,38 @@ void terminal_loop() {
 	}
 
 	char* command = command_params_get_param(&terminal_command_params, 0);
+	uint8_t numberOfParams = command_params_get_number_of_parameters(&terminal_command_params);
 
 	if(strcmp(command, "") == 0)
 	{
+		command_params_reset(&terminal_command_params);
+		terminal_print_terminal_ready();
+
+		return;
+	}
+
+	if(numberOfParams == 2 && strcmp(command, "read") == 0)
+	{
+		// read command
+		char* propertyString = command_params_get_param(&terminal_command_params, 1);
+		unsigned long property = strtoul(propertyString, NULL, 0);
+		Serial_println_s(propertyString);
+		Serial_println_u(property);
+
+		char value;
+		if(si4438_get_property(property, &value))
+		{
+			char valueAsHexString[3];
+			Serial_println_u(value);
+			sprintf(valueAsHexString, "%02X", value);
+			Serial_print_s("0x");
+			Serial_println_s(valueAsHexString);
+		}
+		else
+		{
+			Serial_println_s("Command processing error.");
+		}
+
 		command_params_reset(&terminal_command_params);
 		terminal_print_terminal_ready();
 
