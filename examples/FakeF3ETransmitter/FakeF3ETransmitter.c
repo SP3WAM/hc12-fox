@@ -60,7 +60,7 @@ void loop()
     if(isTx == true && (now - lastTxStartMillis >= 1000))
     {
         // need to disable TX
-        Serial_println_s("Si4438 stop fake F3E");
+        //Serial_println_s("Si4438 stop fake F3E");
         fake_f3e_stop_tx();
         isTx = false;
     }
@@ -68,7 +68,7 @@ void loop()
     if(isTx == false && (now - lastTxStartMillis >= 2000))
     {
         // need to enable Tx
-        Serial_println_s("Si4438 start fake F3E");
+        //Serial_println_s("Si4438 start fake F3E");
         fake_f3e_start_tx();
         isTx = true;
         lastTxStartMillis = now;
