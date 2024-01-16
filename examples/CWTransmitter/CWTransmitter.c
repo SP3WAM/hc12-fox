@@ -1,8 +1,11 @@
 #include <Arduino.h>
 #include "drivers/si4438.h"
 #include "services/cw.h"
+#include "services/terminal.h"
 
 bool chipConnected = false;
+unsigned long lastTxStartMillis = 0;
+bool isTx = false;
 
 void setup()
 {
@@ -45,28 +48,29 @@ void setup()
         Serial_println_s(" failed");
     }
     Serial_println_s(" OK");
+
+    terminal_init();
 }
 
 void loop()
 {
-    delay(1000);
+    terminal_loop();
+    unsigned long now = millis();
 
-    Serial_print_i(millis());
-    Serial_println_s(" loop()");
-
-    if(si4438_is_chip_connected())
+    if(isTx == true && (now - lastTxStartMillis >= 1000))
     {
-        Serial_println_s("Si4438 chip connected.");
+        // need to disable TX
+        //Serial_println_s("Si4438 stop CW");
+        cw_stop_tx();
+        isTx = false;
     }
-    else
+    
+    if(isTx == false && (now - lastTxStartMillis >= 2000))
     {
-        Serial_println_s("Si4438 chip not connected.");
-        return;
+        // need to enable Tx
+        //Serial_println_s("Si4438 start CW");
+        cw_start_tx();
+        isTx = true;
+        lastTxStartMillis = now;
     }
-
-    Serial_println_s("Si4438 start CW");
-    cw_start_tx();
-    delay(1000);
-    Serial_println_s("Si4438 stop CW");
-    cw_stop_tx();
 }
