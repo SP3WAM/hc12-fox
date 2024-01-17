@@ -5,7 +5,8 @@
 #define SI4438_MIN_TX_POWER 0
 
 #define SI4438_CMD_PART_INFO 0x01
-#define SI4438_CMD_POWER_UP 0x02	
+#define SI4438_CMD_POWER_UP 0x02
+#define SI4438_CMD_FUNC_INFO 0x10
 #define SI4438_CMD_SET_PROPERTY 0x11
 #define SI4438_CMD_GET_PROPERTY 0x12
 #define SI4438_CMD_GPIO_PIN_CFG 0x13
@@ -39,3 +40,7 @@ bool si4438_set_tx_power(uint8_t pwr);
 bool si4438_enter_ready_state();
 
 bool si4438_enter_tx_state();
+
+bool si4438_get_part_info(char* part_info);
+
+bool si4438_get_func_info(uint8_t* func_info);

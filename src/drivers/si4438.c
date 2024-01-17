@@ -114,19 +114,11 @@ bool si4438_get_property(uint16_t prop, uint8_t* value)
 
 bool si4438_is_chip_connected()
 {
-    uint8_t cmd[1]= { SI4438_CMD_PART_INFO };
     uint8_t resp[8];
-    if(doAPI(cmd, sizeof(cmd), resp, sizeof(resp)) == false)
+    if(si4438_get_part_info(resp) == false)
     {
         return false;
     }
-
-    //for(uint8_t q = 0 ; q < 8 ; q++)
-    //{
-    //    Serial_print_i(buff[q]);
-    //    Serial_print_s(" ");
-    //}
-    //Serial_println_s("");
 
     if(resp[1] == 0x44 && resp[2] == 0x38)
     {
@@ -219,4 +211,22 @@ bool si4438_enter_tx_state()
     }
 
     return true;
+}
+
+bool si4438_get_part_info(uint8_t* part_info)
+{
+    uint8_t cmd[1]= { SI4438_CMD_PART_INFO };
+    if(doAPI(cmd, sizeof(cmd), part_info, 8) == false)
+    {
+        return false;
+    }
+}
+
+bool si4438_get_func_info(uint8_t* func_info)
+{
+    uint8_t cmd[1]= { SI4438_CMD_FUNC_INFO };
+    if(doAPI(cmd, sizeof(cmd), func_info, 6) == false)
+    {
+        return false;
+    }
 }
