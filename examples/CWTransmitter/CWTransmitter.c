@@ -1,7 +1,7 @@
 #include <Arduino.h>
-#include "drivers/si4438.h"
-#include "services/cw.h"
-#include "services/terminal.h"
+#include <drivers/si4438.h>
+#include <services/cw.h>
+#include <services/terminal.h>
 
 bool chipConnected = false;
 unsigned long lastTxStartMillis = 0;
@@ -32,6 +32,9 @@ void setup()
         Serial_println_s(" failed");
     }
     Serial_println_s(" OK");
+
+    // display device info
+    display_device_info();
 
     // configure the TX power
     Serial_print_s("Si4438 setting TX power...");
