@@ -1,0 +1,6 @@
+{
+	"frameworks": "arduino",
+	"name": "core",
+	"platforms": "ststm8",
+	"version": "1.0.0"
+}
