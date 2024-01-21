@@ -34,7 +34,7 @@ void setup()
     Serial_println_s(" OK");
 
     // display device info
-    display_device_info();
+    //display_device_info();
 
     // configure the TX power
     Serial_print_s("Si4438 setting TX power...");
