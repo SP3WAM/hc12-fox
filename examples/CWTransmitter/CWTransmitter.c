@@ -46,7 +46,7 @@ void setup()
 
     // Init CW transmitter
     Serial_print_s("Si4438 setting CW mode...");
-    if(cw_init_tx() == false)
+    if(cw_init_tx_direct() == false)
     {
         Serial_println_s(" failed");
     }

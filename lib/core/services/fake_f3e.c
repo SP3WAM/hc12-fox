@@ -10,7 +10,7 @@ bool fake_f3e_init_tx()
     gpioCmd[1] = 0x00; // GPIO0
     gpioCmd[2] = 0x00; // GPIO1
     gpioCmd[3] = 0b0000011; // GPIO2: CMOS output driven high, pull up disabled
-    gpioCmd[4] = 0x0000010; // GPIO3: CMOS output driven low, pull up disabled
+    gpioCmd[4] = 0b0000010; // GPIO3: CMOS output driven low, pull up disabled
     gpioCmd[5] = 0x00; // NIRQ
     gpioCmd[6] = 0x00; // SDO
     gpioCmd[7] = 0x00; // GEN_CONFIG
