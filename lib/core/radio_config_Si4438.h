@@ -19,14 +19,14 @@
 
 // INPUT DATA
 /*
-// Crys_freq(Hz): 30000000    Crys_tol(ppm): 20    IF_mode: 2    High_perf_Ch_Fil: 1    OSRtune: 0    Ch_Fil_Bw_AFC: 0    ANT_DIV: 0    PM_pattern: 15    
-// MOD_type: 2    Rsymb(sps): 1000    Fdev(Hz): 4000    RXBW(Hz): 150000    Manchester: 0    AFC_en: 0    Rsymb_error: 0.0    Chip-Version: 2    
-// RF Freq.(MHz): 446.00625    API_TC: 29    fhst: 12500    inputBW: 0    BERT: 0    RAW_dout: 0    D_source: 1    Hi_pfm_div: 1    
+// Crys_freq(Hz): 30000000    Crys_tol(ppm): 20    IF_mode: 2    High_perf_Ch_Fil: 1    OSRtune: 0    Ch_Fil_Bw_AFC: 0    ANT_DIV: 0    PM_pattern: 0    
+// MOD_type: 0    Rsymb(sps): 10000    Fdev(Hz): 20000    RXBW(Hz): 150000    Manchester: 0    AFC_en: 0    Rsymb_error: 0.0    Chip-Version: 2    
+// RF Freq.(MHz): 446.00625    API_TC: 29    fhst: 250000    inputBW: 0    BERT: 0    RAW_dout: 0    D_source: 1    Hi_pfm_div: 1    
 // 
 // # RX IF frequency is  -468750 Hz
-// # WB filter 3 (BW =  46.31 kHz);  NB-filter 3 (BW = 46.31 kHz)
+// # WB filter 3 (BW =  61.74 kHz);  NB-filter 3 (BW = 61.74 kHz)
 // 
-// Modulation index: 8
+// Modulation index: 4
 */
 
 
@@ -120,7 +120,7 @@
 //   MODEM_FREQ_DEV_2 - 17-bit unsigned TX frequency deviation word.
 //   MODEM_FREQ_DEV_1 - 17-bit unsigned TX frequency deviation word.
 */
-#define RF_MODEM_MOD_TYPE_12 0x11, 0x20, 0x0C, 0x00, 0x0A, 0x00, 0x07, 0x00, 0x27, 0x10, 0x01, 0xC9, 0xC3, 0x80, 0x00, 0x01
+#define RF_MODEM_MOD_TYPE_12 0x11, 0x20, 0x0C, 0x00, 0x08, 0x00, 0x07, 0x01, 0x86, 0xA0, 0x01, 0xC9, 0xC3, 0x80, 0x00, 0x05
 
 /*
 // Set properties:           RF_MODEM_FREQ_DEV_0_1
@@ -131,7 +131,7 @@
 // Descriptions:
 //   MODEM_FREQ_DEV_0 - 17-bit unsigned TX frequency deviation word.
 */
-#define RF_MODEM_FREQ_DEV_0_1 0x11, 0x20, 0x01, 0x0C, 0x18
+#define RF_MODEM_FREQ_DEV_0_1 0x11, 0x20, 0x01, 0x0C, 0x76
 
 /*
 // Set properties:           RF_MODEM_TX_RAMP_DELAY_8
@@ -149,7 +149,7 @@
 //   MODEM_DECIMATION_CFG1 - Specifies three decimator ratios for the Cascaded Integrator Comb (CIC) filter.
 //   MODEM_DECIMATION_CFG0 - Specifies miscellaneous parameters and decimator ratios for the Cascaded Integrator Comb (CIC) filter.
 */
-#define RF_MODEM_TX_RAMP_DELAY_8 0x11, 0x20, 0x08, 0x18, 0x01, 0x80, 0x08, 0x03, 0x80, 0x00, 0x32, 0x20
+#define RF_MODEM_TX_RAMP_DELAY_8 0x11, 0x20, 0x08, 0x18, 0x00, 0x00, 0x08, 0x03, 0x80, 0x00, 0x20, 0x10
 
 /*
 // Set properties:           RF_MODEM_BCR_OSR_1_9
@@ -168,7 +168,7 @@
 //   MODEM_BCR_GEAR - RX BCR loop gear control.
 //   MODEM_BCR_MISC1 - Miscellaneous control bits for the RX BCR loop.
 */
-#define RF_MODEM_BCR_OSR_1_9 0x11, 0x20, 0x09, 0x22, 0x03, 0xAA, 0x00, 0x8B, 0xCF, 0x00, 0x46, 0x00, 0xC2
+#define RF_MODEM_BCR_OSR_1_9 0x11, 0x20, 0x09, 0x22, 0x00, 0xFA, 0x02, 0x0C, 0x4A, 0x00, 0x83, 0x02, 0x00
 
 /*
 // Set properties:           RF_MODEM_AFC_GEAR_7
@@ -185,7 +185,7 @@
 //   MODEM_AFC_LIMITER_0 - Set the AFC limiter value.
 //   MODEM_AFC_MISC - Specifies miscellaneous AFC control bits.
 */
-#define RF_MODEM_AFC_GEAR_7 0x11, 0x20, 0x07, 0x2C, 0x54, 0x36, 0x80, 0x15, 0x0C, 0x76, 0x80
+#define RF_MODEM_AFC_GEAR_7 0x11, 0x20, 0x07, 0x2C, 0x00, 0x12, 0x80, 0x57, 0x04, 0x00, 0xA0
 
 /*
 // Set properties:           RF_MODEM_AGC_CONTROL_1
@@ -209,7 +209,7 @@
 //   MODEM_AGC_RFPD_DECAY - Sets the decay time of the RF peak detectors.
 //   MODEM_AGC_IFPD_DECAY - Sets the decay time of the IF peak detectors.
 */
-#define RF_MODEM_AGC_WINDOW_SIZE_3 0x11, 0x20, 0x03, 0x38, 0x11, 0xCD, 0xCD
+#define RF_MODEM_AGC_WINDOW_SIZE_3 0x11, 0x20, 0x03, 0x38, 0x11, 0x37, 0x37
 
 /*
 // Set properties:           RF_MODEM_OOK_PDTC_1
@@ -220,7 +220,7 @@
 // Descriptions:
 //   MODEM_OOK_PDTC - Configures the attack and decay times of the OOK Peak Detector.
 */
-#define RF_MODEM_OOK_PDTC_1 0x11, 0x20, 0x01, 0x40, 0x2B
+#define RF_MODEM_OOK_PDTC_1 0x11, 0x20, 0x01, 0x40, 0x29
 
 /*
 // Set properties:           RF_MODEM_OOK_CNT1_8
@@ -238,7 +238,7 @@
 //   MODEM_ANT_DIV_MODE - Antenna diversity mode settings.
 //   MODEM_ANT_DIV_CONTROL - Specifies controls for the Antenna Diversity algorithm.
 */
-#define RF_MODEM_OOK_CNT1_8 0x11, 0x20, 0x08, 0x42, 0x84, 0x03, 0xD6, 0x8D, 0x01, 0xCD, 0x01, 0x80
+#define RF_MODEM_OOK_CNT1_8 0x11, 0x20, 0x08, 0x42, 0xA4, 0x03, 0xD6, 0x03, 0x01, 0xFF, 0x01, 0x80
 
 /*
 // Set properties:           RF_MODEM_RSSI_COMP_1
@@ -375,7 +375,7 @@
 //   FREQ_CONTROL_W_SIZE - Set window gating period (in number of crystal reference clock cycles) for counting VCO frequency during calibration.
 //   FREQ_CONTROL_VCOCNT_RX_ADJ - Adjust target count for VCO calibration in RX mode.
 */
-#define RF_FREQ_CONTROL_INTE_8 0x11, 0x40, 0x08, 0x00, 0x3A, 0x0B, 0xBD, 0x70, 0x03, 0x6A, 0x20, 0xFE
+#define RF_FREQ_CONTROL_INTE_8 0x11, 0x40, 0x08, 0x00, 0x3A, 0x0B, 0xBD, 0x70, 0x44, 0x44, 0x20, 0xFE
 
 
 // AUTOMATICALLY GENERATED CODE! 
