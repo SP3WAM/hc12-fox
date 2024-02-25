@@ -61,7 +61,7 @@ bool cw_init_tx_direct()
     // GPIO0 <- PB4 as output always high (CW generated constantly)
     pinMode(PB4, OUTPUT);
     // digitalWrite(PB4, LOW);
-    digitalWrite(PB4, HIGH);
+    digitalWrite(PB4, LOW);
 
     // configure CW Tx Synchronous Direct mode
     //   TX_DIRECT_MODE_TYPE[0] = 0b0;   Direct mode operates in synchronous mode, applies to TX only.
