@@ -41,7 +41,7 @@ bool cw_init_tx_direct()
     // configure GPIO of Si44xx
     uint8_t gpioCmd[8];
     gpioCmd[0] = SI4438_CMD_GPIO_PIN_CFG;
-    gpioCmd[1] = 0b00000100; // GPIO0: INPUT Pin is configured as CMOS input. Pull Up disabled.
+    gpioCmd[1] = 0b01000100; // GPIO0: INPUT Pin is configured as CMOS input. Pull Up enabled.
     gpioCmd[2] = 0b00010000; // GPIO1: TX_DATA_CLK Outputs the TX Data Clock signal. Pull Up disabled.
     gpioCmd[3] = 0b00000011; // GPIO2: CMOS output driven high, pull up disabled. Sets the RF switch into TX mode.
     gpioCmd[4] = 0b00000010; // GPIO3: CMOS output driven low, pull up disabled. Sets the RF switch into TX mode.
