@@ -20,15 +20,6 @@ bool ook_init_tx_direct_sync()
     // digitalWrite(PB4, LOW);
 
     // configure GPIO of Si44xx
-    // GPIO2 and GPIO3 drives the RF switch. Here is the table matrix:
-    // GPIO2 | GPIO3
-    // HIGH  | LOW   RF switch in Tx mode
-    // LOW   | HIGH  RF switch in Rx mode
-    // HIGH  | HIGH  undefined state
-    // LOW   | LOW   undefined state
-    // Note: when the chip is in Tx mode but the RF switch is in Rx, the signal 
-    // will be transmitted anyway but its power will be around 20dB weaker.
-    // See the doc folder for HC-12 schematic and the RF switch manual.
     uint8_t gpioCmd[8];
     gpioCmd[0] = SI4438_CMD_GPIO_PIN_CFG;
     gpioCmd[1] = 0b01000100; // GPIO0: INPUT Pin is configured as CMOS input. Pull Up enabled (it's important!).
