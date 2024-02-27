@@ -43,7 +43,7 @@ void setup()
 
     // Init OOK transmitter
     Serial_print_s("Si4438 setting OOK mode...");
-    if(ook_init_tx_direct_sync() == false)
+    if(ook_init_tx_pseudo_sync() == false)
     {
         Serial_println_s(" failed");
     }
