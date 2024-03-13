@@ -43,7 +43,7 @@ void setup()
 
     // Init OOK transmitter
     Serial_print_s("Si4438 setting OOK mode...");
-    if(ook_init_tx_pseudo_sync() == false)
+    if(ook_init_tx_direct_sync() == false)
     {
         Serial_println_s(" failed");
     }
@@ -55,20 +55,7 @@ void setup()
 void loop()
 {
     terminal_loop();
-    unsigned long now = millis();
 
-    if(isTx == true && (now - lastTxStartMillis >= 1000))
-    {
-        // need to disable TX
-        ook_stop_tx();
-        isTx = false;
-    }
-    
-    if(isTx == false && (now - lastTxStartMillis >= 2000))
-    {
-        // need to enable Tx
-        ook_start_tx();
-        isTx = true;
-        lastTxStartMillis = now;
-    }
+    // Enter the Tx state. It is implemented in the way that it block the CPU for 1 second.
+    ook_start_tx();
 }

@@ -94,10 +94,23 @@ bool ook_init_tx_pseudo_sync()
 
 bool ook_start_tx()
 {
-    return si4438_enter_tx_state();
+    if(si4438_enter_tx_state() == false)
+    {
+        return false;
+    }
+
+    for(uint16_t q = 0 ; q < 1000 ; q ++)
+    {
+        digitalWrite(PB4, HIGH);
+        delayMicroseconds(400);
+        digitalWrite(PB4, LOW);
+        delayMicroseconds(400);
+    }
 }
 
 bool ook_stop_tx()
 {
+    digitalWrite(PB4, LOW);
+
     return si4438_enter_ready_state();
 }
