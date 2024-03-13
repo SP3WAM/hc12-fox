@@ -53,27 +53,15 @@ void setup()
     Serial_println_s(" OK");
 
     terminal_init();
+
+    cw_start_tx();
 }
 
 void loop()
 {
     terminal_loop();
-    unsigned long now = millis();
 
-    if(isTx == true && (now - lastTxStartMillis >= 1000))
-    {
-        // need to disable TX
-        //Serial_println_s("Si4438 stop CW");
-        cw_stop_tx();
-        isTx = false;
-    }
-    
-    if(isTx == false && (now - lastTxStartMillis >= 2000))
-    {
-        // need to enable Tx
-        //Serial_println_s("Si4438 start CW");
-        cw_start_tx();
-        isTx = true;
-        lastTxStartMillis = now;
-    }
+    // WARNING: entering the TX state constantly has impact to the transmitter:
+    // it generates something but it is not hearable in the receiver
+    // cw_start_tx();
 }
