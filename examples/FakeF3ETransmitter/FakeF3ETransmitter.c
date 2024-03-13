@@ -43,7 +43,7 @@ void setup()
 
     // Init fake F3E transmission mode
     Serial_print_s("Si4438 setting fake F3E mode...");
-    if(fake_f3e_init_tx() == false)
+    if(fake_f3e_init_tx_direct_sync_2fsk() == false)
     {
         Serial_println_s(" failed");
     }
@@ -55,22 +55,7 @@ void setup()
 void loop()
 {
     terminal_loop();
-    unsigned long now = millis();
 
-    if(isTx == true && (now - lastTxStartMillis >= 1000))
-    {
-        // need to disable TX
-        //Serial_println_s("Si4438 stop fake F3E");
-        fake_f3e_stop_tx();
-        isTx = false;
-    }
-    
-    if(isTx == false && (now - lastTxStartMillis >= 2000))
-    {
-        // need to enable Tx
-        //Serial_println_s("Si4438 start fake F3E");
-        fake_f3e_start_tx();
-        isTx = true;
-        lastTxStartMillis = now;
-    }
+    // Enter the Tx state. It is implemented in the way that it block the CPU for 1 second.
+    fake_f3e_start_tx();
 }
