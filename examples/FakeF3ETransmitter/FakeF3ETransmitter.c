@@ -56,6 +56,10 @@ void loop()
 {
     terminal_loop();
 
-    // Enter the Tx state. It is implemented in the way that it block the CPU for 1 second.
+    // Enter the Tx state
     fake_f3e_start_tx();
+
+    fake_f3e_tone(1000, 1000000L);
+
+    delay(1000);
 }

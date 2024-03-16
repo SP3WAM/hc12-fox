@@ -89,20 +89,9 @@ bool fake_f3e_init_tx_direct_sync_2fsk()
 
 bool fake_f3e_start_tx()
 {
-    if(si4438_enter_tx_state() == false)
-    {
-        return false;
-    }
+    digitalWrite(PB4, LOW);
 
-    for(uint16_t q = 0 ; q < 1000 ; q ++)
-    {
-        digitalWrite(PB4, HIGH);
-        delayMicroseconds(400);
-        digitalWrite(PB4, LOW);
-        delayMicroseconds(400);
-    }
-
-    return true;
+    return si4438_enter_tx_state();
 }
 
 bool fake_f3e_stop_tx()
@@ -110,4 +99,19 @@ bool fake_f3e_stop_tx()
     digitalWrite(PB4, LOW);
 
     return si4438_enter_ready_state();
+}
+
+bool fake_f3e_tone(uint16_t freqHz, unsigned long durationUs)
+{
+    unsigned long delayUs = 1000000L / freqHz / 2;
+    unsigned long start = micros();
+
+    do
+    {
+        digitalWrite(PB4, HIGH);
+        delayMicroseconds(delayUs);
+        digitalWrite(PB4, LOW);
+        delayMicroseconds(delayUs);
+    }
+    while(micros() - start < durationUs);
 }

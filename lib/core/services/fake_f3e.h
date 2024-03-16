@@ -16,3 +16,5 @@ bool fake_f3e_start_tx();
  * Stops the fake F3E pseudo-random transmition.
  */
 bool fake_f3e_stop_tx();
+
+bool fake_f3e_tone(uint16_t freqHz, unsigned long durationUs);
