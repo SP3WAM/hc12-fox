@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include "drivers/si4438.h"
 #include "services/fake_f3e.h"
-#include "services/terminal.h"
 
 bool chipConnected = false;
 unsigned long lastTxStartMillis = 0;
@@ -48,15 +47,10 @@ void setup()
         Serial_println_s(" failed");
     }
     Serial_println_s(" OK");
-
-    terminal_init();
 }
 
 void loop()
 {
-    terminal_loop();
-
-    // Enter the Tx state
     fake_f3e_start_tx();
 
     fake_f3e_tone(1000, 1000000L);
