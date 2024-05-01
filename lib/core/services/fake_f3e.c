@@ -115,3 +115,19 @@ bool fake_f3e_tone(uint16_t freqHz, unsigned long durationUs)
     }
     while(micros() - start < durationUs);
 }
+
+bool fake_f3e_send_aprs_byte(char byte)
+{
+    for(int q = 0 ; q < 8 ; q++)
+    {
+        if(byte & 0x01 == 0x01)
+        {
+            fake_f3e_tone(1200, 833);
+        }
+        else
+        {
+            fake_f3e_tone(2200, 833);
+        }
+        byte >> 1;
+    }
+}
