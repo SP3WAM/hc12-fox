@@ -42,7 +42,11 @@ void setup()
 
     // Init fake F3E transmission mode
     Serial_print_s("Si4438 setting fake F3E mode...");
-    if(fake_f3e_init_tx_direct_sync_2fsk() == false)
+    //if(fake_f3e_init_tx_direct_sync_2fsk() == false)
+    //{
+    //   Serial_println_s(" failed");
+    //}
+    if(fake_f3e_init_tx_direct_sync_2gfsk() == false)
     {
         Serial_println_s(" failed");
     }

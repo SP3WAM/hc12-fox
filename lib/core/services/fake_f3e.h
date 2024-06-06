@@ -5,7 +5,21 @@
  * Modulation type is 2FSK, where two different frequencies are used so the generated stream will be hearable
  * on PMR 446 FM receiver.
  */
-bool fake_f3e_init_tx();
+bool fake_f3e_init_tx_pseudo_sync_2fsk();
+
+/*
+ * Initiates the fake F3E mode. In this mode fake_f3e_tone(uint16_t, unsigned long) must be called to generate an FM tone.
+ * Modulation type is 2FSK, where two different frequencies are used so the generated stream will be hearable
+ * on PMR 446 FM receiver.
+ */
+bool fake_f3e_init_tx_direct_sync_2fsk();
+
+/*
+ * Initiates the fake F3E mode. In this mode fake_f3e_tone(uint16_t, unsigned long) must be called to generate an FM tone.
+ * Modulation type is 2GFSK, where two different frequencies are used so the generated stream will be hearable
+ * on PMR 446 FM receiver.
+ */
+bool fake_f3e_init_tx_direct_sync_2gfsk();
 
 /*
  * Starts the fake F3E pseudo-random transmition.
