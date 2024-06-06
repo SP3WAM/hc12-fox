@@ -99,7 +99,7 @@ bool ook_start_tx()
         return false;
     }
 
-    for(uint16_t q = 0 ; q < 1000 ; q ++)
+    for(uint16_t q = 0 ; q < 2000 ; q ++)
     {
         digitalWrite(PB4, HIGH);
         delayMicroseconds(400);

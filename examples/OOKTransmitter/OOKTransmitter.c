@@ -56,6 +56,6 @@ void loop()
 {
     terminal_loop();
 
-    // Enter the Tx state. It is implemented in the way that it block the CPU for 1 second.
+    // Enter the Tx state. It is implemented in the way that it blocks the CPU for 2 seconds.
     ook_start_tx();
 }
