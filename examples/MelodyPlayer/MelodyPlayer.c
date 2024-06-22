@@ -222,7 +222,10 @@ void loop()
         delay(noteDuration * 0.1);
     }
     // Disable Tx mode, carriere not generated anymore
-     fake_f3e_stop_tx();
+    fake_f3e_stop_tx();
+
+    // Enter si4438 into sleep state
+    si4438_enter_sleep_state();
 
     // Just wait for some time before pleying it again
     delay(5000);

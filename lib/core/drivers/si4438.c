@@ -179,6 +179,20 @@ bool si4438_set_tx_power(uint8_t pwr)
     return false;
 }
 
+bool si4438_enter_sleep_state()
+{
+    // put into SLEEP state
+    uint8_t cmd[2];
+    cmd[0] = SI4438_CMD_CHANGE_STATE;
+    cmd[1] = 0x01; // SLEEP state.
+    if(doAPI(cmd, sizeof(cmd), NULL, 0) == false)
+    {
+        return false;
+    }
+
+    return true;
+}
+
 bool si4438_enter_ready_state()
 {
     // put into READY state
