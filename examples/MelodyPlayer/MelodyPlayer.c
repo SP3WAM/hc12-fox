@@ -175,7 +175,7 @@ void setup()
 
     // configure the TX power
     Serial_print_s("Si4438 setting TX power...");
-    if(si4438_set_tx_power(SI4438_10DBM_POWER) == false)
+    if(si4438_set_tx_power(SI4438_10DBM_TX_POWER) == false)
     {
         Serial_println_s(" failed");
     }
