@@ -74,7 +74,7 @@ void setup()
 
 void loop()
 {
-    fake_f3e_start_tx();
+    fake_f3e_start_tx(0);
     sendMOE();
     fake_f3e_stop_tx();
     si4438_enter_sleep_state();

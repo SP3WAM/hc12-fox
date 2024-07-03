@@ -55,7 +55,7 @@ void setup()
 
 void loop()
 {
-    fake_f3e_start_tx();
+    fake_f3e_start_tx(0);
 
     fake_f3e_tone(1000, 2000000L);
 

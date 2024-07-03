@@ -52,7 +52,7 @@ void setup()
 void loop()
 {
     // Enter the Tx state
-    fake_f3e_start_tx();
+    fake_f3e_start_tx(0);
 
     for(int q = 0 ; q < 128; q ++)
     {

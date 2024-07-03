@@ -54,7 +54,7 @@ void setup()
 
     terminal_init();
 
-    cw_start_tx();
+    cw_start_tx(0);
 }
 
 void loop()

@@ -56,9 +56,9 @@ bool cw_init_tx()
     return cw_stop_tx();
 }
 
-bool cw_start_tx()
+bool cw_start_tx(uint8_t channel)
 {
-    return si4438_enter_tx_state();
+    return si4438_enter_tx_state(channel);
 }
 
 bool cw_stop_tx()

@@ -195,7 +195,7 @@ void loop()
     // Start the Tx mode, it will generate the carrier during the whole melody time,
     // which will make nice sound hearable in the receiver (no squelch involved during
     // whole time) 
-     fake_f3e_start_tx();
+     fake_f3e_start_tx(0);
 
     // iterate over the notes of the melody. 
     // Remember, the array is twice the number of notes (notes + durations)

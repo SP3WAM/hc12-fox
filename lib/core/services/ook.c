@@ -92,9 +92,9 @@ bool ook_init_tx_pseudo_sync()
     return ook_stop_tx();
 }
 
-bool ook_start_tx()
+bool ook_start_tx(uint8_t channel)
 {
-    if(si4438_enter_tx_state() == false)
+    if(si4438_enter_tx_state(channel) == false)
     {
         return false;
     }

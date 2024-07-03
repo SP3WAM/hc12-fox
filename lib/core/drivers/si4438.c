@@ -212,12 +212,12 @@ bool si4438_enter_ready_state()
 // 0x31, channel, 0, 0, 0, 0, 0
 // Attention: on Si4463 the command has 6 bytes of parameters
 // Attention: on SI4438 the command has 5 bytes of parameters
-bool si4438_enter_tx_state()
+bool si4438_enter_tx_state(uint8_t channel)
 {
     // put into TX mode
     uint8_t startTxCmd[6];
     startTxCmd[0] = SI4438_CMD_START_TX;
-    startTxCmd[1] = 0; // channel 0
+    startTxCmd[1] = channel;
     startTxCmd[2] = 0;
     startTxCmd[3] = 0;
     startTxCmd[4] = 0;
@@ -247,30 +247,3 @@ bool si4438_get_func_info(uint8_t* func_info)
         return false;
     }
 }
-
-// TODO: remove this functionality soon as it consumes too much of FLASH memory (binary doesn't fit into flash)
-// bool si4438_set_base_frequency(unsigned long freq_Hz)
-// {
-//     // freq[Hz] = (fc_inte + fc_frac / 2^19) * Npresc * freq_xo / outdiv
-//     double Npresc = 2.0;
-//     double freq_xo = 30000000.0;
-//     double outdiv = 8.0;
-//     double freq = freq_Hz;
-
-//     // To calculate fc_inte we assume fc_frac is zero and we substract 1 to fulfil the condition from the datasheet, thus:
-//     // fcinte = freq * outdiv / Npresc / freq_xo - 1;
-//     double fc_inte_double = freq_Hz / 7500000.0;
-//     uint8_t fc_inte = ((uint8_t)fc_inte_double) - 1;
-
-//     // Having a base value of fc_inte we calculate fc_frac from the equation
-//     // fc_frac = (freq * outdiv / 2 / freq_xo - fc_inte) * (2^19)
-//     double fc_frac_double = (freq - fc_inte * 7500000.0) * 0.069905;
-//     uint32_t fc_frac = (uint32_t)fc_frac_double;
-
-//     Serial_print_s("fc_inte = ");
-//     Serial_println_u(fc_inte);
-//     Serial_print_s("fc_frac = ");
-//     Serial_println_u(fc_frac);
-
-//     return true;
-// }

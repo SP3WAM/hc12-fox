@@ -22,12 +22,12 @@ bool fake_f3e_init_tx_direct_sync_2fsk();
 bool fake_f3e_init_tx_direct_sync_2gfsk();
 
 /*
- * Starts the fake F3E pseudo-random transmition.
+ * Starts the fake F3E transmition on specific channel.
  */
-bool fake_f3e_start_tx();
+bool fake_f3e_start_tx(uint8_t channel);
 
 /*
- * Stops the fake F3E pseudo-random transmition.
+ * Stops the fake F3E transmition.
  */
 bool fake_f3e_stop_tx();
 

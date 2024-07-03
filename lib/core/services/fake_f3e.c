@@ -128,11 +128,11 @@ bool fake_f3e_init_tx_direct_sync_2gfsk()
     return fake_f3e_stop_tx();
 }
 
-bool fake_f3e_start_tx()
+bool fake_f3e_start_tx(uint8_t channel)
 {
     digitalWrite(PB4, LOW);
 
-    return si4438_enter_tx_state();
+    return si4438_enter_tx_state(channel);
 }
 
 bool fake_f3e_stop_tx()
