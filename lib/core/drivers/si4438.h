@@ -48,6 +48,7 @@ bool si4438_get_part_info(char* part_info);
 
 bool si4438_get_func_info(uint8_t* func_info);
 
+// TODO: remove this functionality soon as it consumes too much of FLASH memory (binary doesn't fit into flash)
 /*
  * Sets the base frequency.
  * Euqtion freq[Hz] = (fc_inte + fc_frac / 2^19) * Npresc * freq_xo / outdiv
@@ -64,4 +65,4 @@ bool si4438_get_func_info(uint8_t* func_info);
  * Hint: can use WDS3 software to check the calculations, by changing the base frequency only and comparing the output configuration 
  * header file.
  */
-bool si4438_set_base_frequency(unsigned long freq_Hz);
+// bool si4438_set_base_frequency(unsigned long freq_Hz);
