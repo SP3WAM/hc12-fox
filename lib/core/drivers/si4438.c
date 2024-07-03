@@ -210,15 +210,18 @@ bool si4438_enter_ready_state()
 // https://github.com/IU5HKU/Si4463-CW-Beacon/blob/master/src/si4463/si4463.cpp
 // activateTX()
 // 0x31, channel, 0, 0, 0, 0, 0
+// Attention: on Si4463 the command has 6 bytes of parameters
+// Attention: on SI4438 the command has 5 bytes of parameters
 bool si4438_enter_tx_state()
 {
     // put into TX mode
-    uint8_t startTxCmd[5];
+    uint8_t startTxCmd[6];
     startTxCmd[0] = SI4438_CMD_START_TX;
     startTxCmd[1] = 0; // channel 0
     startTxCmd[2] = 0;
     startTxCmd[3] = 0;
     startTxCmd[4] = 0;
+    startTxCmd[5] = 0;
     if(doAPI(startTxCmd, sizeof(startTxCmd), NULL, 0) == false)
     {
         return false;
