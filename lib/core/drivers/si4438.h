@@ -47,3 +47,21 @@ bool si4438_enter_tx_state();
 bool si4438_get_part_info(char* part_info);
 
 bool si4438_get_func_info(uint8_t* func_info);
+
+/*
+ * Sets the base frequency.
+ * Euqtion freq[Hz] = (fc_inte + fc_frac / 2^19) * Npresc * freq_xo / outdiv
+ * where in SI4438 of HC-12 board:
+ * Npresc = 2
+ * freq_xo = 30000000 Hz
+ * outdiv = 8
+ * 
+ * fc_inte and fc_frac must be calculated and written to the chip. The values may be found from the equation above by taking the minimal
+ * values of fc_inte and fc_frac that solves the equation, however there is written in the datasheet of SI4438, that the value of fc_frac/2^19 
+ * must be in range <1,2>, to have this possible the value of fc_inte
+ * calculation must be 1 less than preliminary minimal values of fc_inte and fc_frac calculated at the first time.
+ *
+ * Hint: can use WDS3 software to check the calculations, by changing the base frequency only and comparing the output configuration 
+ * header file.
+ */
+bool si4438_set_base_frequency(unsigned long freq_Hz);

@@ -244,3 +244,29 @@ bool si4438_get_func_info(uint8_t* func_info)
         return false;
     }
 }
+
+bool si4438_set_base_frequency(unsigned long freq_Hz)
+{
+    // freq[Hz] = (fc_inte + fc_frac / 2^19) * Npresc * freq_xo / outdiv
+    double Npresc = 2.0;
+    double freq_xo = 30000000.0;
+    double outdiv = 8.0;
+    double freq = freq_Hz;
+
+    // To calculate fc_inte we assume fc_frac is zero and we substract 1 to fulfil the condition from the datasheet, thus:
+    // fcinte = freq * outdiv / Npresc / freq_xo - 1;
+    double fc_inte_double = freq_Hz * outdiv / Npresc / freq_xo;
+    uint8_t fc_inte = ((uint8_t)fc_inte_double) - 1;
+
+    // Having a base value of fc_inte we calculate fc_frac from the equation
+    // fc_frac = (freq * outdiv / 2 / freq_xo - fc_inte) * (2^19)
+    double fc_frac_double = (freq * outdiv / 2 / freq_xo - fc_inte) * (2^19);
+    uint32_t fc_frac = (uint32_t)fc_frac_double;
+
+    Serial_print_s("fc_inte = ");
+    Serial_println_u(fc_inte);
+    Serial_print_s("fc_frac = ");
+    Serial_println_u(fc_frac);
+
+    return true;
+}
