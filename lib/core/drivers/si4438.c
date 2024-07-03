@@ -255,12 +255,12 @@ bool si4438_set_base_frequency(unsigned long freq_Hz)
 
     // To calculate fc_inte we assume fc_frac is zero and we substract 1 to fulfil the condition from the datasheet, thus:
     // fcinte = freq * outdiv / Npresc / freq_xo - 1;
-    double fc_inte_double = freq_Hz * outdiv / Npresc / freq_xo;
+    double fc_inte_double = freq_Hz / 7500000.0;
     uint8_t fc_inte = ((uint8_t)fc_inte_double) - 1;
 
     // Having a base value of fc_inte we calculate fc_frac from the equation
     // fc_frac = (freq * outdiv / 2 / freq_xo - fc_inte) * (2^19)
-    double fc_frac_double = (freq * outdiv / 2 / freq_xo - fc_inte) * (2^19);
+    double fc_frac_double = (freq - fc_inte * 7500000.0) * 0.069905;
     uint32_t fc_frac = (uint32_t)fc_frac_double;
 
     Serial_print_s("fc_inte = ");
