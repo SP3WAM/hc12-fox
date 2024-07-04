@@ -209,10 +209,10 @@ void sendMO5()
 
 void inline sendDot()
 {
-    fake_f3e_tone(1000, ((unsigned long)DOT_DURATION_MILLIS) * ((unsigned long)1000));
+    fake_f3e_tone(500, ((unsigned long)DOT_DURATION_MILLIS) * ((unsigned long)1000));
 }
 
 void inline sendDash()
 {
-    fake_f3e_tone(1000, ((unsigned long)DASH_DURATION_MILLIS) * ((unsigned long)1000));
+    fake_f3e_tone(500, ((unsigned long)DASH_DURATION_MILLIS) * ((unsigned long)1000));
 }
