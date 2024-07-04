@@ -74,8 +74,21 @@ void setup()
 
 void loop()
 {
-    fake_f3e_start_tx(0);
+    fake_f3e_start_tx(0); // channel 0: 434.100 MHz
     sendMOE();
+    // fake_f3e_start_tx(4); // channel 4: 434.150 MHz
+    // sendMOI();
+    // fake_f3e_start_tx(8); // channel 8: 434.200 MHz
+    // sendMOS();
+    // fake_f3e_start_tx(12); // channel 12: 434.250 MHz
+    // sendMOH();
+    // fake_f3e_start_tx(16); // channel 16: 434.300 MHz
+    // sendMO5();
+    // fake_f3e_start_tx(20); // channel 20: 434.350 MHz
+    // sendMO5();
+    // fake_f3e_start_tx(24); // channel 24: 434.400 MHz
+    // sendMO5();
+    
     fake_f3e_stop_tx();
     si4438_enter_sleep_state();
 
