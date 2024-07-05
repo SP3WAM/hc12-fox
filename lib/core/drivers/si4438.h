@@ -2,7 +2,8 @@
 #include <stdint.h>
 
 #define SI4438_MAX_TX_POWER 127
-#define SI4438_10DBM_TX_POWER  20
+#define SI4438_10DBM_TX_POWER  20  // 10mW
+#define SI4438_17DBM_TX_POWER  40  // 50mW
 #define SI4438_MIN_TX_POWER 0
 
 #define SI4438_CMD_PART_INFO 0x01

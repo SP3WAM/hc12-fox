@@ -51,7 +51,7 @@ void setup()
 
     // configure the TX power
     Serial_print_s("Si4438 setting TX power...");
-    if(si4438_set_tx_power(SI4438_10DBM_TX_POWER) == false)
+    if(si4438_set_tx_power(SI4438_17DBM_TX_POWER) == false)
     {
         Serial_println_s(" failed");
     }
@@ -75,24 +75,30 @@ void setup()
 void loop()
 {
     fake_f3e_start_tx(0); // channel 0: 434.100 MHz
-    sendMOE();
+    for(uint8_t q = 0 ; q < 4 ; q ++)
+    {
+        sendMOE();
+        delay(2000);
+    }
+
     // fake_f3e_start_tx(4); // channel 4: 434.150 MHz
-    // sendMOI();
+    // for(uint8_t q = 0 ; q < 4 ; q ++)
+    // {
+    //     sendMOI();
+    //     delay(2000);
+    // }
+    
     // fake_f3e_start_tx(8); // channel 8: 434.200 MHz
-    // sendMOS();
-    // fake_f3e_start_tx(12); // channel 12: 434.250 MHz
-    // sendMOH();
-    // fake_f3e_start_tx(16); // channel 16: 434.300 MHz
-    // sendMO5();
-    // fake_f3e_start_tx(20); // channel 20: 434.350 MHz
-    // sendMO5();
-    // fake_f3e_start_tx(24); // channel 24: 434.400 MHz
-    // sendMO5();
+    // for(uint8_t q = 0 ; q < 4 ; q ++)
+    // {
+    //     sendMOS();
+    //     delay(2000);
+    // }
     
     fake_f3e_stop_tx();
     si4438_enter_sleep_state();
 
-    delay(5000);
+    delay(20000);
 }
 
 void sendMOE()
@@ -222,10 +228,10 @@ void sendMO5()
 
 void inline sendDot()
 {
-    fake_f3e_tone(500, ((unsigned long)DOT_DURATION_MILLIS) * ((unsigned long)1000));
+    fake_f3e_tone(700, ((unsigned long)DOT_DURATION_MILLIS) * ((unsigned long)1000));
 }
 
 void inline sendDash()
 {
-    fake_f3e_tone(500, ((unsigned long)DASH_DURATION_MILLIS) * ((unsigned long)1000));
+    fake_f3e_tone(700, ((unsigned long)DASH_DURATION_MILLIS) * ((unsigned long)1000));
 }
