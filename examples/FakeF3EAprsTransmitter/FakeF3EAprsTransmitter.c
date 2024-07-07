@@ -51,15 +51,26 @@ void setup()
 
 void loop()
 {
-    // Enter the Tx state
+    // RS41 sonde sends frame with max 320 bytes
+    // The frame which it leads is 320* bytes long and thus counts just over 533 ms
+
+
+    // Enter the Tx state on channel 0
     fake_f3e_start_tx(0);
 
-    for(int q = 0 ; q < 128; q ++)
+    // send some APRS bytes during some period (~200ms)
+    unsigned long startMillis = millis();
+    uint8_t q = 0;
+    do
     {
         fake_f3e_send_aprs_byte(q);
-    }
+        q++;
+    } 
+    while (millis() - startMillis < 200); 
 
+    // stop transmition
     fake_f3e_stop_tx();
     
-    delay(1000);
+    // wait until the whole second passes
+    delay(800);
 }
