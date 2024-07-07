@@ -9,6 +9,8 @@ bool isTx = false;
 #define DOT_DURATION_MILLIS  150
 #define DASH_DURATION_MILLIS 3 * DOT_DURATION_MILLIS
 
+void stm8s_sleep_5sec();
+
 void sendDot();
 void sendDash();
 void sendMOE();
@@ -22,6 +24,7 @@ void setup()
     delay(3000);
 
     Serial_begin(115200);
+    Serial_println_s("Serial init.");
     si4438_init_hw();
     delay(1000);
 
@@ -74,9 +77,12 @@ void setup()
 
 void loop()
 {
+    Serial_println_s("loop() begin");
+
     fake_f3e_start_tx(0); // channel 0: 434.100 MHz
     for(uint8_t q = 0 ; q < 4 ; q ++)
     {
+        Serial_println_s("sending MOE...");
         sendMOE();
         delay(2000);
     }
@@ -96,9 +102,17 @@ void loop()
     // }
     
     fake_f3e_stop_tx();
-    si4438_enter_sleep_state();
+    Serial_println_s("delay(5000)");
+    delay(5000);
 
-    delay(20000);
+    Serial_println_s("SI4438 enter sleep");
+    si4438_enter_sleep_state();
+    Serial_println_s("delay(5000)");
+    delay(5000);
+
+    stm8s_sleep_5sec();
+
+    Serial_println_s("loop() end");
 }
 
 void sendMOE()
@@ -234,4 +248,36 @@ void inline sendDot()
 void inline sendDash()
 {
     fake_f3e_tone(700, ((unsigned long)DASH_DURATION_MILLIS) * ((unsigned long)1000));
+}
+
+void stm8s_sleep_5sec()
+{
+    Serial_println_s("stm8s_sleep_5sec() begin");
+    // How to calculate the register values:
+    // RM0016_STM8S_and_STM8AF.pdf page 116 Table 25
+
+    // Set the TimeBase 2.080 s - 5.120 s
+    AWU->TBR &= (uint8_t)(~AWU_TBR_AWUTB);
+    AWU->TBR |= 0b1110;
+    // Set the APR divider APR = 5.0 sec / 5 / 2^11 * 128000 = 62.5
+    AWU->APR &= (uint8_t)(~AWU_APR_APR);
+    AWU->APR |= 62;
+
+    // Enable AWU peripheral
+    AWU->CSR |= AWU_CSR_AWUEN;
+
+    //... and enter halt mode. AWU will wake it up after specific amount of time.
+
+    Serial_println_s("about to call halt()...");
+    delay(100);
+    halt();
+    delay(100);
+    Serial_begin(115200);
+    delay(100);
+    Serial_println_s("... exiting from halt()");
+
+    // Disable AWU peripheral
+    AWU->CSR &= (uint8_t)(~AWU_CSR_AWUEN);
+    // No AWU timebase
+    AWU->TBR = (uint8_t)(~AWU_TBR_AWUTB);
 }
