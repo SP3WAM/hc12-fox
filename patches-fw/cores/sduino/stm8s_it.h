@@ -25,6 +25,8 @@
   ******************************************************************************
   */ 
 
+// PATCH wmarkow 09.07.2024 #164 AWU_IRQHandler not working for STM8S https://github.com/tenbaht/sduino/issues/164
+
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __STM8S_IT_H
 #define __STM8S_IT_H
@@ -123,6 +125,9 @@
 // INTERRUPT_HANDLER_TRAP(TRAP_IRQHandler);                 /* TRAP */
 // INTERRUPT_HANDLER(TLI_IRQHandler, 0);                    /* TLI */
 // INTERRUPT_HANDLER(AWU_IRQHandler, 1);                    /* AWU */
+// PATCH wmarkow 'AWU_IRQHandler not working' begin
+ INTERRUPT_HANDLER(AWU_IRQHandler, 1);                    /* AWU */
+// PATCH wmarkow  'AWU_IRQHandler not working' end
 // INTERRUPT_HANDLER(CLK_IRQHandler, 2);                    /* CLOCK */
  INTERRUPT_HANDLER(EXTI_PORTA_IRQHandler, 3);             /* EXTI PORTA */
  INTERRUPT_HANDLER(EXTI_PORTB_IRQHandler, 4);             /* EXTI PORTB */
