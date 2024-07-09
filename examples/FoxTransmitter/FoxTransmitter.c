@@ -82,7 +82,6 @@ void loop()
     fake_f3e_start_tx(0); // channel 0: 434.100 MHz
     for(uint8_t q = 0 ; q < 4 ; q ++)
     {
-        Serial_println_s("sending MOE...");
         sendMOE();
         delay(2000);
     }
@@ -117,6 +116,8 @@ void loop()
 
 void sendMOE()
 {
+    Serial_println_s("sending MOE...");
+
     // send M
     sendDash();
     delay(DOT_DURATION_MILLIS);  
@@ -138,6 +139,8 @@ void sendMOE()
 
 void sendMOI()
 {
+    Serial_println_s("sending MOI...");
+
     // send M
     sendDash();
     delay(DOT_DURATION_MILLIS);  
@@ -161,6 +164,8 @@ void sendMOI()
 
 void sendMOS()
 {
+    Serial_println_s("sending MOS...");
+
     // send M
     sendDash();
     delay(DOT_DURATION_MILLIS);  
@@ -186,6 +191,8 @@ void sendMOS()
 
 void sendMOH()
 {
+    Serial_println_s("sending MOH...");
+
     // send M
     sendDash();
     delay(DOT_DURATION_MILLIS);  
@@ -213,6 +220,8 @@ void sendMOH()
 
 void sendMO5()
 {
+    Serial_println_s("sending MO5...");
+
     // send M
     sendDash();
     delay(DOT_DURATION_MILLIS);  
@@ -269,11 +278,8 @@ void stm8s_sleep_5sec()
     //... and enter halt mode. AWU will wake it up after specific amount of time.
 
     Serial_println_s("about to call halt()...");
-    delay(100);
+    delay(100); // this is required to send data to serial port before halt is executed
     halt();
-    delay(100);
-    Serial_begin(115200);
-    delay(100);
     Serial_println_s("... exiting from halt()");
 
     // Disable AWU peripheral
