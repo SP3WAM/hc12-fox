@@ -281,3 +281,13 @@ void stm8s_sleep_5sec()
     // No AWU timebase
     AWU->TBR = (uint8_t)(~AWU_TBR_AWUTB);
 }
+
+/**
+  * @brief Auto Wake Up Interrupt routine.
+  * @param  None
+  * @retval None
+  */
+INTERRUPT_HANDLER(AWU_IRQHandler, 1)
+{
+    AWU->CSR &= (uint8_t)(~AWU_CSR_AWUF);
+}
