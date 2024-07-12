@@ -12,6 +12,7 @@ bool isTx = false;
 void stm8s_sleep(uint8_t tbr, uint8_t apr);
 #define STM8_S_SLEEP_5_SEC() stm8s_sleep(14, 62)
 #define STM8_S_SLEEP_250_MILLISEC() stm8s_sleep(10, 62)
+#define STM8_S_SLEEP_500_MILLISEC() stm8s_sleep(11, 62)
 #define STM8_S_SLEEP_20_SEC() stm8s_sleep(15, 41)
 
 void sendDot();
@@ -82,14 +83,14 @@ void loop()
 {
     Serial_println_s("loop() begin");
 
-    for(uint8_t q = 0 ; q < 40 ; q ++)
+    for(uint8_t q = 0 ; q < 20 ; q ++)
     {
-        // 40 * (250ms + 250ms) = 40 * 0.5s = 20s
+        // 20 * (500ms + 500ms) = 20 * 1s = 20s
         fake_f3e_start_tx(0); // channel 0: 434.100 MHz
-        fake_f3e_tone(700, 250000ul);
+        fake_f3e_tone(700, 500000ul);
         fake_f3e_stop_tx();
         si4438_enter_sleep_state();
-        STM8_S_SLEEP_250_MILLISEC();
+        STM8_S_SLEEP_500_MILLISEC();
     }
 
     STM8_S_SLEEP_20_SEC();
