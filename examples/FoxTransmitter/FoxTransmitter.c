@@ -9,7 +9,8 @@ bool isTx = false;
 #define DOT_DURATION_MILLIS  150
 #define DASH_DURATION_MILLIS 3 * DOT_DURATION_MILLIS
 
-void stm8s_sleep_5sec();
+void stm8s_sleep(uint8_t tbr, uint8_t apr);
+#define STM8_S_SLEEP_5_SEC() stm8s_sleep(14, 62)
 
 void sendDot();
 void sendDash();
@@ -109,7 +110,7 @@ void loop()
     Serial_println_s("delay(5000)");
     delay(5000);
 
-    stm8s_sleep_5sec();
+    STM8_S_SLEEP_5_SEC();
 
     Serial_println_s("loop() end");
 }
@@ -259,7 +260,7 @@ void inline sendDash()
     fake_f3e_tone(700, ((unsigned long)DASH_DURATION_MILLIS) * ((unsigned long)1000));
 }
 
-void stm8s_sleep_5sec()
+void stm8s_sleep(uint8_t tbr, uint8_t apr)
 {
     Serial_println_s("stm8s_sleep_5sec() begin");
     // How to calculate the register values:
@@ -267,10 +268,10 @@ void stm8s_sleep_5sec()
 
     // Set the TimeBase 2.080 s - 5.120 s
     AWU->TBR &= (uint8_t)(~AWU_TBR_AWUTB);
-    AWU->TBR |= 0b1110;
+    AWU->TBR |= tbr;
     // Set the APR divider APR = 5.0 sec / 5 / 2^11 * 128000 = 62.5
     AWU->APR &= (uint8_t)(~AWU_APR_APR);
-    AWU->APR |= 62;
+    AWU->APR |= apr;
 
     // Enable AWU peripheral
     AWU->CSR |= AWU_CSR_AWUEN;
