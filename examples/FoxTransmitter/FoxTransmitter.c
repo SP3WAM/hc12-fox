@@ -11,6 +11,8 @@ bool isTx = false;
 
 void stm8s_sleep(uint8_t tbr, uint8_t apr);
 #define STM8_S_SLEEP_5_SEC() stm8s_sleep(14, 62)
+#define STM8_S_SLEEP_250_MILLISEC() stm8s_sleep(10, 62)
+#define STM8_S_SLEEP_20_SEC() stm8s_sleep(15, 41)
 
 void sendDot();
 void sendDash();
@@ -80,37 +82,18 @@ void loop()
 {
     Serial_println_s("loop() begin");
 
-    fake_f3e_start_tx(0); // channel 0: 434.100 MHz
-    for(uint8_t q = 0 ; q < 4 ; q ++)
+    for(uint8_t q = 0 ; q < 40 ; q ++)
     {
-        sendMOE();
-        delay(2000);
+        // 40 * (250ms + 250ms) = 40 * 0.5s = 20s
+        fake_f3e_start_tx(0); // channel 0: 434.100 MHz
+        fake_f3e_tone(700, 250000ul);
+        fake_f3e_stop_tx();
+        si4438_enter_sleep_state();
+        STM8_S_SLEEP_250_MILLISEC();
     }
 
-    // fake_f3e_start_tx(4); // channel 4: 434.150 MHz
-    // for(uint8_t q = 0 ; q < 4 ; q ++)
-    // {
-    //     sendMOI();
-    //     delay(2000);
-    // }
-    
-    // fake_f3e_start_tx(8); // channel 8: 434.200 MHz
-    // for(uint8_t q = 0 ; q < 4 ; q ++)
-    // {
-    //     sendMOS();
-    //     delay(2000);
-    // }
-    
-    fake_f3e_stop_tx();
-    Serial_println_s("delay(5000)");
-    delay(5000);
-
-    Serial_println_s("SI4438 enter sleep");
-    si4438_enter_sleep_state();
-    Serial_println_s("delay(5000)");
-    delay(5000);
-
-    STM8_S_SLEEP_5_SEC();
+    STM8_S_SLEEP_20_SEC();
+    STM8_S_SLEEP_20_SEC();
 
     Serial_println_s("loop() end");
 }
