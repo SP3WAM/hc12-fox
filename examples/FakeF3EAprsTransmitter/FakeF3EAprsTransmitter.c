@@ -74,3 +74,9 @@ void loop()
     // wait until the whole second passes
     delay(800);
 }
+
+
+INTERRUPT_HANDLER(AWU_IRQHandler, 1)
+{
+
+}
