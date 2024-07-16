@@ -1,5 +1,39 @@
+# HC-12 Overview
 
-Current consumption meassurements where STM8S always in run mode:
+HC-12 module is a versy simple module. It embedds SI4438 (or SI4464) transceiver chip together with STM8S microcontroller.
+
+The pinout is as on the image below:
+   - VCC power supply input
+   - GND common ground
+   - RXD UART data input
+   - TXD UART data output
+   - SET Parameter setting control pin
+   - NRST programming interface
+   - SWM programming interface
+
+![HC-12 Pinout](doc/HC-12/HC-12_pinout.jpg)
+
+It allows reprogramming and communication via serial port. Of course after reprogramming the RXD/TXD/SET pins may serve alternate functions,
+as defined in the new firmware.
+
+
+![HC-12 Pinout](doc/HC-12/HC_12_schematic_very_simple.jpg)
+
+simple schematic
+
+
+# HC-12 Reprogramming
+Here about how to unlock the brand new HC-12 module
+
+# Example source code
+
+# SI4438 spectrums
+Here examples of spectrum of CW, OOK, 2FSk and 2GFSK
+
+# SI4438 Undarstanding RF configuration file part 
+Here the image related to the following settings: frequency, channel width, 2FSK deviation
+
+# SI448 and STM8S Current consumption meassurements:
 
 | Supply voltage [V] | Si4438 state | STM8S state | Current (Tx 10mW) [mA] | Current (Tx 50mW) [mA] | Current (Tx 100mW) [mA] |
 |----:|:----:|:----:|:----:|:----:|:----:|
