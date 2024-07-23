@@ -83,7 +83,8 @@ bool cw_init_rx()
     // LOW   | LOW   undefined state
     uint8_t gpioCmd[8];
     gpioCmd[0] = SI4438_CMD_GPIO_PIN_CFG;
-    gpioCmd[1] = 0b00010101; // GPIO0: RX_RAW_DATA Outputs the demodulated RX Raw Data stream, prior to synchronization and re-timing by the local RX Data Clock.
+    gpioCmd[1] = 0b00011011; // GPIO0: CCA Clear Channel Assessment. This output goes high when the Current RSSI signal exceeds the threshold value 
+                             //        set by the MODEM_RSSI_THRESH property.
     gpioCmd[2] = 0b00010001; // GPIO1: RX_DATA_CLK Outputs the RX Data CLK signal.
     gpioCmd[3] = 0b00000010; // GPIO2: CMOS output driven low, pull up disabled. Sets the RF switch into RX mode.
     gpioCmd[4] = 0b00000011; // GPIO3: CMOS output driven high, pull up disabled. Sets the RF switch into RX mode.

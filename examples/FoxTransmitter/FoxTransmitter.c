@@ -82,6 +82,16 @@ void setup()
         Serial_println_s(" OK");
     }
 
+    Serial_print_s("Si4438 setting modem RSSI treshold...");
+    if(setProperty(SI4438_PROPERTY_MODEM_RSSI_THRESH, 0x7f) == false)
+    {
+        Serial_println_s(" failed");
+    }
+    else
+    {
+        Serial_println_s(" OK");
+    }
+
     // start RX
     Serial_print_s("Si4438 setting fake CW RX mode...");
     if(cw_init_rx() == false)
@@ -105,6 +115,12 @@ void setup()
     // attach interrupt to PB4 as INPUT pull up
     // must be called after cw_init_rx method (where PB4 is configured as input pullup)
     GPIO_Init(GPIOB, GPIO_PIN_4, GPIO_MODE_IN_PU_IT);
+    disableInterrupts();
+    EXTI_SetExtIntSensitivity( EXTI_PORT_GPIOB, EXTI_SENSITIVITY_RISE_FALL);  
+    enableInterrupts();
+    attachInterrupt(INT_PORTB & 0xFF, rx_pin_changed, 0);
+
+    GPIO_Init(GPIOB, GPIO_PIN_5, GPIO_MODE_IN_PU_IT);
     disableInterrupts();
     EXTI_SetExtIntSensitivity( EXTI_PORT_GPIOB, EXTI_SENSITIVITY_RISE_FALL);  
     enableInterrupts();
