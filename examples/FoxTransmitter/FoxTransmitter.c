@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "drivers/si4438.h"
 #include "services/fake_f3e.h"
+#include "services/cw.h"
 
 bool chipConnected = false;
 unsigned long lastTxStartMillis = 0;
@@ -22,6 +23,9 @@ void sendMOI();
 void sendMOS();
 void sendMOH();
 void sendMO5();
+
+void rx_pin_changed(void);
+bool volatile pinChanged = false;
 
 void setup()
 {
@@ -77,26 +81,48 @@ void setup()
     {
         Serial_println_s(" OK");
     }
+
+    // start RX
+    Serial_print_s("Si4438 setting fake CW RX mode...");
+    if(cw_init_rx() == false)
+    {
+        Serial_println_s(" failed");
+    }
+    else
+    {
+        Serial_println_s(" OK");
+    }
+    Serial_print_s("Si4438 start listening...");
+    if(cw_start_rx(0) == false)
+    {
+        Serial_println_s(" failed");
+    }
+    else
+    {
+        Serial_println_s(" OK");
+    }
+
+    // attach interrupt to PB4 as INPUT pull up
+    // must be called after cw_init_rx method (where PB4 is configured as input pullup)
+    GPIO_Init(GPIOB, GPIO_PIN_4, GPIO_MODE_IN_PU_IT);
+    disableInterrupts();
+    EXTI_SetExtIntSensitivity( EXTI_PORT_GPIOB, EXTI_SENSITIVITY_RISE_FALL);  
+    enableInterrupts();
+    attachInterrupt(INT_PORTB & 0xFF, rx_pin_changed, 0);
 }
 
 void loop()
 {
-    Serial_println_s("loop() begin");
-
-    for(uint8_t q = 0 ; q < 20 ; q ++)
+    if(pinChanged)
     {
-        // 20 * (500ms + 500ms) = 20 * 1s = 20s
-        fake_f3e_start_tx(0); // channel 0: 434.100 MHz
-        fake_f3e_tone(700, 500000ul);
-        fake_f3e_stop_tx();
-        si4438_enter_sleep_state();
-        STM8_S_SLEEP_500_MILLISEC();
+        pinChanged = false;
+        Serial_println_s("RX changed");
     }
+}
 
-    STM8_S_SLEEP_20_SEC();
-    STM8_S_SLEEP_20_SEC();
-
-    Serial_println_s("loop() end");
+void rx_pin_changed(void) 
+{
+  pinChanged = 1;
 }
 
 void sendMOE()

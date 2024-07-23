@@ -230,6 +230,26 @@ bool si4438_enter_tx_state(uint8_t channel)
     return true;
 }
 
+bool si4438_enter_rx_state(uint8_t channel)
+{
+    // put into RX state
+    uint8_t startTxCmd[8];
+    startTxCmd[0] = SI4438_CMD_START_RX;
+    startTxCmd[1] = channel;
+    startTxCmd[2] = 0;
+    startTxCmd[3] = 0;
+    startTxCmd[4] = 0;
+    startTxCmd[5] = 0;
+    startTxCmd[6] = 0;
+    startTxCmd[7] = 0;
+    if(doAPI(startTxCmd, sizeof(startTxCmd), NULL, 0) == false)
+    {
+        return false;
+    }
+
+    return true;
+}
+
 bool si4438_get_part_info(uint8_t* part_info)
 {
     uint8_t cmd[1]= { SI4438_CMD_PART_INFO };

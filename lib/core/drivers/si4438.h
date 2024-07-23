@@ -13,6 +13,7 @@
 #define SI4438_CMD_GET_PROPERTY 0x12
 #define SI4438_CMD_GPIO_PIN_CFG 0x13
 #define SI4438_CMD_START_TX 0x31
+#define SI4438_CMD_START_RX 0x32
 #define SI4438_CMD_CHANGE_STATE 0x34
 #define SI4438_CMD_READ_CMD_BUFF 0x44
 
@@ -51,6 +52,8 @@ bool si4438_enter_ready_state();
  * where the parameters are configured in radio_config.h with the help of WDS3 software.
  */
 bool si4438_enter_tx_state(uint8_t channel);
+
+bool si4438_enter_rx_state(uint8_t channel);
 
 bool si4438_get_part_info(char* part_info);
 

@@ -53,7 +53,7 @@ bool cw_init_tx()
         return false;
     }
 
-    return cw_stop_tx();
+    return cw_stop_txrx();
 }
 
 bool cw_start_tx(uint8_t channel)
@@ -61,7 +61,59 @@ bool cw_start_tx(uint8_t channel)
     return si4438_enter_tx_state(channel);
 }
 
-bool cw_stop_tx()
+bool cw_init_rx()
+{
+    // configure GPIO of STM8
+    // Configure both GPIOs as input pull up.
+    // GPIO1 -> PC3 as input pull up
+    pinMode(PC3, INPUT);
+    digitalWrite(PC3, HIGH);
+    // GPIO0 <- PB4 as input pull up
+    pinMode(PB4, INPUT);
+    digitalWrite(PB4, HIGH);
+
+    // configure GPIO of Si44xx
+    // GPIO0 configure as RX_DATA output
+    // GPIO1 seems to be useless
+    // GPIO2 and GPIO3 drives the RF switch. Here is the table matrix:
+    // GPIO2 | GPIO3
+    // HIGH  | LOW   RF switch in Tx mode
+    // LOW   | HIGH  RF switch in Rx mode
+    // HIGH  | HIGH  undefined state
+    // LOW   | LOW   undefined state
+    uint8_t gpioCmd[8];
+    gpioCmd[0] = SI4438_CMD_GPIO_PIN_CFG;
+    gpioCmd[1] = 0b00010101; // GPIO0: RX_RAW_DATA Outputs the demodulated RX Raw Data stream, prior to synchronization and re-timing by the local RX Data Clock.
+    gpioCmd[2] = 0b00010001; // GPIO1: RX_DATA_CLK Outputs the RX Data CLK signal.
+    gpioCmd[3] = 0b00000010; // GPIO2: CMOS output driven low, pull up disabled. Sets the RF switch into RX mode.
+    gpioCmd[4] = 0b00000011; // GPIO3: CMOS output driven high, pull up disabled. Sets the RF switch into RX mode.
+    gpioCmd[5] = 0x00; // NIRQ
+    gpioCmd[6] = 0x00; // SDO
+    gpioCmd[7] = 0x00; // GEN_CONFIG
+
+    if(doAPI(gpioCmd, sizeof(gpioCmd), NULL, 0) == false)
+    {
+        return false;
+    }
+
+    // configure CW Tx Synchronous Direct mode
+    //   TX_DIRECT_MODE_TYPE[0] = 0b0;   Direct mode operates in synchronous mode, applies to TX only.
+    // TX_DIRECT_MODE_GPIO[1:0] = 0b00;  TX direct mode uses GPIO0 as data source.
+    //          MOD_SOURCE[1:0] = 0b01;  DIRECT: The modulation is sourced in real-time from a GPIO pin
+    //            MOD_TYPE[2:0] = 0b001; OOK
+    uint8_t value = 0b00001001;
+    if(setProperty(SI44338_PROPERTY_MODEM_MOD_TYPE, value) == false)
+    {
+        return false;
+    }
+}
+
+bool cw_start_rx(uint8_t channel)
+{
+    return si4438_enter_rx_state(channel);
+}
+
+bool cw_stop_txrx()
 {
     return si4438_enter_ready_state();
 }

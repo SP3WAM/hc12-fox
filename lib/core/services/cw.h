@@ -7,4 +7,8 @@ bool cw_init_tx();
  */
 bool cw_start_tx(uint8_t channel);
 
-bool cw_stop_tx();
+bool cw_init_rx();
+
+bool cw_start_rx(uint8_t channel);
+
+bool cw_stop_txrx();
