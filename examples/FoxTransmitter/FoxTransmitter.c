@@ -119,12 +119,6 @@ void setup()
     EXTI_SetExtIntSensitivity( EXTI_PORT_GPIOB, EXTI_SENSITIVITY_RISE_FALL);  
     enableInterrupts();
     attachInterrupt(INT_PORTB & 0xFF, rx_pin_changed, 0);
-
-    GPIO_Init(GPIOB, GPIO_PIN_5, GPIO_MODE_IN_PU_IT);
-    disableInterrupts();
-    EXTI_SetExtIntSensitivity( EXTI_PORT_GPIOB, EXTI_SENSITIVITY_RISE_FALL);  
-    enableInterrupts();
-    attachInterrupt(INT_PORTB & 0xFF, rx_pin_changed, 0);
 }
 
 void loop()

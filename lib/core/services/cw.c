@@ -73,19 +73,11 @@ bool cw_init_rx()
     digitalWrite(PB4, HIGH);
 
     // configure GPIO of Si44xx
-    // GPIO0 configure as RX_DATA output
-    // GPIO1 seems to be useless
-    // GPIO2 and GPIO3 drives the RF switch. Here is the table matrix:
-    // GPIO2 | GPIO3
-    // HIGH  | LOW   RF switch in Tx mode
-    // LOW   | HIGH  RF switch in Rx mode
-    // HIGH  | HIGH  undefined state
-    // LOW   | LOW   undefined state
     uint8_t gpioCmd[8];
     gpioCmd[0] = SI4438_CMD_GPIO_PIN_CFG;
     gpioCmd[1] = 0b00011011; // GPIO0: CCA Clear Channel Assessment. This output goes high when the Current RSSI signal exceeds the threshold value 
                              //        set by the MODEM_RSSI_THRESH property.
-    gpioCmd[2] = 0b00010001; // GPIO1: RX_DATA_CLK Outputs the RX Data CLK signal.
+    gpioCmd[2] = 0b00000001; // GPIO1: TRISTATE Input and output drivers disabled.
     gpioCmd[3] = 0b00000010; // GPIO2: CMOS output driven low, pull up disabled. Sets the RF switch into RX mode.
     gpioCmd[4] = 0b00000011; // GPIO3: CMOS output driven high, pull up disabled. Sets the RF switch into RX mode.
     gpioCmd[5] = 0x00; // NIRQ
@@ -97,11 +89,11 @@ bool cw_init_rx()
         return false;
     }
 
-    // configure CW Tx Synchronous Direct mode
+    // configure CW Rx Direct mode
     //   TX_DIRECT_MODE_TYPE[0] = 0b0;   Direct mode operates in synchronous mode, applies to TX only.
-    // TX_DIRECT_MODE_GPIO[1:0] = 0b00;  TX direct mode uses GPIO0 as data source.
-    //          MOD_SOURCE[1:0] = 0b01;  DIRECT: The modulation is sourced in real-time from a GPIO pin
-    //            MOD_TYPE[2:0] = 0b001; OOK
+    // TX_DIRECT_MODE_GPIO[1:0] = 0b00;  TX direct mode uses GPIO0 as data source, applies to TX only.
+    //          MOD_SOURCE[1:0] = 0b01;  DIRECT: The modulation is sourced in real-time from a GPIO pin. Applies to TX or RX.
+    //            MOD_TYPE[2:0] = 0b001; OOK: Configures the Modem for transmission or reception of the desired type of modulation. CW only for TX.
     uint8_t value = 0b00001001;
     if(setProperty(SI44338_PROPERTY_MODEM_MOD_TYPE, value) == false)
     {
