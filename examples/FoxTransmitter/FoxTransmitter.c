@@ -3,17 +3,19 @@
 #include "services/fake_f3e.h"
 #include "services/cw.h"
 
-bool chipConnected = false;
-unsigned long lastTxStartMillis = 0;
-bool isTx = false;
+#define FOX_STATE_RX 0
+#define FOX_STATE_TX 1
+
+uint8_t foxState;
 
 #define DOT_DURATION_MILLIS  150
 #define DASH_DURATION_MILLIS 3 * DOT_DURATION_MILLIS
 
 void stm8s_sleep(uint8_t tbr, uint8_t apr);
-#define STM8_S_SLEEP_5_SEC() stm8s_sleep(14, 62)
 #define STM8_S_SLEEP_250_MILLISEC() stm8s_sleep(10, 62)
 #define STM8_S_SLEEP_500_MILLISEC() stm8s_sleep(11, 62)
+#define STM8_S_SLEEP_2_25_SEC() stm8s_sleep(14, 28)
+#define STM8_S_SLEEP_5_SEC() stm8s_sleep(14, 62)
 #define STM8_S_SLEEP_20_SEC() stm8s_sleep(15, 41)
 
 void sendDot();
@@ -24,12 +26,11 @@ void sendMOS();
 void sendMOH();
 void sendMO5();
 
-void rx_pin_changed(void);
-bool volatile pinChanged = false;
-
 void setup()
 {
     delay(3000);
+
+    foxState = FOX_STATE_RX;
 
     Serial_begin(115200);
     Serial_println_s("Serial init.");
@@ -38,8 +39,7 @@ void setup()
 
     // at first check if the hardware is connected
     Serial_print_s("Si4438 checking hardware...");
-    chipConnected = si4438_is_chip_connected();
-    if(chipConnected == false)
+    if(si4438_is_chip_connected() == false)
     {
         Serial_println_s(" failed");
     }
@@ -91,48 +91,44 @@ void setup()
     {
         Serial_println_s(" OK");
     }
-
-    // start RX
-    Serial_print_s("Si4438 setting fake CW RX mode...");
-    if(cw_init_rx() == false)
-    {
-        Serial_println_s(" failed");
-    }
-    else
-    {
-        Serial_println_s(" OK");
-    }
-    Serial_print_s("Si4438 start listening...");
-    if(cw_start_rx(0) == false)
-    {
-        Serial_println_s(" failed");
-    }
-    else
-    {
-        Serial_println_s(" OK");
-    }
-
-    // attach interrupt to PB4 as INPUT pull up
-    // must be called after cw_init_rx method (where PB4 is configured as input pullup)
-    GPIO_Init(GPIOB, GPIO_PIN_4, GPIO_MODE_IN_PU_IT);
-    disableInterrupts();
-    EXTI_SetExtIntSensitivity( EXTI_PORT_GPIOB, EXTI_SENSITIVITY_RISE_FALL);  
-    enableInterrupts();
-    attachInterrupt(INT_PORTB & 0xFF, rx_pin_changed, 0);
 }
 
 void loop()
 {
-    if(pinChanged)
+    if(foxState == FOX_STATE_RX)
     {
-        pinChanged = false;
-        Serial_println_s("RX changed");
-    }
-}
+        Serial_print_s("Fox in RX state.");
 
-void rx_pin_changed(void) 
-{
-  pinChanged = 1;
+        // 1. go to RX state
+        cw_init_rx();
+        cw_start_rx(0);
+
+        // 2. for 250ms check for carrier presence
+        unsigned long timestamp = millis();
+        do
+        {
+            if(digitalRead(PB4) == HIGH)
+            {
+                foxState = FOX_STATE_TX;
+                return;
+            }
+        } while (millis() - timestamp < 250);
+        
+        // 3. sleep for 2.25s
+        si4438_enter_sleep_state();
+        STM8_S_SLEEP_2_25_SEC();
+
+        return;
+    }
+
+    if(foxState == FOX_STATE_TX)
+    {
+        Serial_print_s("Fox in TX state.");
+
+        foxState = FOX_STATE_RX;
+
+        return;
+    }
 }
 
 void sendMOE()
@@ -282,7 +278,7 @@ void inline sendDash()
 
 void stm8s_sleep(uint8_t tbr, uint8_t apr)
 {
-    Serial_println_s("stm8s_sleep_5sec() begin");
+    Serial_println_s("stm8s_sleep() begin");
     // How to calculate the register values:
     // RM0016_STM8S_and_STM8AF.pdf page 116 Table 25
 
