@@ -66,7 +66,7 @@ bool si4438_wait_for_response(void* out, uint8_t outLen)
 	return true;
 }
 
-bool doAPI(uint8_t* data, uint8_t len, uint8_t* out, uint8_t outLen)
+bool si4438_doAPI(uint8_t* data, uint8_t len, uint8_t* out, uint8_t outLen)
 {
     // wait until chip accepts commands
     if(si4438_wait_for_response(NULL, 0) == false)
@@ -89,7 +89,7 @@ bool doAPI(uint8_t* data, uint8_t len, uint8_t* out, uint8_t outLen)
     return true;
 }
 
-bool setProperty(uint16_t prop, uint8_t value)
+bool si4438_setProperty(uint16_t prop, uint8_t value)
 {
     uint8_t cmd[5];
     cmd[0] = SI4438_CMD_SET_PROPERTY;
@@ -98,7 +98,7 @@ bool setProperty(uint16_t prop, uint8_t value)
     cmd[3] = prop & 0x00ff; // property number
     cmd[4] = value;  // property value
 
-    return doAPI(cmd, sizeof(cmd), NULL, 0);
+    return si4438_doAPI(cmd, sizeof(cmd), NULL, 0);
 }
 
 bool si4438_get_property(uint16_t prop, uint8_t* value)
@@ -109,7 +109,7 @@ bool si4438_get_property(uint16_t prop, uint8_t* value)
     cmd[2] = 1; // just one property
     cmd[3] = prop & 0x00ff; // property number
 
-    return doAPI(cmd, sizeof(cmd), value, 1);
+    return si4438_doAPI(cmd, sizeof(cmd), value, 1);
 }
 
 bool si4438_is_chip_connected()
@@ -151,7 +151,7 @@ bool si4438_apply_startup_config()
 	for(uint16_t i = 0 ; i < sizeof(STARTUP_CONFIG) ; i++)
 	{
 		memcpy(buff, &STARTUP_CONFIG[i], sizeof(buff));
-		result &= doAPI(&buff[1], buff[0], NULL, 0);
+		result &= si4438_doAPI(&buff[1], buff[0], NULL, 0);
 		i += buff[0];
 	}
 
@@ -160,7 +160,7 @@ bool si4438_apply_startup_config()
 
 bool si4438_set_tx_power(uint8_t pwr)
 {
-    if(setProperty(SI4438_PROPERTY_PA_PWR_LVL, pwr) == false)
+    if(si4438_setProperty(SI4438_PROPERTY_PA_PWR_LVL, pwr) == false)
     {
         return false;
     }
@@ -185,7 +185,7 @@ bool si4438_enter_sleep_state()
     uint8_t cmd[2];
     cmd[0] = SI4438_CMD_CHANGE_STATE;
     cmd[1] = 0x01; // SLEEP state.
-    if(doAPI(cmd, sizeof(cmd), NULL, 0) == false)
+    if(si4438_doAPI(cmd, sizeof(cmd), NULL, 0) == false)
     {
         return false;
     }
@@ -199,7 +199,7 @@ bool si4438_enter_ready_state()
     uint8_t cmd[2];
     cmd[0] = SI4438_CMD_CHANGE_STATE;
     cmd[1] = 0x03; // READY state.
-    if(doAPI(cmd, sizeof(cmd), NULL, 0) == false)
+    if(si4438_doAPI(cmd, sizeof(cmd), NULL, 0) == false)
     {
         return false;
     }
@@ -222,7 +222,7 @@ bool si4438_enter_tx_state(uint8_t channel)
     startTxCmd[3] = 0;
     startTxCmd[4] = 0;
     startTxCmd[5] = 0;
-    if(doAPI(startTxCmd, sizeof(startTxCmd), NULL, 0) == false)
+    if(si4438_doAPI(startTxCmd, sizeof(startTxCmd), NULL, 0) == false)
     {
         return false;
     }
@@ -242,7 +242,7 @@ bool si4438_enter_rx_state(uint8_t channel)
     startTxCmd[5] = 0;
     startTxCmd[6] = 0;
     startTxCmd[7] = 0;
-    if(doAPI(startTxCmd, sizeof(startTxCmd), NULL, 0) == false)
+    if(si4438_doAPI(startTxCmd, sizeof(startTxCmd), NULL, 0) == false)
     {
         return false;
     }
@@ -253,7 +253,7 @@ bool si4438_enter_rx_state(uint8_t channel)
 bool si4438_get_part_info(uint8_t* part_info)
 {
     uint8_t cmd[1]= { SI4438_CMD_PART_INFO };
-    if(doAPI(cmd, sizeof(cmd), part_info, 8) == false)
+    if(si4438_doAPI(cmd, sizeof(cmd), part_info, 8) == false)
     {
         return false;
     }
@@ -262,7 +262,7 @@ bool si4438_get_part_info(uint8_t* part_info)
 bool si4438_get_func_info(uint8_t* func_info)
 {
     uint8_t cmd[1]= { SI4438_CMD_FUNC_INFO };
-    if(doAPI(cmd, sizeof(cmd), func_info, 6) == false)
+    if(si4438_doAPI(cmd, sizeof(cmd), func_info, 6) == false)
     {
         return false;
     }

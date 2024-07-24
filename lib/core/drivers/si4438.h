@@ -25,11 +25,11 @@ bool si4438_init_hw();
 
 bool si4438_is_chip_connected();
 
-bool doAPI(uint8_t* data, uint8_t len, uint8_t* out, uint8_t outLen);
+bool si4438_doAPI(uint8_t* data, uint8_t len, uint8_t* out, uint8_t outLen);
 
 bool si4438_get_property(uint16_t prop, uint8_t* value);
 
-bool setProperty(uint16_t prop, uint8_t value);
+bool si4438_setProperty(uint16_t prop, uint8_t value);
 
 bool si4438_apply_startup_config();
 

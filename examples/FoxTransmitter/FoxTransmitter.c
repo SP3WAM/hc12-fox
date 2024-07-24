@@ -83,7 +83,7 @@ void setup()
     }
 
     Serial_print_s("Si4438 setting modem RSSI treshold...");
-    if(setProperty(SI4438_PROPERTY_MODEM_RSSI_THRESH, 0x7f) == false)
+    if(si4438_setProperty(SI4438_PROPERTY_MODEM_RSSI_THRESH, 0x7f) == false)
     {
         Serial_println_s(" failed");
     }

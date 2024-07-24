@@ -37,7 +37,7 @@ bool cw_init_tx()
     gpioCmd[6] = 0x00; // SDO
     gpioCmd[7] = 0x00; // GEN_CONFIG
 
-    if(doAPI(gpioCmd, sizeof(gpioCmd), NULL, 0) == false)
+    if(si4438_doAPI(gpioCmd, sizeof(gpioCmd), NULL, 0) == false)
     {
         return false;
     }
@@ -48,7 +48,7 @@ bool cw_init_tx()
     //          MOD_SOURCE[1:0] = 0b01;  The modulation is sourced in real-time from a GPIO pin
     //            MOD_TYPE[2:0] = 0b000; CW
     uint8_t value = 0b00001000;
-    if(setProperty(SI44338_PROPERTY_MODEM_MOD_TYPE, value) == false)
+    if(si4438_setProperty(SI44338_PROPERTY_MODEM_MOD_TYPE, value) == false)
     {
         return false;
     }
@@ -84,7 +84,7 @@ bool cw_init_rx()
     gpioCmd[6] = 0x00; // SDO
     gpioCmd[7] = 0x00; // GEN_CONFIG
 
-    if(doAPI(gpioCmd, sizeof(gpioCmd), NULL, 0) == false)
+    if(si4438_doAPI(gpioCmd, sizeof(gpioCmd), NULL, 0) == false)
     {
         return false;
     }
@@ -95,7 +95,7 @@ bool cw_init_rx()
     //          MOD_SOURCE[1:0] = 0b01;  DIRECT: The modulation is sourced in real-time from a GPIO pin. Applies to TX or RX.
     //            MOD_TYPE[2:0] = 0b001; OOK: Configures the Modem for transmission or reception of the desired type of modulation. CW only for TX.
     uint8_t value = 0b00001001;
-    if(setProperty(SI44338_PROPERTY_MODEM_MOD_TYPE, value) == false)
+    if(si4438_setProperty(SI44338_PROPERTY_MODEM_MOD_TYPE, value) == false)
     {
         return false;
     }

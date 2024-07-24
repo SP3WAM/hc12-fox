@@ -30,7 +30,7 @@ bool ook_init_tx_direct_sync()
     gpioCmd[6] = 0x00; // SDO
     gpioCmd[7] = 0x00; // GEN_CONFIG
 
-    if(doAPI(gpioCmd, sizeof(gpioCmd), NULL, 0) == false)
+    if(si4438_doAPI(gpioCmd, sizeof(gpioCmd), NULL, 0) == false)
     {
         return false;
     }
@@ -41,7 +41,7 @@ bool ook_init_tx_direct_sync()
     //          MOD_SOURCE[1:0] = 0b01;  The modulation is sourced in real-time from a GPIO pin
     //            MOD_TYPE[2:0] = 0b001; OOK
     uint8_t value = 0b00001001;
-    if(setProperty(SI44338_PROPERTY_MODEM_MOD_TYPE, value) == false)
+    if(si4438_setProperty(SI44338_PROPERTY_MODEM_MOD_TYPE, value) == false)
     {
         return false;
     }
@@ -73,7 +73,7 @@ bool ook_init_tx_pseudo_sync()
     gpioCmd[6] = 0x00; // SDO
     gpioCmd[7] = 0x00; // GEN_CONFIG
 
-    if(doAPI(gpioCmd, sizeof(gpioCmd), NULL, 0) == false)
+    if(si4438_doAPI(gpioCmd, sizeof(gpioCmd), NULL, 0) == false)
     {
         return false;
     }
@@ -84,7 +84,7 @@ bool ook_init_tx_pseudo_sync()
     //          MOD_SOURCE[1:0] = 0b10;  PSEUDO The modulation is sourced from the internal pseudo-random generator.
     //            MOD_TYPE[2:0] = 0b001; OOK
     uint8_t value = 0b00010001;
-    if(setProperty(SI44338_PROPERTY_MODEM_MOD_TYPE, value) == false)
+    if(si4438_setProperty(SI44338_PROPERTY_MODEM_MOD_TYPE, value) == false)
     {
         return false;
     }
