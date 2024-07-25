@@ -60,8 +60,19 @@ void setup()
         Serial_println_s(" OK");
     }
 
+    // The thershold avlue below is used to configure detection of carrier in Rx mode
+    // Tests shows lower values of the threshold give a false carrier detection (threshold is below noise level?)
+    // Need to choose the threshold experimental but it may vary depending on the environment (urban or non-urban).
+    // It is important to choose the lowest possible value of the threshold.  
+    // 0x00=  0 -> -132dBm carrier detected all the time (threshold value below noise level?)
+    // 0x3F= 63 -> -100dBm carrier detected all the time
+    // 0x4E= 78 ->  -93dBm carrier detected all the time
+    // 0x5E= 94 -> -85dBm it works, carrier detected only when PTT of handy radio (2.5W) is pressed
+    // 0x7F=127 -> -68dBm it works, carrier detected only when PTT of handy radio (2.5W) is pressed
+    // 0xbF=191 -> -36dBm it works, carrier detected only when PTT of handy radio (2.5W) is pressed
+    // 0xFF=255 ->  -4dBm carrier not detected at all (even if handy radio transmits with 5W). I don't know why.
     Serial_print_s("Si4438 setting modem RSSI treshold...");
-    if(si4438_setProperty(SI4438_PROPERTY_MODEM_RSSI_THRESH, 0x7f) == false)
+    if(si4438_setProperty(SI4438_PROPERTY_MODEM_RSSI_THRESH, 0x5e) == false)
     {
         Serial_println_s(" failed");
     }
