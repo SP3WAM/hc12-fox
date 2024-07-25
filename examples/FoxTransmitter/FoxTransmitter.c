@@ -60,17 +60,6 @@ void setup()
         Serial_println_s(" OK");
     }
 
-    // Init fake F3E transmission mode
-    Serial_print_s("Si4438 setting fake F3E mode...");
-    if(fake_f3e_init_tx_direct_sync_2gfsk() == false)
-    {
-        Serial_println_s(" failed");
-    }
-    else
-    {
-        Serial_println_s(" OK");
-    }
-
     Serial_print_s("Si4438 setting modem RSSI treshold...");
     if(si4438_setProperty(SI4438_PROPERTY_MODEM_RSSI_THRESH, 0x7f) == false)
     {
