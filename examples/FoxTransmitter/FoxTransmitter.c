@@ -96,7 +96,7 @@ void loop()
         // cw_start_rx(0);
 
         // 2. meassure average RSSI
-        uint8_t averageRssi = get_average_rssi(100, 16);
+        uint8_t averageRssi = get_average_rssi(50, 32);
         // 3. display average RSSI
         Serial_print_s("RSSI average is ");
         Serial_println_i(averageRssi);
