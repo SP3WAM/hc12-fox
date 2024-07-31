@@ -8,6 +8,7 @@
 #define FOX_STATE_RSSI 2
 
 uint8_t foxState;
+uint8_t rssiTreshold;
 
 uint8_t get_average_rssi(uint8_t span_millis, uint8_t samples_count);
 void stm8s_sleep(uint8_t tbr, uint8_t apr);
@@ -22,6 +23,7 @@ void setup()
     delay(3000);
 
     foxState = FOX_STATE_RSSI;
+    rssiTreshold = 0x7f;
 
     Serial_begin(115200);
     Serial_println_s("Serial init.");
@@ -92,15 +94,24 @@ void loop()
     if(foxState == FOX_STATE_RSSI)
     {
         // 1. go to RX state
-        // cw_init_rx();
-        // cw_start_rx(0);
+        cw_init_rx();
+        cw_start_rx(0);
 
         // 2. meassure average RSSI
-        uint8_t averageRssi = get_average_rssi(50, 32);
+        uint16_t averageRssi = get_average_rssi(50, 32);
         // 3. display average RSSI
         Serial_print_s("RSSI average is ");
         Serial_println_i(averageRssi);
 
+        // 4. calculate RSSI treshold
+        rssiTreshold = (uint8_t)((averageRssi + 6) % 256);
+        Serial_print_s("RSSI treshold is ");
+        Serial_println_i(rssiTreshold);
+
+        // 5. set new treshold
+        si4438_setProperty(SI4438_PROPERTY_MODEM_RSSI_THRESH, rssiTreshold);
+
+        foxState = FOX_STATE_RX;
         return;
     }
 
@@ -112,16 +123,15 @@ void loop()
         cw_init_rx();
         cw_start_rx(0);
 
-        // 2. for 250ms check for carrier presence
-        unsigned long timestamp = millis();
-        do
+        // 2. for 320ms check for carrier presence
+        uint8_t averageRssi = get_average_rssi(10, 32);
+        Serial_print_s("RSSI average is ");
+        Serial_println_i(averageRssi);
+        if(averageRssi >= rssiTreshold)
         {
-            if(digitalRead(PB4) == HIGH)
-            {
-                foxState = FOX_STATE_TX;
-                return;
-            }
-        } while (millis() - timestamp < 250);
+            foxState = FOX_STATE_TX;
+            return;
+        }
         
         // 3. sleep for 2.25s
         si4438_enter_sleep_state();
@@ -169,8 +179,8 @@ void loop()
             STM8_S_SLEEP_500_MILLISEC();
         }
 
-        // 3. go to RX mode
-        foxState = FOX_STATE_RX;
+        // 3. go to FOX_STATE_RSSI state
+        foxState = FOX_STATE_RSSI;
 
         return;
     }
