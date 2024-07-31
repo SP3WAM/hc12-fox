@@ -267,3 +267,21 @@ bool si4438_get_func_info(uint8_t* func_info)
         return false;
     }
 }
+
+bool si4438_get_rssi(uint8_t* rssi)
+{
+    uint8_t command[2];
+    command[0] = SI4438_CMD_GET_MODEM_STATUS;
+    command[1] = 0xFF;  // don't clear interrupts
+
+    uint8_t response[8];
+
+    if(si4438_doAPI(command, sizeof(command), response, sizeof(response)) == false)
+    {
+        return false;
+    }
+
+    *rssi = response[2];
+
+    return true;
+}

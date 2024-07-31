@@ -5,6 +5,7 @@
 
 #define FOX_STATE_RX 0
 #define FOX_STATE_TX 1
+#define FOX_STATE_RSSI 2
 
 uint8_t foxState;
 
@@ -19,7 +20,7 @@ void setup()
 {
     delay(3000);
 
-    foxState = FOX_STATE_RX;
+    foxState = FOX_STATE_RSSI;
 
     Serial_begin(115200);
     Serial_println_s("Serial init.");
@@ -80,10 +81,31 @@ void setup()
     {
         Serial_println_s(" OK");
     }
+
+    cw_init_rx();
+    cw_start_rx(0);
 }
 
 void loop()
 {
+    if(foxState == FOX_STATE_RSSI)
+    {
+        // 1. go to RX state
+        // cw_init_rx();
+        // cw_start_rx(0);
+
+        // 2. get current RSSI
+        uint8_t rssi;
+        si4438_get_rssi(&rssi);
+
+        // 3. display RSSI
+        Serial_print_s("RSSI is ");
+        Serial_println_i(rssi);
+
+        delay(500);
+        return;
+    }
+
     if(foxState == FOX_STATE_RX)
     {
         Serial_print_s("Fox in RX state.");

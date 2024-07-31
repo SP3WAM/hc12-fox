@@ -12,6 +12,7 @@
 #define SI4438_CMD_SET_PROPERTY 0x11
 #define SI4438_CMD_GET_PROPERTY 0x12
 #define SI4438_CMD_GPIO_PIN_CFG 0x13
+#define SI4438_CMD_GET_MODEM_STATUS 0x22
 #define SI4438_CMD_START_TX 0x31
 #define SI4438_CMD_START_RX 0x32
 #define SI4438_CMD_CHANGE_STATE 0x34
@@ -59,3 +60,9 @@ bool si4438_enter_rx_state(uint8_t channel);
 bool si4438_get_part_info(char* part_info);
 
 bool si4438_get_func_info(uint8_t* func_info);
+
+/**
+ * Gets the current RSSI as a value between 0 (the worst signal) and 255 (the best signal).
+ * It is not a dBm meassure.
+ */
+bool si4438_get_rssi(uint8_t* rssi);
