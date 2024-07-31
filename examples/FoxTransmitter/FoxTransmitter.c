@@ -9,6 +9,7 @@
 
 uint8_t foxState;
 
+uint8_t get_average_rssi(uint8_t span_millis, uint8_t samples_count);
 void stm8s_sleep(uint8_t tbr, uint8_t apr);
 #define STM8_S_SLEEP_250_MILLISEC() stm8s_sleep(10, 62)
 #define STM8_S_SLEEP_500_MILLISEC() stm8s_sleep(11, 62)
@@ -95,20 +96,7 @@ void loop()
         // cw_start_rx(0);
 
         // 2. meassure average RSSI
-        uint16_t rssiSumm = 0;
-        for(uint8_t q = 0 ; q < 8; q++)
-        {
-            uint8_t rssi;
-            si4438_get_rssi(&rssi);
-
-            rssiSumm += rssi;
-
-            Serial_print_s("RSSI is ");
-            Serial_println_i(rssi);
-
-            delay(100);
-        }
-        uint8_t averageRssi = rssiSumm >> 3; // divided by 8
+        uint8_t averageRssi = get_average_rssi(100, 16);
         // 3. display average RSSI
         Serial_print_s("RSSI average is ");
         Serial_println_i(averageRssi);
@@ -186,6 +174,26 @@ void loop()
 
         return;
     }
+}
+
+uint8_t get_average_rssi(uint8_t span_millis, uint8_t samples_count)
+{
+    uint16_t rssiSumm = 0;
+    for(uint8_t q = 0 ; q < samples_count; q++)
+    {
+        uint8_t rssi;
+        si4438_get_rssi(&rssi);
+
+        rssiSumm += rssi;
+
+        Serial_print_s("RSSI is ");
+        Serial_println_i(rssi);
+
+        delay(span_millis);
+    }
+    uint8_t averageRssi = rssiSumm / samples_count;
+
+    return averageRssi;
 }
 
 void stm8s_sleep(uint8_t tbr, uint8_t apr)
