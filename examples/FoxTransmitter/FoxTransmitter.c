@@ -123,8 +123,8 @@ void loop()
         cw_init_rx();
         cw_start_rx(0);
 
-        // 2. for 320ms check for carrier presence
-        uint8_t averageRssi = get_average_rssi(10, 32);
+        // 2. for 160ms check for carrier presence
+        uint8_t averageRssi = get_average_rssi(5, 32);
         Serial_print_s("RSSI average is ");
         Serial_println_i(averageRssi);
         if(averageRssi >= rssiTreshold)
