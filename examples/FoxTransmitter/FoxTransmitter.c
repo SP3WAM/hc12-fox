@@ -94,15 +94,25 @@ void loop()
         // cw_init_rx();
         // cw_start_rx(0);
 
-        // 2. get current RSSI
-        uint8_t rssi;
-        si4438_get_rssi(&rssi);
+        // 2. meassure average RSSI
+        uint16_t rssiSumm = 0;
+        for(uint8_t q = 0 ; q < 8; q++)
+        {
+            uint8_t rssi;
+            si4438_get_rssi(&rssi);
 
-        // 3. display RSSI
-        Serial_print_s("RSSI is ");
-        Serial_println_i(rssi);
+            rssiSumm += rssi;
 
-        delay(500);
+            Serial_print_s("RSSI is ");
+            Serial_println_i(rssi);
+
+            delay(100);
+        }
+        uint8_t averageRssi = rssiSumm >> 3; // divided by 8
+        // 3. display average RSSI
+        Serial_print_s("RSSI average is ");
+        Serial_println_i(averageRssi);
+
         return;
     }
 
