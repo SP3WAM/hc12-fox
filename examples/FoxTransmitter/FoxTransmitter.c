@@ -84,9 +84,6 @@ void setup()
     {
         Serial_println_s(" OK");
     }
-
-    cw_init_rx();
-    cw_start_rx(0);
 }
 
 void loop()
@@ -117,16 +114,17 @@ void loop()
 
     if(foxState == FOX_STATE_RX)
     {
-        Serial_print_s("Fox in RX state.");
-
         // 1. go to RX state
         cw_init_rx();
         cw_start_rx(0);
 
         // 2. for 160ms check for carrier presence
         uint8_t averageRssi = get_average_rssi(5, 32);
-        Serial_print_s("RSSI average is ");
-        Serial_println_i(averageRssi);
+        Serial_print_s("RX avgRSSI = ");
+        Serial_print_i(averageRssi);
+        Serial_print_s("  trshRSSI = ");
+        Serial_println_i(rssiTreshold);
+
         if(averageRssi >= rssiTreshold)
         {
             foxState = FOX_STATE_TX;
@@ -134,6 +132,7 @@ void loop()
         }
         
         // 3. sleep for 2.25s
+        delay(2); // additional delay so the debug data could be sent correctly through serial port
         si4438_enter_sleep_state();
         STM8_S_SLEEP_2_25_SEC();
 
@@ -142,8 +141,6 @@ void loop()
 
     if(foxState == FOX_STATE_TX)
     {
-        Serial_print_s("Fox in TX state.");
-
         // 1. go to TX state
         fake_f3e_init_tx_direct_sync_2gfsk();
 
@@ -171,6 +168,9 @@ void loop()
         for(uint8_t q = 0 ; q < 20 ; q ++)
         {
             // 20 * (500ms + 500ms) = 20 * 1s = 20s
+            Serial_print_s("TX beep no. ");
+            Serial_println_i(q);
+
             fake_f3e_start_tx(0); // channel 0: 434.100 MHz
             fake_f3e_tone(700, 500000ul);
             fake_f3e_stop_tx();
@@ -196,9 +196,6 @@ uint8_t get_average_rssi(uint8_t span_millis, uint8_t samples_count)
 
         rssiSumm += rssi;
 
-        Serial_print_s("RSSI is ");
-        Serial_println_i(rssi);
-
         delay(span_millis);
     }
     uint8_t averageRssi = rssiSumm / samples_count;
@@ -208,14 +205,13 @@ uint8_t get_average_rssi(uint8_t span_millis, uint8_t samples_count)
 
 void stm8s_sleep(uint8_t tbr, uint8_t apr)
 {
-    Serial_println_s("stm8s_sleep() begin");
     // How to calculate the register values:
     // RM0016_STM8S_and_STM8AF.pdf page 116 Table 25
 
-    // Set the TimeBase 2.080 s - 5.120 s
+    // Set the TimeBase
     AWU->TBR &= (uint8_t)(~AWU_TBR_AWUTB);
     AWU->TBR |= tbr;
-    // Set the APR divider APR = 5.0 sec / 5 / 2^11 * 128000 = 62.5
+    // Set the APR divider
     AWU->APR &= (uint8_t)(~AWU_APR_APR);
     AWU->APR |= apr;
 
@@ -223,11 +219,7 @@ void stm8s_sleep(uint8_t tbr, uint8_t apr)
     AWU->CSR |= AWU_CSR_AWUEN;
 
     //... and enter halt mode. AWU will wake it up after specific amount of time.
-
-    Serial_println_s("about to call halt()...");
-    delay(100); // this is required to send data to serial port before halt is executed
     halt();
-    Serial_println_s("... exiting from halt()");
 
     // Disable AWU peripheral
     AWU->CSR &= (uint8_t)(~AWU_CSR_AWUEN);
