@@ -8,7 +8,7 @@
 #define FOX_STATE_RSSI 2
 
 uint8_t foxState;
-uint8_t rssiTreshold;
+uint16_t rssiTreshold;
 
 uint8_t get_average_rssi(uint8_t span_millis, uint8_t samples_count);
 void stm8s_sleep(uint8_t tbr, uint8_t apr);
@@ -80,13 +80,10 @@ void loop()
         Serial_println_i(averageRssi);
 
         // 4. calculate RSSI treshold
-        if(averageRssi >= 249)
+        rssiTreshold = averageRssi + 6;
+        if(rssiTreshold > 127)
         {
-            rssiTreshold = 255;
-        }
-        else
-        {
-            rssiTreshold = averageRssi + 6;
+            rssiTreshold = 127;
         }
         Serial_print_s("RSSI treshold is ");
         Serial_println_i(rssiTreshold);
