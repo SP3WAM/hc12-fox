@@ -80,7 +80,14 @@ void loop()
         Serial_println_i(averageRssi);
 
         // 4. calculate RSSI treshold
-        rssiTreshold = (uint8_t)((averageRssi + 6) % 256);
+        if(averageRssi >= 249)
+        {
+            rssiTreshold = 255;
+        }
+        else
+        {
+            rssiTreshold = averageRssi + 6;
+        }
         Serial_print_s("RSSI treshold is ");
         Serial_println_i(rssiTreshold);
 
