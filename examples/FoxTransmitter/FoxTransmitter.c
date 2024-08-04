@@ -74,7 +74,7 @@ void loop()
         cw_start_rx(0);
 
         // 2. meassure average RSSI
-        uint16_t averageRssi = get_average_rssi(50, 32);
+        uint16_t averageRssi = get_average_rssi(25, 32);
         // 3. display average RSSI
         Serial_print_s("RSSI average is ");
         Serial_println_i(averageRssi);
@@ -99,7 +99,7 @@ void loop()
         cw_start_rx(0);
 
         // 2. for 160ms check for carrier presence
-        uint8_t averageRssi = get_average_rssi(5, 32);
+        uint8_t averageRssi = get_average_rssi(1, 32);
         Serial_print_s("RX avgRSSI = ");
         Serial_print_i(averageRssi);
         Serial_print_s("  trshRSSI = ");
@@ -111,10 +111,10 @@ void loop()
             return;
         }
         
-        // 3. sleep for 2.25s
+        // 3. sleep for 5s
         delay(2); // additional delay so the debug data could be sent correctly through serial port
         si4438_enter_sleep_state();
-        STM8_S_SLEEP_2_25_SEC();
+        STM8_S_SLEEP_5_SEC();
 
         return;
     }
@@ -135,7 +135,6 @@ void loop()
         //         fake_f3e_tone(700, 500000ul);
         //         fake_f3e_stop_tx();
         //         si4438_enter_sleep_state();
-        //         STM8_S_SLEEP_250_MILLISEC();
         //         STM8_S_SLEEP_500_MILLISEC();
         //     }
 
@@ -155,7 +154,6 @@ void loop()
             fake_f3e_tone(700, 500000ul);
             fake_f3e_stop_tx();
             si4438_enter_sleep_state();
-            STM8_S_SLEEP_250_MILLISEC();
             STM8_S_SLEEP_500_MILLISEC();
         }
 
