@@ -3,6 +3,8 @@
 #include "services/fake_f3e.h"
 #include "services/cw.h"
 
+#define RSSI_TRESHOLD_SNR 6
+
 #define FOX_STATE_RX 0
 #define FOX_STATE_TX 1
 #define FOX_STATE_RSSI 2
@@ -10,6 +12,7 @@
 uint8_t foxState;
 uint16_t rssiTreshold;
 
+void set_rssi_treshold(uint16_t treshold);
 uint8_t get_average_rssi(uint8_t span_millis, uint8_t samples_count);
 void stm8s_sleep(uint8_t tbr, uint8_t apr);
 #define STM8_S_SLEEP_250_MILLISEC() stm8s_sleep(10, 62)
@@ -80,11 +83,7 @@ void loop()
         Serial_println_i(averageRssi);
 
         // 4. calculate RSSI treshold
-        rssiTreshold = averageRssi + 6;
-        if(rssiTreshold > 127)
-        {
-            rssiTreshold = 127;
-        }
+        set_rssi_treshold(averageRssi + RSSI_TRESHOLD_SNR);
         Serial_print_s("RSSI treshold is ");
         Serial_println_i(rssiTreshold);
 
@@ -109,6 +108,11 @@ void loop()
         {
             foxState = FOX_STATE_TX;
             return;
+        }
+        else
+        {
+            // update treshold
+            set_rssi_treshold(averageRssi + RSSI_TRESHOLD_SNR);
         }
         
         // 3. sleep for 5s
@@ -161,6 +165,15 @@ void loop()
         foxState = FOX_STATE_RSSI;
 
         return;
+    }
+}
+
+void set_rssi_treshold(uint16_t treshold)
+{
+    rssiTreshold = treshold;
+    if(rssiTreshold > 127)
+    {
+        rssiTreshold = 127;
     }
 }
 
