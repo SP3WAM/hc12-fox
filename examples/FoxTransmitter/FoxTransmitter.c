@@ -3,7 +3,29 @@
 #include "services/fake_f3e.h"
 #include "services/cw.h"
 
+/*
+ * FOX CONFIGURATION SECTION BEGIN
+ */
+// Defines the minimal SNR level to wake the fox up
 #define RSSI_TRESHOLD_SNR 6
+
+// Communication channel:
+// The step between single channels is 12.5 kHz, but foxes communicate on channels with 50 kHz step.
+//  0 434.100 MHz this is the base channel of all foxes (see also radio_config_Si4438.h)
+//  4 434.150 MHz
+//  8 434.200 MHz
+// 12 434.250 MHz
+// 16 434.300 MHz
+// 20 434.350 MHz
+// 24 434.400 MHz
+// 28 434.450 MHz
+// 32 434.500 MHz
+// 36 434.550 MHz this is the last possible channel according to IARU Region 1 UHF band plan
+#define COMMUNICATION_CHANNEL 0
+/*
+ * FOX CONFIGURATION SECTION END
+*/
+
 
 #define FOX_STATE_RX 0
 #define FOX_STATE_TX 1
@@ -74,7 +96,7 @@ void loop()
     {
         // 1. go to RX state
         cw_init_rx();
-        cw_start_rx(0);
+        cw_start_rx(COMMUNICATION_CHANNEL);
 
         // 2. meassure average RSSI
         uint16_t averageRssi = get_average_rssi(25, 32);
@@ -95,9 +117,9 @@ void loop()
     {
         // 1. go to RX state
         cw_init_rx();
-        cw_start_rx(0);
+        cw_start_rx(COMMUNICATION_CHANNEL);
 
-        // 2. for 160ms check for carrier presence
+        // 2. check for carrier presence
         uint8_t averageRssi = get_average_rssi(1, 32);
         Serial_print_s("RX avgRSSI = ");
         Serial_print_i(averageRssi);
@@ -154,7 +176,7 @@ void loop()
             Serial_print_s("TX beep no. ");
             Serial_println_i(q);
 
-            fake_f3e_start_tx(0); // channel 0: 434.100 MHz
+            fake_f3e_start_tx(COMMUNICATION_CHANNEL);
             fake_f3e_tone(700, 500000ul);
             fake_f3e_stop_tx();
             si4438_enter_sleep_state();
