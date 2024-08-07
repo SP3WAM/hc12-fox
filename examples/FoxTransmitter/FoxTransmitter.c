@@ -7,7 +7,7 @@
  * FOX CONFIGURATION SECTION BEGIN
  */
 // Defines the minimal SNR level to wake the fox up
-#define RSSI_TRESHOLD_SNR 6
+#define RSSI_TRESHOLD_SNR 20
 
 // Communication channel:
 // The step between single channels is 12.5 kHz, but foxes communicate on channels with 50 kHz step.
@@ -99,7 +99,7 @@ void loop()
         cw_start_rx(COMMUNICATION_CHANNEL);
 
         // 2. meassure average RSSI
-        uint16_t averageRssi = get_average_rssi(25, 32);
+        uint16_t averageRssi = get_average_rssi(16, 32);
         // 3. display average RSSI
         Serial_print_s("RSSI average is ");
         Serial_println_i(averageRssi);
@@ -120,7 +120,7 @@ void loop()
         cw_start_rx(COMMUNICATION_CHANNEL);
 
         // 2. check for carrier presence
-        uint8_t averageRssi = get_average_rssi(1, 32);
+        uint8_t averageRssi = get_average_rssi(16, 32);
         Serial_print_s("RX avgRSSI = ");
         Serial_print_i(averageRssi);
         Serial_print_s("  trshRSSI = ");
