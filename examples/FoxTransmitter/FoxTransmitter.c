@@ -158,14 +158,16 @@ void loop()
         {
             // transmit beeps for 20 seconds
             fake_f3e_start_tx(COMMUNICATION_CHANNEL);
-            for(uint8_t q = 0 ; q < 10 ; q ++)
+            for(uint8_t q = 0 ; q < 8 ; q ++)
             {
                 Serial_print_s("TX beep no. ");
                 Serial_println_i(q);
-
+                if()
                 fake_f3e_tone(700, 500000ul);
-                delay(500);
+                delay(250);
                 fake_f3e_tone(800, 500000ul);
+                delay(250);
+                fake_f3e_tone(900, 500000ul);
                 delay(500);
             }
             fake_f3e_stop_tx();
