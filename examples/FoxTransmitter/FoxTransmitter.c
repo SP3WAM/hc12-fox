@@ -154,20 +154,20 @@ void loop()
         for(uint8_t w = 0 ; w < 10 ; w ++)
         {
             // transmit beeps for 20 seconds
+            fake_f3e_start_tx(COMMUNICATION_CHANNEL);
             for(uint8_t q = 0 ; q < 20 ; q ++)
             {
                 // 20 * (500ms + 500ms) = 20 * 1s = 20s
                 Serial_print_s("TX beep no. ");
                 Serial_println_i(q);
 
-                fake_f3e_start_tx(COMMUNICATION_CHANNEL);
                 fake_f3e_tone(700, 500000ul);
-                fake_f3e_stop_tx();
-                si4438_enter_sleep_state();
-                STM8_S_SLEEP_500_MILLISEC();
+                fake_f3e_tone(800, 500000ul);
             }
+            fake_f3e_stop_tx();
 
             // sleep for 40 seconds
+            si4438_enter_sleep_state();
             STM8_S_SLEEP_20_SEC();
             STM8_S_SLEEP_20_SEC();
         }
