@@ -102,7 +102,7 @@ void loop()
         cw_start_rx(COMMUNICATION_CHANNEL);
 
         // 2. meassure average RSSI
-        uint16_t averageRssi = get_average_rssi(16, 32);
+        uint16_t averageRssi = get_average_rssi(1, 32);
         // 3. display average RSSI
         Serial_print_s("RSSI average is ");
         Serial_println_i(averageRssi);
@@ -123,7 +123,7 @@ void loop()
         cw_start_rx(COMMUNICATION_CHANNEL);
 
         // 2. check for carrier presence
-        uint8_t averageRssi = get_average_rssi(16, 32);
+        uint8_t averageRssi = get_average_rssi(1, 32);
         Serial_print_s("RX avgRSSI = ");
         Serial_print_i(averageRssi);
         Serial_print_s("  trshRSSI = ");
@@ -158,14 +158,15 @@ void loop()
         {
             // transmit beeps for 20 seconds
             fake_f3e_start_tx(COMMUNICATION_CHANNEL);
-            for(uint8_t q = 0 ; q < 20 ; q ++)
+            for(uint8_t q = 0 ; q < 10 ; q ++)
             {
-                // 20 * (500ms + 500ms) = 20 * 1s = 20s
                 Serial_print_s("TX beep no. ");
                 Serial_println_i(q);
 
                 fake_f3e_tone(700, 500000ul);
+                delay(500);
                 fake_f3e_tone(800, 500000ul);
+                delay(500);
             }
             fake_f3e_stop_tx();
 
