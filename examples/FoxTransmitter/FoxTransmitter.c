@@ -150,37 +150,26 @@ void loop()
         // 1. go to TX state
         fake_f3e_init_tx_direct_sync_2gfsk();
 
-        // 2. transmit beeps for 30 minutes
-        // for(uint8_t w = 0 ; w < 30 ; w ++)
-        // {
-        //     // the loop below takes 20 seconds
-        //     for(uint8_t q = 0 ; q < 20 ; q ++)
-        //     {
-        //         // 20 * (500ms + 500ms) = 20 * 1s = 20s
-        //         fake_f3e_start_tx(0); // channel 0: 434.100 MHz
-        //         fake_f3e_tone(700, 500000ul);
-        //         fake_f3e_stop_tx();
-        //         si4438_enter_sleep_state();
-        //         STM8_S_SLEEP_500_MILLISEC();
-        //     }
-
-        //     // sleep for 40 seconds
-        //     STM8_S_SLEEP_20_SEC();
-        //     STM8_S_SLEEP_20_SEC();
-        // }
-
-        // 2. transmit beeps for 20 seconds
-        for(uint8_t q = 0 ; q < 20 ; q ++)
+        // 2. transmition cycle: 10 minutes
+        for(uint8_t w = 0 ; w < 10 ; w ++)
         {
-            // 20 * (500ms + 500ms) = 20 * 1s = 20s
-            Serial_print_s("TX beep no. ");
-            Serial_println_i(q);
+            // transmit beeps for 20 seconds
+            for(uint8_t q = 0 ; q < 20 ; q ++)
+            {
+                // 20 * (500ms + 500ms) = 20 * 1s = 20s
+                Serial_print_s("TX beep no. ");
+                Serial_println_i(q);
 
-            fake_f3e_start_tx(COMMUNICATION_CHANNEL);
-            fake_f3e_tone(700, 500000ul);
-            fake_f3e_stop_tx();
-            si4438_enter_sleep_state();
-            STM8_S_SLEEP_500_MILLISEC();
+                fake_f3e_start_tx(COMMUNICATION_CHANNEL);
+                fake_f3e_tone(700, 500000ul);
+                fake_f3e_stop_tx();
+                si4438_enter_sleep_state();
+                STM8_S_SLEEP_500_MILLISEC();
+            }
+
+            // sleep for 40 seconds
+            STM8_S_SLEEP_20_SEC();
+            STM8_S_SLEEP_20_SEC();
         }
 
         // 3. go to FOX_STATE_RSSI state
