@@ -22,6 +22,9 @@
 // 32 434.500 MHz
 // 36 434.550 MHz this is the last possible channel according to IARU Region 1 UHF band plan
 #define COMMUNICATION_CHANNEL 0
+
+// Uncomment below line to have more debugs around RSSI calculations
+#define DEBUG_RSSI
 /*
  * FOX CONFIGURATION SECTION END
 */
@@ -190,6 +193,10 @@ void set_rssi_treshold(uint16_t treshold)
 
 uint8_t get_average_rssi(uint8_t span_millis, uint8_t samples_count)
 {
+    #ifdef DEBUG_RSSI
+    Serial_println_s("D get_average_rssi begin");
+    #endif
+
     uint16_t rssiSumm = 0;
     for(uint8_t q = 0 ; q < samples_count; q++)
     {
@@ -198,9 +205,18 @@ uint8_t get_average_rssi(uint8_t span_millis, uint8_t samples_count)
 
         rssiSumm += rssi;
 
+        #ifdef DEBUG_RSSI
+        Serial_print_s("D RSSI is ");
+        Serial_println_i(rssi);
+        #endif
+
         delay(span_millis);
     }
     uint8_t averageRssi = rssiSumm / samples_count;
+
+    #ifdef DEBUG_RSSI
+    Serial_println_s("D get_average_rssi end");
+    #endif
 
     return averageRssi;
 }
