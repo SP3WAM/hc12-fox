@@ -162,7 +162,7 @@ void loop()
             {
                 Serial_print_s("TX beep no. ");
                 Serial_println_i(q);
-                if()
+
                 fake_f3e_tone(700, 500000ul);
                 delay(250);
                 fake_f3e_tone(800, 500000ul);
