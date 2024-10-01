@@ -11,19 +11,26 @@ The pinout is as on the image below:
    - NRST programming interface
    - SWM programming interface
 
-![HC-12 Pinout](doc/HC-12/HC-12_pinout.jpg)
+![HC-12 Pinout](doc/HC-12/HC-12_pinout.jpg)
 
 It allows reprogramming and communication via serial port. Of course after reprogramming the RXD/TXD/SET pins may serve alternate functions,
 as defined in the new firmware.
 
 
-![HC-12 Pinout](doc/HC-12/HC_12_schematic_very_simple.jpg)
+![HC-12 Pinout](doc/HC-12/HC_12_schematic_very_simple.jpg)
 
 simple schematic
 
 
 # HC-12 Reprogramming
-Here about how to unlock the brand new HC-12 module
+The key to the reprogramming is just correct usage of ST-LINK V2 programmer. Here we use the SWIM protocol
+where four pins are required during programming: VCC, GND, SWM and RST. VCC and GND are already pinouted
+from HC-12, while SWM and RST are available only as a pads on the PCB so you need at least to solder two additional pins
+to those pads for easily attaching the programmer.
+I will not describe in details on how to program STM8 with ST-LINK V2, as there is a lot of tutorials already available, 
+however take a look at [st-link-v2](../st-link-v2/README.md) project to learn about some issues that I've faced during my first experiments with 
+HC-12, especially on how to unlock the device in order to flash your own firmware.
+
 
 # Example source code
 
@@ -31,7 +38,7 @@ Here about how to unlock the brand new HC-12 module
 Here examples of spectrum of CW, OOK, 2FSk and 2GFSK
 
 # SI4438 Undarstanding RF configuration file part 
-Here the image related to the following settings: frequency, channel width, 2FSK deviation
+Here the image related to the following settings: frequency, channel width, 2FSK deviation
 
 # SI448 and STM8S Current consumption meassurements:
 
