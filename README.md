@@ -47,7 +47,7 @@ programmed **RF Freq.(MHz)** is the end frequency of the communication channel (
 This is important to be aware of to correctly match the transmission frequency with the frequency that needs to be entered to the receiver
 radio (i.e. Yaesu, Baofen, Qunshen, etc).
 Example: if you want to hear the fox on frequency **434.100 MHz** (with the standard FM channel width 12.5kHz), the base **RF Freq.(MHz)** must be set
-to **434.10625** and the **fhst** must be set to **12500*.
+to **434.10625** and the **fhst** must be set to **12500**.
 
 
 
