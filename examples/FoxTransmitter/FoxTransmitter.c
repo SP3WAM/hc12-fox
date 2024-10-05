@@ -7,7 +7,7 @@
  * FOX CONFIGURATION SECTION BEGIN
  */
 // Defines the minimal SNR level to wake the fox up
-#define RSSI_TRESHOLD_SNR 20
+#define RSSI_TRESHOLD_SNR 3
 
 // Communication channel:
 // The step between single channels is 12.5 kHz, but foxes communicate on channels with 50 kHz step.
@@ -37,9 +37,15 @@
 uint8_t foxState;
 uint16_t rssiTreshold;
 
+typedef struct
+{
+    uint8_t rssi;
+    uint8_t deviation;
+} average_rssi;
+
 uint8_t sqrt(uint16_t value);
 void set_rssi_treshold(uint16_t treshold);
-uint8_t get_average_rssi(uint8_t span_millis, uint8_t samples_count);
+void get_average_rssi(uint8_t span_millis, uint8_t samples_count, average_rssi* result);
 void stm8s_sleep(uint8_t tbr, uint8_t apr);
 #define STM8_S_SLEEP_250_MILLISEC() stm8s_sleep(10, 62)
 #define STM8_S_SLEEP_500_MILLISEC() stm8s_sleep(11, 62)
@@ -103,13 +109,14 @@ void loop()
         cw_start_rx(COMMUNICATION_CHANNEL);
 
         // 2. meassure average RSSI
-        uint16_t averageRssi = get_average_rssi(1, 32);
+        average_rssi averageRssi;
+        get_average_rssi(1, 32, &averageRssi);
         // 3. display average RSSI
         Serial_print_s("RSSI average is ");
-        Serial_println_i(averageRssi);
+        Serial_println_i(averageRssi.rssi);
 
         // 4. calculate RSSI treshold
-        set_rssi_treshold(averageRssi + RSSI_TRESHOLD_SNR);
+        set_rssi_treshold(averageRssi.rssi + averageRssi.deviation + RSSI_TRESHOLD_SNR);
         Serial_print_s("RSSI treshold is ");
         Serial_println_i(rssiTreshold);
 
@@ -124,13 +131,14 @@ void loop()
         cw_start_rx(COMMUNICATION_CHANNEL);
 
         // 2. check for carrier presence
-        uint8_t averageRssi = get_average_rssi(1, 32);
+        average_rssi averageRssi;
+        get_average_rssi(1, 32, &averageRssi);
         Serial_print_s("RX avgRSSI = ");
-        Serial_print_i(averageRssi);
-        Serial_print_s("  trshRSSI = ");
+        Serial_print_i(averageRssi.rssi);
+        Serial_print_s("  current trshRSSI = ");
         Serial_println_i(rssiTreshold);
 
-        if(averageRssi >= rssiTreshold)
+        if(averageRssi.rssi >= rssiTreshold)
         {
             foxState = FOX_STATE_TX;
             return;
@@ -138,7 +146,9 @@ void loop()
         else
         {
             // update treshold
-            set_rssi_treshold(averageRssi + RSSI_TRESHOLD_SNR);
+            set_rssi_treshold(averageRssi.rssi +averageRssi.deviation + RSSI_TRESHOLD_SNR);
+            Serial_print_s("RX New trshRSSI = ");
+            Serial_println_i(rssiTreshold);
         }
         
         // 3. sleep for 5s
@@ -195,7 +205,7 @@ void set_rssi_treshold(uint16_t treshold)
     }
 }
 
-uint8_t get_average_rssi(uint8_t span_millis, uint8_t samples_count)
+void get_average_rssi(uint8_t span_millis, uint8_t samples_count, average_rssi* result)
 {
     #ifdef DEBUG_RSSI
     Serial_println_s("D get_average_rssi begin");
@@ -236,7 +246,8 @@ uint8_t get_average_rssi(uint8_t span_millis, uint8_t samples_count)
     Serial_println_s("D get_average_rssi end");
     #endif
 
-    return averageRssi;
+    result->rssi = averageRssi;
+    result->deviation = deviation;
 }
 
 uint8_t sqrt(uint16_t value)
