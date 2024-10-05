@@ -44,7 +44,7 @@ typedef struct
 } average_rssi;
 
 uint8_t sqrt(uint16_t value);
-void set_rssi_treshold(uint16_t treshold);
+void update_rssi_treshold(average_rssi* averageRssi);
 void get_average_rssi(uint8_t span_millis, uint8_t samples_count, average_rssi* result);
 void stm8s_sleep(uint8_t tbr, uint8_t apr);
 #define STM8_S_SLEEP_250_MILLISEC() stm8s_sleep(10, 62)
@@ -116,7 +116,8 @@ void loop()
         Serial_println_i(averageRssi.rssi);
 
         // 4. calculate RSSI treshold
-        set_rssi_treshold(averageRssi.rssi + averageRssi.deviation + RSSI_TRESHOLD_SNR);
+        update_rssi_treshold(&averageRssi);
+
         Serial_print_s("RSSI treshold is ");
         Serial_println_i(rssiTreshold);
 
@@ -146,7 +147,7 @@ void loop()
         else
         {
             // update treshold
-            set_rssi_treshold(averageRssi.rssi +averageRssi.deviation + RSSI_TRESHOLD_SNR);
+            update_rssi_treshold(&averageRssi);
             Serial_print_s("RX New trshRSSI = ");
             Serial_println_i(rssiTreshold);
         }
@@ -196,9 +197,10 @@ void loop()
     }
 }
 
-void set_rssi_treshold(uint16_t treshold)
+void update_rssi_treshold(average_rssi* averageRssi)
 {
-    rssiTreshold = treshold;
+    rssiTreshold = (uint16_t)averageRssi->rssi + (uint16_t)averageRssi->deviation + (uint16_t)RSSI_TRESHOLD_SNR;
+
     if(rssiTreshold > 127)
     {
         rssiTreshold = 127;
