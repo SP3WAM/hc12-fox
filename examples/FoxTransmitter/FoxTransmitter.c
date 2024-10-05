@@ -166,7 +166,8 @@ void loop()
         fake_f3e_init_tx_direct_sync_2gfsk();
 
         // 2. transmition cycle: 10 minutes
-        for(uint8_t w = 0 ; w < 10 ; w ++)
+        uint8_t maxMinutes = 10;
+        for(uint8_t w = 0 ; w < maxMinutes ; w ++)
         {
             // transmit beeps for 20 seconds
             fake_f3e_start_tx(COMMUNICATION_CHANNEL);
@@ -175,12 +176,29 @@ void loop()
                 Serial_print_s("TX beep no. ");
                 Serial_println_i(q);
 
-                fake_f3e_tone(700, 500000ul);
-                delay(250);
-                fake_f3e_tone(800, 500000ul);
-                delay(250);
-                fake_f3e_tone(900, 500000ul);
-                delay(500);
+                if(w == maxMinutes - 1)
+                {
+                    // the last beeps in the whole cycle
+                    // make it beep faster to signalise
+                    // it will go to sleep
+                    fake_f3e_tone(900, 500000ul);
+                    delay(250);
+                    fake_f3e_tone(900, 500000ul);
+                    delay(250);
+                    fake_f3e_tone(900, 500000ul);
+                    delay(250);
+                    fake_f3e_tone(900, 500000ul);
+                    delay(250);
+                }
+                else
+                {
+                    fake_f3e_tone(700, 500000ul);
+                    delay(250);
+                    fake_f3e_tone(800, 500000ul);
+                    delay(250);
+                    fake_f3e_tone(900, 500000ul);
+                    delay(500);
+                }
             }
             fake_f3e_stop_tx();
 
