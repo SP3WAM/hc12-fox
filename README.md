@@ -17,9 +17,9 @@ It allows reprogramming and communication via serial port. Of course after repro
 as defined in the new firmware.
 
 
+The simple reversed engineered schematic below:
 ![HC-12 Pinout](doc/HC-12/HC_12_schematic_very_simple.jpg)
-
-simple schematic
+<img src="doc/HC-12/HC_12_schematic_very_simple.jpg" width="75%" >
 
 
 # HC-12 Reprogramming
@@ -33,9 +33,6 @@ HC-12, especially on how to unlock the device in order to flash your own firmwar
 
 
 # Example source code
-
-# SI4438 spectrums
-Here examples of spectrum of CW, OOK, 2FSk and 2GFSK
 
 # SI4438 Undarstanding RF configuration file part 
 Here additional note related to the following settings: frequency, channel width, 2FSK deviation.
@@ -65,3 +62,6 @@ to **434.10625** and the **fhst** must be set to **12500**.
 | 5.0 | Sleep | Active Halt |  0.2 |  0.2 |   0.2  |
 
 *Interesting, the datasheet says that Si4438 in Tx@20dBm takes ~76mA of current.
+
+# SI4438 spectrums
+Here examples of spectrum of CW, OOK, 2FSk and 2GFSK
