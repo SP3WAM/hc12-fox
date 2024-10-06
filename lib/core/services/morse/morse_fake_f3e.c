@@ -2,7 +2,7 @@
 #include "morse_fake_f3e.h"
 #include "../fake_f3e.h"
 
-#define WPM 8
+#define WPM 12
 
 #define DIT_DURATION_MILLIS  (1200 / WPM)   // dot duration in milliseconds
 #define DAH_DURATION_MILLIS 3 * DIT_DURATION_MILLIS // dash duration
