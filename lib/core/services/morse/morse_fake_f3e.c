@@ -2,8 +2,10 @@
 #include "morse_fake_f3e.h"
 #include "../fake_f3e.h"
 
-#define DIT_DURATION_MILLIS  150 // a dot
-#define DAH_DURATION_MILLIS 3 * DIT_DURATION_MILLIS // a dash
+#define WPM 8
+
+#define DIT_DURATION_MILLIS  (1200 / WPM)   // dot duration in milliseconds
+#define DAH_DURATION_MILLIS 3 * DIT_DURATION_MILLIS // dash duration
 
 void morse_fake_f3e_send_word(char* ptr)
 {
