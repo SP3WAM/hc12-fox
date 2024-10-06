@@ -175,9 +175,9 @@ void loop()
         {
             fake_f3e_start_tx(COMMUNICATION_CHANNEL);
             delay(500); // so the squelch on receiver could be opened
-            
+
             // at first send call sign
-            morse_fake_f3e_send_sequence(CALL_SIGN);
+            morse_fake_f3e_send_word(CALL_SIGN);
             delay(500);
 
             // transmit beeps for 20 seconds

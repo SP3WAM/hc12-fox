@@ -5,7 +5,7 @@
 #define DIT_DURATION_MILLIS  150 // a dot
 #define DAH_DURATION_MILLIS 3 * DIT_DURATION_MILLIS // a dash
 
-void morse_fake_f3e_send_sequence(char* ptr)
+void morse_fake_f3e_send_word(char* ptr)
 {
     while(*ptr != NULL)
     {
