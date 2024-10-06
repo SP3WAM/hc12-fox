@@ -2,6 +2,7 @@
 #include "drivers/si4438.h"
 #include "services/fake_f3e.h"
 #include "services/cw.h"
+#include "services/morse/morse_fake_f3e.h"
 
 /*
  * FOX CONFIGURATION SECTION BEGIN
@@ -25,6 +26,9 @@
 
 // Uncomment below line to have more debugs around RSSI calculations
 #define DEBUG_RSSI
+
+//char CALL_SIGN[] = {'.', '.', '.', ' ', '.', '-', '-', '.', ' ', '.', '.', '.', '-', '-', ' ', '.', '-', '-', ' ', '.', '-', ' ', '-', '-', '\n'};
+char CALL_SIGN[] = "... .--. ...-- .-- .- --";
 /*
  * FOX CONFIGURATION SECTION END
 */
@@ -169,8 +173,14 @@ void loop()
         uint8_t maxMinutes = 10;
         for(uint8_t w = 0 ; w < maxMinutes ; w ++)
         {
-            // transmit beeps for 20 seconds
             fake_f3e_start_tx(COMMUNICATION_CHANNEL);
+            delay(500); // so the squelch on receiver could be opened
+            
+            // at first send call sign
+            morse_fake_f3e_send_sequence(CALL_SIGN);
+            delay(500);
+
+            // transmit beeps for 20 seconds
             for(uint8_t q = 0 ; q < 8 ; q ++)
             {
                 Serial_print_s("TX beep no. ");
