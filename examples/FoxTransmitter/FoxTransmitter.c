@@ -136,6 +136,11 @@ void loop()
         cw_start_rx(COMMUNICATION_CHANNEL);
 
         // 2. check for carrier presence
+        // Wait additional small delay so give the radio chip a bit of time
+        // to correctly settle up after exiting the sleep mode. Benefit: average RSSI 
+        // and its deviation is better calculated (it can be seen in debug logs of RSSI calculation);
+        // especially deviation goes drastically low (i.e. from value of 11 to 4) 
+        delay(5);
         average_rssi averageRssi;
         get_average_rssi(1, 32, &averageRssi);
         Serial_print_s("RX avgRSSI = ");
