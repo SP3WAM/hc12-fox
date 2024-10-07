@@ -180,17 +180,17 @@ void loop()
             morse_fake_f3e_send_word(CALL_SIGN);
             delay(500);
 
-            // transmit beeps for 20 seconds
-            for(uint8_t q = 0 ; q < 8 ; q ++)
+            // transmit beeps for 20 seconds and sleep for 40 seconds
+            if(w == maxMinutes - 1)
             {
-                Serial_print_s("TX beep no. ");
-                Serial_println_i(q);
-
-                if(w == maxMinutes - 1)
+                // the last beeps in the whole cycle
+                // make it beep faster to signalise
+                // it will go to sleep
+                for(uint8_t q = 0 ; q < 8 ; q ++)
                 {
-                    // the last beeps in the whole cycle
-                    // make it beep faster to signalise
-                    // it will go to sleep
+                    Serial_print_s("TX beep no. ");
+                    Serial_println_i(q);
+
                     fake_f3e_tone(900, 500000ul);
                     delay(250);
                     fake_f3e_tone(900, 500000ul);
@@ -200,8 +200,19 @@ void loop()
                     fake_f3e_tone(900, 500000ul);
                     delay(250);
                 }
-                else
+
+                fake_f3e_stop_tx();
+
+                // don't sleep after the last trsnamition cycle 
+            }
+            else
+            {
+                // standard beeps in the cycle
+                for(uint8_t q = 0 ; q < 8 ; q ++)
                 {
+                    Serial_print_s("TX beep no. ");
+                    Serial_println_i(q);
+
                     fake_f3e_tone(700, 500000ul);
                     delay(250);
                     fake_f3e_tone(800, 500000ul);
@@ -209,13 +220,14 @@ void loop()
                     fake_f3e_tone(900, 500000ul);
                     delay(500);
                 }
-            }
-            fake_f3e_stop_tx();
 
-            // sleep for 40 seconds
-            si4438_enter_sleep_state();
-            STM8_S_SLEEP_20_SEC();
-            STM8_S_SLEEP_20_SEC();
+                fake_f3e_stop_tx();
+
+                // sleep for 40 seconds
+                si4438_enter_sleep_state();
+                STM8_S_SLEEP_20_SEC();
+                STM8_S_SLEEP_20_SEC();
+            }
         }
 
         // 3. go to FOX_STATE_RSSI state
