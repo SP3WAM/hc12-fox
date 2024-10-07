@@ -27,8 +27,8 @@
 // Uncomment below line to have more debugs around RSSI calculations
 #define DEBUG_RSSI
 
-//char CALL_SIGN[] = {'.', '.', '.', ' ', '.', '-', '-', '.', ' ', '.', '.', '.', '-', '-', ' ', '.', '-', '-', ' ', '.', '-', ' ', '-', '-', '\n'};
 char CALL_SIGN[] = "... .--. ...-- .-- .- --";
+char QRT[] = "--.- .-. -";
 /*
  * FOX CONFIGURATION SECTION END
 */
@@ -201,9 +201,14 @@ void loop()
                     delay(250);
                 }
 
+                // send QRT signal
+                delay(500);
+                morse_fake_f3e_send_word(QRT);
+                delay(500);
+
                 fake_f3e_stop_tx();
 
-                // don't sleep after the last trsnamition cycle 
+                // don't sleep after the last transmition cycle 
             }
             else
             {
