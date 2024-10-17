@@ -7,8 +7,8 @@
 /*
  * FOX CONFIGURATION SECTION BEGIN
  */
-// Defines the minimal SNR level to wake the fox up
-#define RSSI_TRESHOLD_SNR 3
+// Defines the additional SNR level (added to the current average noise level) to wake the fox up
+#define RSSI_ADDITIONAL_TRESHOLD_SNR 6
 
 // Communication channel:
 // The step between single channels is 12.5 kHz, but foxes communicate on channels with 50 kHz step.
@@ -249,7 +249,7 @@ void loop()
 
 void update_rssi_treshold(average_rssi* averageRssi)
 {
-    rssiTreshold = (uint16_t)averageRssi->rssi + (uint16_t)averageRssi->deviation + (uint16_t)RSSI_TRESHOLD_SNR;
+    rssiTreshold = (uint16_t)averageRssi->rssi + (uint16_t)averageRssi->deviation + (uint16_t)RSSI_ADDITIONAL_TRESHOLD_SNR;
 
     if(rssiTreshold > 127)
     {
