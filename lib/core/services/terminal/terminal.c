@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include "terminal.h"
-#include "../drivers/si4438.h"
+#include "../../drivers/si4438.h"
 
 CommandParams terminal_command_params;
 

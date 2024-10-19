@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <drivers/si4438.h>
 #include <services/modulations/cw/cw.h>
-#include <services/terminal.h>
+#include <services/terminal/terminal.h>
 
 bool chipConnected = false;
 unsigned long lastTxStartMillis = 0;
