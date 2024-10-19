@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include <drivers/si4438.h>
 #include <services/ook.h>
-#include <services/terminal.h>
 
 bool chipConnected = false;
 unsigned long lastTxStartMillis = 0;
@@ -48,14 +47,18 @@ void setup()
         Serial_println_s(" failed");
     }
     Serial_println_s(" OK");
-
-    terminal_init();
 }
 
 void loop()
 {
-    terminal_loop();
-
     // Enter the Tx state. It is implemented in the way that it blocks the CPU for 2 seconds.
     ook_start_tx(0);
+}
+
+/*
+ * Empty interrupt handler.
+ */
+INTERRUPT_HANDLER(AWU_IRQHandler, 1)
+{
+
 }
