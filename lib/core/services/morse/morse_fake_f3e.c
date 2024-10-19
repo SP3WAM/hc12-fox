@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include "morse_fake_f3e.h"
-#include "../modulations/fsk/fsk.h"
+#include "../modulations/afsk/afsk.h"
 
 #define WPM 12
 

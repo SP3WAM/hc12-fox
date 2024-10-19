@@ -33,7 +33,3 @@ bool fsk_start_tx(uint8_t channel);
  * Stops the FSK transmition.
  */
 bool fsk_stop_tx();
-
-bool afsk_tone(uint16_t freqHz, unsigned long durationUs);
-
-bool afsk_send_aprs_byte(char byte);
