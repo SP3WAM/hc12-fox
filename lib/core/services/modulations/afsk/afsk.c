@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "afsk.h"
+#include "../fsk/fsk.h"
 
 bool afsk_tone(uint16_t freqHz, unsigned long durationUs)
 {
@@ -8,9 +9,9 @@ bool afsk_tone(uint16_t freqHz, unsigned long durationUs)
 
     do
     {
-        digitalWrite(PB4, HIGH);
+        fsk_tx_direct_bit_high();
         delayMicroseconds(delayUs);
-        digitalWrite(PB4, LOW);
+        fsk_tx_direct_bit_low();
         delayMicroseconds(delayUs);
     }
     while(micros() - start < durationUs);

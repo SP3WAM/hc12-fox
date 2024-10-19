@@ -142,3 +142,12 @@ bool fsk_stop_tx()
     return si4438_enter_ready_state();
 }
 
+inline void fsk_tx_direct_bit_high()
+{
+    digitalWrite(PB4, HIGH);
+}
+
+inline void fsk_tx_direct_bit_low()
+{
+    digitalWrite(PB4, LOW);
+}

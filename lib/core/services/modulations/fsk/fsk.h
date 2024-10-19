@@ -33,3 +33,13 @@ bool fsk_start_tx(uint8_t channel);
  * Stops the FSK transmition.
  */
 bool fsk_stop_tx();
+
+/*
+ * Transmits bit HIGH.
+ */
+void fsk_tx_direct_bit_high();
+
+/*
+ * Transmits bit LOW.
+ */
+void fsk_tx_direct_bit_low();
