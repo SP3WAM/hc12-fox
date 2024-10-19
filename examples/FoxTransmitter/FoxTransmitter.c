@@ -1,8 +1,8 @@
 #include <Arduino.h>
-#include "drivers/si4438.h"
-#include "services/fake_f3e.h"
-#include "services/cw.h"
-#include "services/morse/morse_fake_f3e.h"
+#include <drivers/si4438.h>
+#include <services/fake_f3e.h>
+#include <services/modulations/cw/cw.h>
+#include <services/morse/morse_fake_f3e.h>
 
 /*
  * FOX CONFIGURATION SECTION BEGIN
