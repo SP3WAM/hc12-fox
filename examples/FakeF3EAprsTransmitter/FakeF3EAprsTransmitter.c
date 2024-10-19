@@ -41,8 +41,8 @@ void setup()
     Serial_println_s(" OK");
 
     // Init fake F3E transmission mode
-    Serial_print_s("Si4438 setting fake F3E mode...");
-    if(fake_f3e_init_tx_direct_sync_2fsk() == false)
+    Serial_print_s("Si4438 setting FSK mode...");
+    if(fsk_init_tx_direct_sync_2fsk() == false)
     {
         Serial_println_s(" failed");
     }
@@ -56,20 +56,20 @@ void loop()
 
 
     // Enter the Tx state on channel 0
-    fake_f3e_start_tx(0);
+    fsk_start_tx(0);
 
     // send some APRS bytes during some period (~200ms)
     unsigned long startMillis = millis();
     uint8_t q = 0;
     do
     {
-        fake_f3e_send_aprs_byte(q);
+        fsk_send_aprs_byte(q);
         q++;
     } 
     while (millis() - startMillis < 200); 
 
     // stop transmition
-    fake_f3e_stop_tx();
+    fsk_stop_tx();
     
     // wait until the whole second passes
     delay(800);

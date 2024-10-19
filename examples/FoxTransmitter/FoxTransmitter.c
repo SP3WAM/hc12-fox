@@ -172,13 +172,13 @@ void loop()
     if(foxState == FOX_STATE_TX)
     {
         // 1. go to TX state
-        fake_f3e_init_tx_direct_sync_2gfsk();
+        fsk_init_tx_direct_sync_2gfsk();
 
         // 2. transmition cycle: 10 minutes
         uint8_t maxMinutes = 10;
         for(uint8_t w = 0 ; w < maxMinutes ; w ++)
         {
-            fake_f3e_start_tx(COMMUNICATION_CHANNEL);
+            fsk_start_tx(COMMUNICATION_CHANNEL);
             delay(500); // so the squelch on receiver could be opened
 
             // at first send call sign
@@ -196,13 +196,13 @@ void loop()
                     Serial_print_s("TX beep no. ");
                     Serial_println_i(q);
 
-                    fake_f3e_tone(900, 500000ul);
+                    afsk_tone(900, 500000ul);
                     delay(250);
-                    fake_f3e_tone(900, 500000ul);
+                    afsk_tone(900, 500000ul);
                     delay(250);
-                    fake_f3e_tone(900, 500000ul);
+                    afsk_tone(900, 500000ul);
                     delay(250);
-                    fake_f3e_tone(900, 500000ul);
+                    afsk_tone(900, 500000ul);
                     delay(250);
                 }
 
@@ -211,7 +211,7 @@ void loop()
                 morse_fake_f3e_send_word(QRT);
                 delay(500);
 
-                fake_f3e_stop_tx();
+                fsk_stop_tx();
 
                 // don't sleep after the last transmition cycle 
             }
@@ -223,15 +223,15 @@ void loop()
                     Serial_print_s("TX beep no. ");
                     Serial_println_i(q);
 
-                    fake_f3e_tone(700, 500000ul);
+                    afsk_tone(700, 500000ul);
                     delay(250);
-                    fake_f3e_tone(800, 500000ul);
+                    afsk_tone(800, 500000ul);
                     delay(250);
-                    fake_f3e_tone(900, 500000ul);
+                    afsk_tone(900, 500000ul);
                     delay(500);
                 }
 
-                fake_f3e_stop_tx();
+                fsk_stop_tx();
 
                 // sleep for 40 seconds
                 si4438_enter_sleep_state();

@@ -183,7 +183,7 @@ void setup()
 
     // Init fake F3E transmission mode
     Serial_print_s("Si4438 setting fake F3E mode...");
-    if(fake_f3e_init_tx_direct_sync_2gfsk() == false)
+    if(fsk_init_tx_direct_sync_2gfsk() == false)
     {
         Serial_println_s(" failed");
     }
@@ -195,7 +195,7 @@ void loop()
     // Start the Tx mode, it will generate the carrier during the whole melody time,
     // which will make nice sound hearable in the receiver (no squelch involved during
     // whole time) 
-     fake_f3e_start_tx(0);
+     fsk_start_tx(0);
 
     // iterate over the notes of the melody. 
     // Remember, the array is twice the number of notes (notes + durations)
@@ -216,13 +216,13 @@ void loop()
         }
 
         // we only play the note for 90% of the duration, leaving 10% as a pause
-        fake_f3e_tone(melody[thisNote], noteDuration * 0.9 * 1000);
+        afsk_tone(melody[thisNote], noteDuration * 0.9 * 1000);
 
         // wait for the 10% of the note duration before playing the next note.
         delay(noteDuration * 0.1);
     }
     // Disable Tx mode, carriere not generated anymore
-    fake_f3e_stop_tx();
+    fsk_stop_tx();
 
     // Enter si4438 into sleep state
     si4438_enter_sleep_state();

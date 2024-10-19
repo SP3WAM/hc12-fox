@@ -3,7 +3,7 @@
 #include "fsk.h"
 #include "../../../drivers/si4438.h"
 
-bool fake_f3e_init_tx_pseudo_sync_2fsk()
+bool fsk_init_tx_pseudo_sync_2fsk()
 {
     // Configure GPIO of STM8: this is irrelevant for pseudorandom PN9 mode.
     // Configure them as input with pull up enabled.
@@ -43,10 +43,10 @@ bool fake_f3e_init_tx_pseudo_sync_2fsk()
         return false;
     }
 
-    return fake_f3e_stop_tx();
+    return fsk_stop_tx();
 }
 
-bool fake_f3e_init_tx_direct_sync_2fsk()
+bool fsk_init_tx_direct_sync_2fsk()
 {
     // Configure GPIO of STM8
     // GPIO1 -> PC3 as input pull up
@@ -84,10 +84,10 @@ bool fake_f3e_init_tx_direct_sync_2fsk()
         return false;
     }
 
-    return fake_f3e_stop_tx();
+    return fsk_stop_tx();
 }
 
-bool fake_f3e_init_tx_direct_sync_2gfsk()
+bool fsk_init_tx_direct_sync_2gfsk()
 {
     // Configure GPIO of STM8
     // GPIO1 -> PC3 as input pull up
@@ -125,24 +125,24 @@ bool fake_f3e_init_tx_direct_sync_2gfsk()
         return false;
     }
 
-    return fake_f3e_stop_tx();
+    return fsk_stop_tx();
 }
 
-bool fake_f3e_start_tx(uint8_t channel)
+bool fsk_start_tx(uint8_t channel)
 {
     digitalWrite(PB4, LOW);
 
     return si4438_enter_tx_state(channel);
 }
 
-bool fake_f3e_stop_tx()
+bool fsk_stop_tx()
 {
     digitalWrite(PB4, LOW);
 
     return si4438_enter_ready_state();
 }
 
-bool fake_f3e_tone(uint16_t freqHz, unsigned long durationUs)
+bool afsk_tone(uint16_t freqHz, unsigned long durationUs)
 {
     unsigned long delayUs = 1000000L / freqHz / 2;
     unsigned long start = micros();
@@ -157,17 +157,17 @@ bool fake_f3e_tone(uint16_t freqHz, unsigned long durationUs)
     while(micros() - start < durationUs);
 }
 
-bool fake_f3e_send_aprs_byte(char byte)
+bool afsk_send_aprs_byte(char byte)
 {
     for(int q = 0 ; q < 8 ; q++)
     {
         if(byte & 0x01 == 0x01)
         {
-            fake_f3e_tone(1200, 833);
+            afsk_tone(1200, 833);
         }
         else
         {
-            fake_f3e_tone(2200, 833);
+            afsk_tone(2200, 833);
         }
         byte >> 1;
     }

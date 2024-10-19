@@ -41,12 +41,8 @@ void setup()
     Serial_println_s(" OK");
 
     // Init fake F3E transmission mode
-    Serial_print_s("Si4438 setting fake F3E mode...");
-    //if(fake_f3e_init_tx_direct_sync_2fsk() == false)
-    //{
-    //   Serial_println_s(" failed");
-    //}
-    if(fake_f3e_init_tx_direct_sync_2gfsk() == false)
+    Serial_print_s("Si4438 setting FSK mode...");
+    if(fsk_init_tx_direct_sync_2gfsk() == false)
     {
         Serial_println_s(" failed");
     }
@@ -55,11 +51,11 @@ void setup()
 
 void loop()
 {
-    fake_f3e_start_tx(0);
+    fsk_start_tx(0);
 
-    fake_f3e_tone(1000, 2000000L);
+    afsk_tone(1000, 2000000L);
 
-    fake_f3e_stop_tx();
+    fsk_stop_tx();
 
     delay(2000);
 }

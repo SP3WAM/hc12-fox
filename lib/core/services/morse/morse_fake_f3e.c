@@ -41,10 +41,10 @@ void morse_fake_f3e_send_word(char* ptr)
 
 void inline morse_fake_f3e_send_dit()
 {
-    fake_f3e_tone(700, ((unsigned long)DIT_DURATION_MILLIS) * ((unsigned long)1000));
+    afsk_tone(700, ((unsigned long)DIT_DURATION_MILLIS) * ((unsigned long)1000));
 }
 
 void inline morse_fake_f3e_send_dah()
 {
-    fake_f3e_tone(700, ((unsigned long)DAH_DURATION_MILLIS) * ((unsigned long)1000));
+    afsk_tone(700, ((unsigned long)DAH_DURATION_MILLIS) * ((unsigned long)1000));
 }
