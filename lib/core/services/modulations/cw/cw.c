@@ -2,7 +2,7 @@
 #include <Arduino.h>
 #include <stddef.h>
 #include "cw.h"
-#include "../drivers/si4438.h"
+#include "../../../drivers/si4438.h"
 
 bool cw_init_tx()
 {

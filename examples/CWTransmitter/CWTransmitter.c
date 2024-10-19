@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <drivers/si4438.h>
-#include <services/cw.h>
+#include <services/modulations/cw/cw.h>
 #include <services/terminal.h>
 
 bool chipConnected = false;
