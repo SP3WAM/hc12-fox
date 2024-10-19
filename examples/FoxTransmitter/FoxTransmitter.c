@@ -3,7 +3,7 @@
 #include <services/modulations/fsk/fsk.h>
 #include <services/modulations/afsk/afsk.h>
 #include <services/modulations/cw/cw.h>
-#include <services/morse/morse_fake_f3e.h>
+#include <services/morse/morse_afsk.h>
 
 /*
  * FOX CONFIGURATION SECTION BEGIN
