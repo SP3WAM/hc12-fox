@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <stddef.h>
 #include "fake_f3e.h"
-#include "../drivers/si4438.h"
+#include "../../../drivers/si4438.h"
 
 bool fake_f3e_init_tx_pseudo_sync_2fsk()
 {
