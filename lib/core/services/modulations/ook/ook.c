@@ -2,7 +2,7 @@
 #include <Arduino.h>
 #include <stddef.h>
 #include "ook.h"
-#include "../drivers/si4438.h"
+#include "../../../drivers/si4438.h"
 
 bool ook_init_tx_direct_sync()
 {
