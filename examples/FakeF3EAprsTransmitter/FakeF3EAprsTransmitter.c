@@ -1,6 +1,7 @@
 #include <Arduino.h>
-#include "drivers/si4438.h"
-#include "services/modulations/fsk/fsk.h"
+#include <drivers/si4438.h>
+#include <services/modulations/fsk/fsk.h>
+#include <services/modulations/afsk/afsk.h>
 
 bool chipConnected = false;
 unsigned long lastTxStartMillis = 0;
@@ -63,7 +64,7 @@ void loop()
     uint8_t q = 0;
     do
     {
-        fsk_send_aprs_byte(q);
+        afsk_send_aprs_byte(q);
         q++;
     } 
     while (millis() - startMillis < 200); 

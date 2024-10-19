@@ -60,3 +60,11 @@ void loop()
 
     delay(2000);
 }
+
+/*
+ * Empty interrupt handler.
+ */
+INTERRUPT_HANDLER(AWU_IRQHandler, 1)
+{
+
+}

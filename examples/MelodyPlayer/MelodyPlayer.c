@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include <drivers/si4438.h">
+#include <drivers/si4438.h>
 #include <services/modulations/fsk/fsk.h>
 #include <services/modulations/afsk/afsk.h>
 
@@ -230,4 +230,12 @@ void loop()
 
     // Just wait for some time before pleying it again
     delay(5000);
+}
+
+/*
+ * Empty interrupt handler.
+ */
+INTERRUPT_HANDLER(AWU_IRQHandler, 1)
+{
+
 }
