@@ -65,3 +65,11 @@ void loop()
     // it generates something but it is not hearable in the receiver
     // cw_start_tx();
 }
+
+/*
+ * Empty interrupt handler.
+ */
+INTERRUPT_HANDLER(AWU_IRQHandler, 1)
+{
+
+}
