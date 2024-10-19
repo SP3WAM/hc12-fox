@@ -183,7 +183,7 @@ void loop()
             delay(500); // so the squelch on receiver could be opened
 
             // at first send call sign
-            morse_fake_f3e_send_word(CALL_SIGN);
+            morse_afsk_send_word(CALL_SIGN);
             delay(500);
 
             // transmit beeps for 20 seconds and sleep for 40 seconds
@@ -209,7 +209,7 @@ void loop()
 
                 // send QRT signal
                 delay(500);
-                morse_fake_f3e_send_word(QRT);
+                morse_afsk_send_word(QRT);
                 delay(500);
 
                 fsk_stop_tx();

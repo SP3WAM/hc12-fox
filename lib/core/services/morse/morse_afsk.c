@@ -7,14 +7,14 @@
 #define DIT_DURATION_MILLIS  (1200 / WPM)   // dot duration in milliseconds
 #define DAH_DURATION_MILLIS 3 * DIT_DURATION_MILLIS // dash duration
 
-void morse_fake_f3e_send_word(char* ptr)
+void morse_afsk_send_word(char* ptr)
 {
     while(*ptr != NULL)
     {
         if(*ptr == '.')
         {
             // dit
-            morse_fake_f3e_send_dit();
+            morse_afsk_send_dit();
             delay(DIT_DURATION_MILLIS);
         }
         else if(*ptr == ' ')
@@ -27,7 +27,7 @@ void morse_fake_f3e_send_word(char* ptr)
         else
         {
             // dah
-            morse_fake_f3e_send_dah();
+            morse_afsk_send_dah();
             delay(DIT_DURATION_MILLIS);
         }
 
@@ -39,12 +39,12 @@ void morse_fake_f3e_send_word(char* ptr)
     delay(6 * DIT_DURATION_MILLIS);
 }
 
-void inline morse_fake_f3e_send_dit()
+void inline morse_afsk_send_dit()
 {
     afsk_tone(700, ((unsigned long)DIT_DURATION_MILLIS) * ((unsigned long)1000));
 }
 
-void inline morse_fake_f3e_send_dah()
+void inline morse_afsk_send_dah()
 {
     afsk_tone(700, ((unsigned long)DAH_DURATION_MILLIS) * ((unsigned long)1000));
 }
