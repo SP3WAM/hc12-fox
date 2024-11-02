@@ -59,21 +59,44 @@ void loop()
     // Enter the Tx state on channel 0
     fsk_start_tx(0);
 
-    // send some APRS bytes during some period (~200ms)
-    unsigned long startMillis = millis();
-    uint8_t q = 0;
-    do
-    {
-        afsk_send_aprs_byte(q);
-        q++;
-    } 
-    while (millis() - startMillis < 200); 
-
-    // stop transmition
-    fsk_stop_tx();
+    // char minimalFrame[] = {'S', 'P', '3', 'W', 'A', 'M', ' ', '1', 'S', 'P', '3', 'W', 'A', 'M', ' ', '1', 0x03, 0xF0, 'H', 'e', 'l', 'l', 'o', '#', '#'};
     
-    // wait until the whole second passes
-    delay(800);
+    // // sent some flags to indicate incoming packet
+    // for(uint8_t q = 0 ; q < 10 ; q++)
+    // {
+    //     afsk_send_aprs_byte(0x7F);
+    // }
+    // // send the packet itself
+    // for(uint8_t q = 0; q < 25; q++)
+    // {
+    //     afsk_send_aprs_byte(minimalFrame[q]);
+    // }
+    // // send some flags at end
+    // for(uint8_t q = 0 ; q < 10 ; q++)
+    // {
+    //     afsk_send_aprs_byte(0x7F);
+    // }
+
+    // // stop transmition
+    // fsk_stop_tx();
+    
+    // // wait until the whole second passes
+    // delay(800);
+
+    // send 0xFF (ones) for 10 seconds
+    for(uint16_t q = 0; q < 750; q++)
+    {
+        afsk_send_aprs_byte(0xFF);
+    }
+
+    // send 0x00 (zeros) for 10 seconds
+    for(uint16_t q = 0; q < 750; q++)
+    {
+        afsk_send_aprs_byte(0x00);
+    }
+
+    //afsk_tone_half_duration_us(417, 5000000);
+    //afsk_tone_half_duration_us(227, 5000000);
 }
 
 
