@@ -26,15 +26,17 @@ bool afsk_send_aprs_byte(char byte)
 {
     for(int q = 0 ; q < 8 ; q++)
     {
-        if(byte & 0x01 == 0x01)
+        if(byte & 0x01)
         {
+            // bit 1
             afsk_aprs_send_mark();
         }
         else
         {
+            // bit 0
             afsk_aprs_send_space();
         }
-        byte >> 1;
+        byte >>= 1;
     }
 }
 
