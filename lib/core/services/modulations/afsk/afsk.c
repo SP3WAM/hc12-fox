@@ -3,8 +3,8 @@
 #include "../fsk/fsk.h"
 
 #define MICROS_DURATIN_US 43
-#define AFSK1200_SPACE_HALF_DURATION_US 227 - 33
-#define AFSK1200_MARK_HALF_DURATION_US 417 - 37
+#define AFSK1200_SPACE_HALF_DURATION_US (227 - 33)
+#define AFSK1200_MARK_HALF_DURATION_US (417 - 37)
 
 bool afsk_tone(uint16_t freqHz, unsigned long durationUs)
 {
@@ -38,7 +38,7 @@ bool afsk_send_aprs_byte(char byte)
     }
 }
 
-bool afsk_aprs_send_space()
+inline void afsk_aprs_send_space()
 {
     fsk_tx_direct_bit_high();
     delayMicroseconds(AFSK1200_SPACE_HALF_DURATION_US);
@@ -50,7 +50,7 @@ bool afsk_aprs_send_space()
     delayMicroseconds(AFSK1200_SPACE_HALF_DURATION_US);
 }
 
-bool afsk_aprs_send_mark()
+inline void afsk_aprs_send_mark()
 {
     fsk_tx_direct_bit_high();
     delayMicroseconds(AFSK1200_MARK_HALF_DURATION_US);

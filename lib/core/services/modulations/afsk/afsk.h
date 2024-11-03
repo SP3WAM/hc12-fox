@@ -5,9 +5,9 @@ bool afsk_send_aprs_byte(char byte);
 /*
  * Sends the space tone (2200Hz, typically a binary 0)
  */
-bool afsk_aprs_send_space();
+void afsk_aprs_send_space();
 
 /*
  * Sends the mark tone (1200Hz, typically a binary 1)
  */
-bool afsk_aprs_send_mark();
+void afsk_aprs_send_mark();
