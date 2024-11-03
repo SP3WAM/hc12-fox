@@ -3,9 +3,14 @@
 #include <services/modulations/fsk/fsk.h>
 #include <services/modulations/afsk/afsk.h>
 
+#define lo8(x) ((x)&0xff)
+#define hi8(x) ((x)>>8)
+
 bool chipConnected = false;
 unsigned long lastTxStartMillis = 0;
 bool isTx = false;
+
+uint16_t crc_ccitt_update(uint16_t crc, uint8_t data);
 
 void setup()
 {
@@ -59,46 +64,63 @@ void loop()
     // Enter the Tx state on channel 0
     fsk_start_tx(0);
 
-    // char minimalFrame[] = {'S', 'P', '3', 'W', 'A', 'M', ' ', '1', 'S', 'P', '3', 'W', 'A', 'M', ' ', '1', 0x03, 0xF0, 'H', 'e', 'l', 'l', 'o', '#', '#'};
+    char minimalFrame[] = {'S', 'P', '3', 'W', 'A', 'M', ' ', 'S', 'P', '3', 'W', 'A', 'M', ' ', 0x03, 0xF0, 'H', 'e', 'l', 'l', 'o', '#', '#'};
     
-    // // sent some flags to indicate incoming packet
-    // for(uint8_t q = 0 ; q < 10 ; q++)
-    // {
-    //     afsk_send_aprs_byte(0x7F);
-    // }
-    // // send the packet itself
-    // for(uint8_t q = 0; q < 25; q++)
-    // {
-    //     afsk_send_aprs_byte(minimalFrame[q]);
-    // }
-    // // send some flags at end
-    // for(uint8_t q = 0 ; q < 10 ; q++)
-    // {
-    //     afsk_send_aprs_byte(0x7F);
-    // }
-
-    // // stop transmition
-    // fsk_stop_tx();
-    
-    // // wait until the whole second passes
-    // delay(800);
-
-    // send 0xFF (ones) for 10 seconds
-    for(uint16_t q = 0; q < 750; q++)
+    // Frame Check Sequence - CRC-16-CCITT (0xFFFF)
+    uint16_t crc = 0xFFFF;
+    for(uint16_t i = 0; i < 21; i++)
     {
-        afsk_send_aprs_byte(0xFF);
+        crc = crc_ccitt_update(crc, minimalFrame[i]);
+    }
+    crc = ~crc;                              // flip the bits
+    minimalFrame[21] = crc & 0xFF;           // FCS is sent low-byte first
+    minimalFrame[22] = (crc >> 8) & 0xFF;
+
+    // sent some flags to indicate incoming packet
+    for(uint16_t q = 0 ; q < 255 ; q++)
+    {
+        afsk_send_aprs_byte(0x7E);
+    }
+    // send the packet itself
+    for(uint8_t q = 0; q < 23; q++)
+    {
+        afsk_send_aprs_byte(minimalFrame[q]);
+    }
+    // send some flags at end
+    for(uint16_t q = 0 ; q < 255 ; q++)
+    {
+        afsk_send_aprs_byte(0x7E);
     }
 
-    // send 0x00 (zeros) for 10 seconds
-    for(uint16_t q = 0; q < 750; q++)
-    {
-        afsk_send_aprs_byte(0x00);
-    }
+    // stop transmition
+    fsk_stop_tx();
+    
+    // wait until the whole second passes
+    delay(800);
+
+    // // send 0xFF (ones) for 10 seconds
+    // for(uint16_t q = 0; q < 750; q++)
+    // {
+    //     afsk_send_aprs_byte(0xFF);
+    // }
+
+    // // send 0x00 (zeros) for 10 seconds
+    // for(uint16_t q = 0; q < 750; q++)
+    // {
+    //     afsk_send_aprs_byte(0x00);
+    // }
 
     //afsk_tone_half_duration_us(417, 5000000);
     //afsk_tone_half_duration_us(227, 5000000);
 }
 
+uint16_t crc_ccitt_update(uint16_t crc, uint8_t data)
+{
+	data ^= lo8 (crc);
+	data ^= data << 4;
+	
+	return ((((uint16_t)data << 8) | hi8 (crc)) ^ (uint8_t)(data >> 4) ^ ((uint16_t)data << 3));
+}
 
 INTERRUPT_HANDLER(AWU_IRQHandler, 1)
 {
