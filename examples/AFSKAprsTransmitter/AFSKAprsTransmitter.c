@@ -77,7 +77,7 @@ void loop()
     minimalFrame[22] = (crc >> 8) & 0xFF;
 
     // sent some flags to indicate incoming packet
-    for(uint16_t q = 0 ; q < 255 ; q++)
+    for(uint16_t q = 0 ; q < 40 ; q++)
     {
         afsk_send_aprs_byte(0x7E);
     }
@@ -87,7 +87,7 @@ void loop()
         afsk_send_aprs_byte(minimalFrame[q]);
     }
     // send some flags at end
-    for(uint16_t q = 0 ; q < 255 ; q++)
+    for(uint16_t q = 0 ; q < 40 ; q++)
     {
         afsk_send_aprs_byte(0x7E);
     }
