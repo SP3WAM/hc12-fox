@@ -6,6 +6,13 @@
 #define AFSK1200_SPACE_HALF_DURATION_US (227 - 33)
 #define AFSK1200_MARK_HALF_DURATION_US (417 - 37)
 
+uint8_t lastSentSymbol = 1; // meaning MARK as default
+
+
+void afsk_send_aprs_byte(char byte);
+void afsk_aprs_send_space();
+void afsk_aprs_send_mark();
+
 bool afsk_tone(uint16_t freqHz, unsigned long durationUs)
 {
     unsigned long delayUs = 1000000L / freqHz / 2;
@@ -22,24 +29,66 @@ bool afsk_tone(uint16_t freqHz, unsigned long durationUs)
     while(micros() - start < durationUs);
 }
 
-bool afsk_send_aprs_byte(char byte)
+void afsk_send_aprs_init()
+{
+    lastSentSymbol = 0;
+}
+
+void afsk_send_aprs_packet(char* packet, uint8_t length)
+{
+    for(uint8_t q = 0 ; q < 40 ; q++)
+    {
+        afsk_send_aprs_byte(0xE7);
+    }
+
+    for(uint8_t q = 0 ; q < length ; q++)
+    {
+        afsk_send_aprs_byte(packet[q]);
+    }
+
+    for(uint8_t q = 0 ; q < 40 ; q++)
+    {
+        afsk_send_aprs_byte(0xE7);
+    }
+}
+
+void afsk_send_aprs_byte(char byte)
 {
     for(int q = 0 ; q < 8 ; q++)
     {
         if(byte & 0x01)
         {
-            // bit 1
-            afsk_aprs_send_mark();
+            // bit 1: repeat last sent symbol
+            if(lastSentSymbol == 1)
+            {
+                afsk_aprs_send_mark();
+            }
+            else
+            {
+                afsk_aprs_send_space();
+            }
         }
         else
         {
-            // bit 0
-            afsk_aprs_send_space();
+            // bit 0: switch to the other symbol
+            if(lastSentSymbol == 1)
+            {
+                afsk_aprs_send_space();
+                lastSentSymbol = 0;
+            }
+            else
+            {
+                afsk_aprs_send_mark();
+                lastSentSymbol = 1;
+            }
         }
         byte >>= 1;
     }
 }
 
+/*
+ * Sends the space tone (2200Hz, typically a binary 0 if not using extra encoding, i.e. NRZI)
+ */
 inline void afsk_aprs_send_space()
 {
     fsk_tx_direct_bit_high();
@@ -52,6 +101,9 @@ inline void afsk_aprs_send_space()
     delayMicroseconds(AFSK1200_SPACE_HALF_DURATION_US);
 }
 
+/*
+ * Sends the mark tone (1200Hz, typically a binary 1 if not using extra encoding, i.e. NRZI)
+ */
 inline void afsk_aprs_send_mark()
 {
     fsk_tx_direct_bit_high();

@@ -1,13 +1,18 @@
 bool afsk_tone(uint16_t freqHz, unsigned long durationUs);
 
-bool afsk_send_aprs_byte(char byte);
+/*
+ * Prepares the state machine to send APRS packet
+ */
+void afsk_send_aprs_init();
 
 /*
- * Sends the space tone (2200Hz, typically a binary 0)
+ * Sends the APRS packet into the transmisison medium.
+ * The following aspects are taken into account:
+ * 1. sending the flags before packet
+ * 2. sending the packet itself
+ *  a. bit stuffing
+ *  b. NRZI encoding
+ *  c. sending mark or space symbols accordingly
+ * 3. sending the flags after the packet
  */
-void afsk_aprs_send_space();
-
-/*
- * Sends the mark tone (1200Hz, typically a binary 1)
- */
-void afsk_aprs_send_mark();
+void afsk_send_aprs_packet(char* packet, uint8_t length);

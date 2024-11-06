@@ -76,42 +76,16 @@ void loop()
     minimalFrame[21] = crc & 0xFF;           // FCS is sent low-byte first
     minimalFrame[22] = (crc >> 8) & 0xFF;
 
-    // sent some flags to indicate incoming packet
-    for(uint16_t q = 0 ; q < 40 ; q++)
-    {
-        afsk_send_aprs_byte(0x7E);
-    }
-    // send the packet itself
-    for(uint8_t q = 0; q < 23; q++)
-    {
-        afsk_send_aprs_byte(minimalFrame[q]);
-    }
-    // send some flags at end
-    for(uint16_t q = 0 ; q < 40 ; q++)
-    {
-        afsk_send_aprs_byte(0x7E);
-    }
+    // init APRS transmition
+    afsk_send_aprs_init();
+    // send APRS packet
+    afsk_send_aprs_packet(minimalFrame, 23);
 
     // stop transmition
     fsk_stop_tx();
     
     // wait until the whole second passes
     delay(800);
-
-    // // send 0xFF (ones) for 10 seconds
-    // for(uint16_t q = 0; q < 750; q++)
-    // {
-    //     afsk_send_aprs_byte(0xFF);
-    // }
-
-    // // send 0x00 (zeros) for 10 seconds
-    // for(uint16_t q = 0; q < 750; q++)
-    // {
-    //     afsk_send_aprs_byte(0x00);
-    // }
-
-    //afsk_tone_half_duration_us(417, 5000000);
-    //afsk_tone_half_duration_us(227, 5000000);
 }
 
 uint16_t crc_ccitt_update(uint16_t crc, uint8_t data)
