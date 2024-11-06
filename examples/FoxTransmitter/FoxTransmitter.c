@@ -136,7 +136,7 @@ void loop()
         cw_init_rx();
         cw_start_rx(COMMUNICATION_CHANNEL);
 
-        // 2. check for carrier presence
+        // 2. check for carrier presence (PTT pressed)
         // Wait additional small delay so give the radio chip a bit of time
         // to correctly settle up after exiting the sleep mode. Benefit: average RSSI 
         // and its deviation is better calculated (it can be seen in debug logs of RSSI calculation);
@@ -151,6 +151,15 @@ void loop()
 
         if(averageRssi.rssi >= rssiTreshold)
         {
+            // Before going into transmition state wait until carrier presence
+            // is gone (PTT released) - but wait no longer than 10 sec
+            unsigned long start = millis();
+            do
+            {
+                delay(500);
+                get_average_rssi(1, 32, &averageRssi);
+            } while ((millis() - start < 10000) && (averageRssi.rssi >= rssiTreshold));
+            
             foxState = FOX_STATE_TX;
             return;
         }
