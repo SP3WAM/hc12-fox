@@ -4,6 +4,7 @@
 
 #define MICROS_DURATIN_US 43
 #define AFSK1200_SPACE_HALF_DURATION_US (227 - 33)
+#define AFSK1200_SPACE_HALF_SHORT_DURATION_US (227 - 76 - 33)
 #define AFSK1200_MARK_HALF_DURATION_US (417 - 37)
 
 uint8_t lastSentSymbol = 1; // meaning MARK as default
@@ -98,7 +99,10 @@ inline void afsk_aprs_send_space()
     fsk_tx_direct_bit_high();
     delayMicroseconds(AFSK1200_SPACE_HALF_DURATION_US);
     fsk_tx_direct_bit_low();
-    delayMicroseconds(AFSK1200_SPACE_HALF_DURATION_US);
+    // total duration of this bit must be 1/1200 sec (833us), but we are sending two periods 
+    // of tone 2200Hz (which takes 909us, so a bit to much),
+    // so the last half needs to be shortened around 76us)
+    delayMicroseconds(AFSK1200_SPACE_HALF_SHORT_DURATION_US);
 }
 
 /*
