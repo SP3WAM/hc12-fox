@@ -10,7 +10,7 @@
 uint8_t lastSentSymbol = 1; // meaning MARK as default
 
 
-void afsk_send_aprs_byte(char byte);
+void afsk_send_aprs_byte_no_bit_stuffing(char byte);
 void afsk_aprs_send_space();
 void afsk_aprs_send_mark();
 
@@ -39,21 +39,21 @@ void afsk_send_aprs_packet(char* packet, uint8_t length)
 {
     for(uint8_t q = 0 ; q < 40 ; q++)
     {
-        afsk_send_aprs_byte(0xE7);
+        afsk_send_aprs_byte_no_bit_stuffing(0xE7);
     }
 
     for(uint8_t q = 0 ; q < length ; q++)
     {
-        afsk_send_aprs_byte(packet[q]);
+        afsk_send_aprs_byte_no_bit_stuffing(packet[q]);
     }
 
     for(uint8_t q = 0 ; q < 40 ; q++)
     {
-        afsk_send_aprs_byte(0xE7);
+        afsk_send_aprs_byte_no_bit_stuffing(0xE7);
     }
 }
 
-void afsk_send_aprs_byte(char byte)
+void afsk_send_aprs_byte_no_bit_stuffing(char byte)
 {
     for(int q = 0 ; q < 8 ; q++)
     {
