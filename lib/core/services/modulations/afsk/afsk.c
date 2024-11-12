@@ -3,9 +3,9 @@
 #include "../fsk/fsk.h"
 
 #define MICROS_DURATIN_US 43
-#define AFSK1200_SPACE_HALF_DURATION_US (227 - 33)
-#define AFSK1200_SPACE_HALF_SHORT_DURATION_US (227 - 76 - 33)
-#define AFSK1200_MARK_HALF_DURATION_US (417 - 37)
+#define AFSK1200_SPACE_HALF_DURATION_US (227 - 33 + 10)
+#define AFSK1200_SPACE_HALF_SHORT_DURATION_US (227 - 33 - 76 + 50)
+#define AFSK1200_MARK_HALF_DURATION_US (417 - 37 + 20)
 
 uint8_t lastSentSymbol = 1; // meaning MARK as default
 
