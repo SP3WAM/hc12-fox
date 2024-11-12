@@ -39,7 +39,7 @@ void afsk_send_aprs_packet(char* packet, uint8_t length)
 {
     for(uint8_t q = 0 ; q < 40 ; q++)
     {
-        afsk_send_aprs_byte_no_bit_stuffing(0xE7);
+        afsk_send_aprs_byte_no_bit_stuffing(0x7E);
     }
 
     for(uint8_t q = 0 ; q < length ; q++)
@@ -49,7 +49,7 @@ void afsk_send_aprs_packet(char* packet, uint8_t length)
 
     for(uint8_t q = 0 ; q < 40 ; q++)
     {
-        afsk_send_aprs_byte_no_bit_stuffing(0xE7);
+        afsk_send_aprs_byte_no_bit_stuffing(0x7E);
     }
 }
 
