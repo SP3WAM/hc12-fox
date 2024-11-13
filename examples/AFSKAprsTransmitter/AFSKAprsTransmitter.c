@@ -85,7 +85,7 @@ void loop()
     fsk_stop_tx();
     
     // wait until the whole second passes
-    delay(800);
+    delay(1000);
 }
 
 uint16_t crc_ccitt_update(uint16_t crc, uint8_t data)
@@ -96,7 +96,7 @@ uint16_t crc_ccitt_update(uint16_t crc, uint8_t data)
 	return ((((uint16_t)data << 8) | hi8 (crc)) ^ (uint8_t)(data >> 4) ^ ((uint16_t)data << 3));
 }
 
-INTERRUPT_HANDLER(AWU_IRQHandler, 1)
+INTERRUPT_HANDLER(AWU_IRQHandler, ITC_IRQ_AWU)
 {
 
 }

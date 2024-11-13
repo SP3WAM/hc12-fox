@@ -27,6 +27,8 @@
 
 // PATCH wmarkow 09.07.2024 #164 AWU_IRQHandler not working for STM8S https://github.com/tenbaht/sduino/issues/164
 
+// PATCH wmarkow 13.11.2024 Enable TIM2 interrupt
+
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __STM8S_IT_H
 #define __STM8S_IT_H
@@ -153,6 +155,9 @@
 // INTERRUPT_HANDLER(TIM5_CAP_COM_IRQHandler, 14);          /* TIM5 CAP/COM */
 #else /* (STM8S208) || (STM8S207) || (STM8S105) || (STM8S103) || (STM8S001) || (STM8AF52Ax) || (STM8AF62Ax) || (STM8A626x) */
 // INTERRUPT_HANDLER(TIM2_UPD_OVF_BRK_IRQHandler, 13);      /* TIM2 UPD/OVF/BRK */
+// PATCH wmarkow 'Enable TIM2 interrupt' begin
+ INTERRUPT_HANDLER(TIM2_UPD_OVF_BRK_IRQHandler, 13);      /* TIM2 UPD/OVF/BRK */
+// PATCH wmarkow 'Enable TIM2 interrupt' end
 // INTERRUPT_HANDLER(TIM2_CAP_COM_IRQHandler, 14);          /* TIM2 CAP/COM */
 #endif /* (STM8S903) || (STM8AF622x) */
 
