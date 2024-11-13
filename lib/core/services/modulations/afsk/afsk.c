@@ -8,9 +8,10 @@
 #define AFSK1200_MARK_HALF_DURATION_US (417 - 37 + 20)
 
 uint8_t lastSentSymbol = 1; // meaning MARK as default
-
+uint8_t countOfOnes = 0;
 
 void afsk_send_aprs_byte_no_bit_stuffing(char byte);
+void afsk_send_aprs_byte_bit_stuffing(char byte);
 void afsk_aprs_send_space();
 void afsk_aprs_send_mark();
 
@@ -33,6 +34,7 @@ bool afsk_tone(uint16_t freqHz, unsigned long durationUs)
 void afsk_send_aprs_init()
 {
     lastSentSymbol = 0;
+    countOfOnes = 0;
 }
 
 void afsk_send_aprs_packet(char* packet, uint8_t length)
@@ -44,7 +46,7 @@ void afsk_send_aprs_packet(char* packet, uint8_t length)
 
     for(uint8_t q = 0 ; q < length ; q++)
     {
-        afsk_send_aprs_byte_no_bit_stuffing(packet[q]);
+        afsk_send_aprs_byte_bit_stuffing(packet[q]);
     }
 
     for(uint8_t q = 0 ; q < 40 ; q++)
@@ -55,10 +57,55 @@ void afsk_send_aprs_packet(char* packet, uint8_t length)
 
 void afsk_send_aprs_byte_no_bit_stuffing(char byte)
 {
+    //Serial_print_s(" Sending byte ");
+    Serial_println_i(byte);
+
     for(int q = 0 ; q < 8 ; q++)
     {
-        if(byte & 0x01)
+        if((byte & 0x01) == 0x01)
         {
+            //Serial_println_s("Sending bit 1");
+            // bit 1: repeat last sent symbol
+            if(lastSentSymbol == 1)
+            {
+                //Serial_println_s("Last sent was MARK. Sending symbol MARK");
+                afsk_aprs_send_mark();
+            }
+            else
+            {
+                //Serial_println_s("Last sent was SPACE. Sending symbol SPACE");
+                afsk_aprs_send_space();
+            }
+        }
+        else
+        {
+            //Serial_println_s("Sending bit 0");
+            // bit 0: switch to the other symbol
+            if(lastSentSymbol == 1)
+            {
+                //Serial_println_s("Last sent was MARK. Sending symbol SPACE");
+                afsk_aprs_send_space();
+                lastSentSymbol = 0;
+            }
+            else
+            {
+                //Serial_println_s("Last sent was SPACE. Sending symbol MARK");
+                afsk_aprs_send_mark();
+                lastSentSymbol = 1;
+            }
+        }
+        byte >>= 1;
+    }
+}
+
+void afsk_send_aprs_byte_bit_stuffing(char byte)
+{
+    for(int q = 0 ; q < 8 ; q++)
+    {
+        if((byte & 0x01) == 0x01)
+        {
+            countOfOnes ++;
+
             // bit 1: repeat last sent symbol
             if(lastSentSymbol == 1)
             {
@@ -69,8 +116,12 @@ void afsk_send_aprs_byte_no_bit_stuffing(char byte)
                 afsk_aprs_send_space();
             }
         }
-        else
+
+        // send standard bit 0 or additional bit 0 when in bit stuffing
+        if(((byte & 0x01) == 0x00) || (countOfOnes == 5))
         {
+            countOfOnes = 0;
+
             // bit 0: switch to the other symbol
             if(lastSentSymbol == 1)
             {
@@ -83,6 +134,7 @@ void afsk_send_aprs_byte_no_bit_stuffing(char byte)
                 lastSentSymbol = 1;
             }
         }
+
         byte >>= 1;
     }
 }
