@@ -63,23 +63,23 @@ void afsk_send_aprs_init()
 
 void afsk_send_aprs_packet(char* packet, uint8_t length)
 {
-    // for(uint8_t q = 0 ; q < 40 ; q++)
-    // {
-    //     afsk_send_aprs_byte_no_bit_stuffing(0x7E);
-    // }
-
-    // for(uint8_t q = 0 ; q < length ; q++)
-    // {
-    //     afsk_send_aprs_byte_bit_stuffing(packet[q]);
-    // }
-
-    // for(uint8_t q = 0 ; q < 40 ; q++)
-    // {
-    //     afsk_send_aprs_byte_no_bit_stuffing(0x7E);
-    // }
-
     TIM2->CR1 |= TIM2_CR1_CEN; // enable TIM2
-    delay(1000);  // wait
+
+    for(uint8_t q = 0 ; q < 40 ; q++)
+    {
+        afsk_send_aprs_byte_no_bit_stuffing(0x7E);
+    }
+
+    for(uint8_t q = 0 ; q < length ; q++)
+    {
+        afsk_send_aprs_byte_bit_stuffing(packet[q]);
+    }
+
+    for(uint8_t q = 0 ; q < 40 ; q++)
+    {
+        afsk_send_aprs_byte_no_bit_stuffing(0x7E);
+    }
+
     TIM2->CR1 &= ~TIM2_CR1_CEN; // disable TIM2
 }
 
@@ -167,22 +167,20 @@ void afsk_send_aprs_byte_bit_stuffing(char byte)
     }
 }
 
+volatile bool bitToSend = false;
+volatile bool giveMeNextBit = false;
+
 /*
  * Sends the space tone (2200Hz, typically a binary 0 if not using extra encoding, i.e. NRZI)
  */
 inline void afsk_aprs_send_space()
 {
-    fsk_tx_direct_bit_high();
-    delayMicroseconds(AFSK1200_SPACE_HALF_DURATION_US);
-    fsk_tx_direct_bit_low();
-    delayMicroseconds(AFSK1200_SPACE_HALF_DURATION_US);
-    fsk_tx_direct_bit_high();
-    delayMicroseconds(AFSK1200_SPACE_HALF_DURATION_US);
-    fsk_tx_direct_bit_low();
-    // total duration of this bit must be 1/1200 sec (833us), but we are sending two periods 
-    // of tone 2200Hz (which takes 909us, so a bit to much),
-    // so the last half needs to be shortened around 76us)
-    delayMicroseconds(AFSK1200_SPACE_HALF_SHORT_DURATION_US);
+    bitToSend = false;
+    giveMeNextBit = false;
+     while(!giveMeNextBit)
+     {
+         // do nothing; just wait
+     }
 }
 
 /*
@@ -190,27 +188,53 @@ inline void afsk_aprs_send_space()
  */
 inline void afsk_aprs_send_mark()
 {
-    fsk_tx_direct_bit_high();
-    delayMicroseconds(AFSK1200_MARK_HALF_DURATION_US);
-    fsk_tx_direct_bit_low();
-    delayMicroseconds(AFSK1200_MARK_HALF_DURATION_US);
+    bitToSend = true;
+    giveMeNextBit = false;
+     while(!giveMeNextBit)
+     {
+         // do nothing; just wait
+     }
 }
 
 INTERRUPT_HANDLER(TIM2_UPD_OVF_BRK_IRQHandler, ITC_IRQ_TIM1_OVF)
 {
+    // Clear Timer 2 Status Register 1 Update Interrupt Flag (UIF) (bit 0)
+    TIM2->SR1 &= ~TIM2_SR1_UIF;
+
     intCount ++;
 
-    if(intCount == 11)
+    if(bitToSend)
     {
-        fsk_tx_direct_bit_high();
+        if(intCount == 11)
+        {
+            fsk_tx_direct_bit_high();
+            return;
+        }
     }
-    else if(intCount == 22)
+    else
+    {
+        if(intCount == 6)
+        {
+            fsk_tx_direct_bit_high();
+            return;
+        }
+        else if(intCount == 12)
+        {
+            fsk_tx_direct_bit_low();
+            return;
+        }
+        else if(intCount == 18)
+        {
+            fsk_tx_direct_bit_high();
+            return;
+        }
+    }
+
+    if(intCount == 22)
     {
         fsk_tx_direct_bit_low();
         intCount = 0;
+        giveMeNextBit = true;
     }
-
-    // Clear Timer 2 Status Register 1 Update Interrupt Flag (UIF) (bit 0)
-    TIM2->SR1 &= ~TIM2_SR1_UIF;
 }
 
