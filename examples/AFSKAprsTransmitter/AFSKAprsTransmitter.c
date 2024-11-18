@@ -85,7 +85,7 @@ void loop()
     fsk_stop_tx();
     
     // wait until the whole second passes
-    delay(500);
+    delay(1000);
 }
 
 uint16_t crc_ccitt_update(uint16_t crc, uint8_t data)

@@ -53,7 +53,8 @@ void afsk_send_aprs_init()
     // set Counter Auto-Reload Registers - TIM2->ARR=303 == 0x012F,
     // theoretically giving interrupt frequency 26402.6 Hz
     TIM2->ARRH = 0x01;
-    TIM2->ARRL = 0x45; // practically the counter needs to be a bit higher 
+    // TIM2->ARRL = 0x45; // practically the counter needs to be a bit higher 
+    TIM2->ARRL = 0x2F;
     // TIM2->IER (Interrupt Enable Register), Update interrupt (UIE) (bit 0)
     TIM2->IER |= TIM2_IER_UIE;
 
@@ -85,14 +86,15 @@ void afsk_send_aprs_packet(char* packet, uint8_t length)
 
 void afsk_send_aprs_byte_no_bit_stuffing(char byte)
 {
-    //Serial_print_s(" Sending byte ");
-    Serial_println_i(byte);
+    //Serial_print_s(" SB ");
+    //Serial_print_i(byte);
+    //Serial_print_s(" ");
 
     for(int q = 0 ; q < 8 ; q++)
     {
         if((byte & 0x01) == 0x01)
         {
-            //Serial_println_s("Sending bit 1");
+            //Serial_print_s("1");
             // bit 1: repeat last sent symbol
             if(lastSentSymbol == 1)
             {
@@ -107,7 +109,7 @@ void afsk_send_aprs_byte_no_bit_stuffing(char byte)
         }
         else
         {
-            //Serial_println_s("Sending bit 0");
+            //Serial_print_s("0");
             // bit 0: switch to the other symbol
             if(lastSentSymbol == 1)
             {
@@ -124,6 +126,7 @@ void afsk_send_aprs_byte_no_bit_stuffing(char byte)
         }
         byte >>= 1;
     }
+    //Serial_println_s("");
 }
 
 void afsk_send_aprs_byte_bit_stuffing(char byte)
@@ -175,6 +178,7 @@ volatile bool giveMeNextBit = false;
  */
 inline void afsk_aprs_send_space()
 {
+    //Serial_print_s("S");
     bitToSend = false;
     giveMeNextBit = false;
      while(!giveMeNextBit)
@@ -188,6 +192,7 @@ inline void afsk_aprs_send_space()
  */
 inline void afsk_aprs_send_mark()
 {
+    //Serial_print_s("M");
     bitToSend = true;
     giveMeNextBit = false;
      while(!giveMeNextBit)
@@ -196,6 +201,8 @@ inline void afsk_aprs_send_mark()
      }
 }
 
+bool bitToSend0 = false;
+
 INTERRUPT_HANDLER(TIM2_UPD_OVF_BRK_IRQHandler, ITC_IRQ_TIM1_OVF)
 {
     // Clear Timer 2 Status Register 1 Update Interrupt Flag (UIF) (bit 0)
@@ -203,11 +210,22 @@ INTERRUPT_HANDLER(TIM2_UPD_OVF_BRK_IRQHandler, ITC_IRQ_TIM1_OVF)
 
     intCount ++;
 
-    if(bitToSend)
+    if(intCount == 5)
+    {
+        // remember what bit needs to be sent ...
+        bitToSend0 = bitToSend;
+        // .. and let the main loop to prepare the next bit
+        giveMeNextBit = true;
+
+        return;
+    }
+
+    if(bitToSend0)
     {
         if(intCount == 11)
         {
             fsk_tx_direct_bit_high();
+            //Serial_print_s("H");
             return;
         }
     }
@@ -216,16 +234,19 @@ INTERRUPT_HANDLER(TIM2_UPD_OVF_BRK_IRQHandler, ITC_IRQ_TIM1_OVF)
         if(intCount == 6)
         {
             fsk_tx_direct_bit_high();
+            //Serial_print_s("H");
             return;
         }
         else if(intCount == 12)
         {
             fsk_tx_direct_bit_low();
+            //Serial_print_s("L");
             return;
         }
         else if(intCount == 18)
         {
             fsk_tx_direct_bit_high();
+            //Serial_print_s("H");
             return;
         }
     }
@@ -233,8 +254,8 @@ INTERRUPT_HANDLER(TIM2_UPD_OVF_BRK_IRQHandler, ITC_IRQ_TIM1_OVF)
     if(intCount == 22)
     {
         fsk_tx_direct_bit_low();
+        //Serial_print_s("L");
         intCount = 0;
-        giveMeNextBit = true;
     }
 }
 
