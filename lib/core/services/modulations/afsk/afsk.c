@@ -243,7 +243,7 @@ INTERRUPT_HANDLER(TIM2_UPD_OVF_BRK_IRQHandler, ITC_IRQ_TIM1_OVF)
             //Serial_print_s("L");
             return;
         }
-        else if(intCount == 18)
+        else if(intCount == 17)
         {
             fsk_tx_direct_bit_high();
             //Serial_print_s("H");
