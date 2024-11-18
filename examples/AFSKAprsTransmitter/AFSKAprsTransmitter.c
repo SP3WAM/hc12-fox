@@ -66,6 +66,17 @@ void loop()
 
     char minimalFrame[] = {'S', 'P', '3', 'W', 'A', 'M', ' ', 'S', 'P', '3', 'W', 'A', 'M', ' ', 0x03, 0xF0, 'H', 'e', 'l', 'l', 'o', '#', '#'};
     
+    minimalFrame[6]=0b01110000; // C=1, RR=1, SSID=0
+    minimalFrame[13] = 0b00110000; // C=0, RR=1, SSID=0
+    
+    // shift address bytes one bit to the left
+    for(uint8_t q = 0 ; q < 14 ; q ++)
+    {
+        minimalFrame[q] = minimalFrame[q] << 1;
+    }
+    // set the LSB of the last address byte
+    minimalFrame[13] |= 0x01;
+
     // Frame Check Sequence - CRC-16-CCITT (0xFFFF)
     uint16_t crc = 0xFFFF;
     for(uint16_t i = 0; i < 21; i++)
