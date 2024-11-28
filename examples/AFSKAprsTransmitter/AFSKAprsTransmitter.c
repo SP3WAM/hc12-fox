@@ -64,9 +64,9 @@ void loop()
     // Enter the Tx state on channel 0
     fsk_start_tx(0);
 
-    char minimalFrame[] = {'S', 'P', '3', 'W', 'A', 'M', ' ', 'S', 'P', '3', 'W', 'A', 'M', ' ', 0x03, 0xF0, ':', 'B', 'L', 'N', '0', ' ', ' ', ' ', ' ', ' ', ':', 'H', 'e', 'l', 'l', 'o', ' ', 'f', 'r', 'o', 'm', ' ', 'H', 'C', '1', '2', '#', '#'};
+    char minimalFrame[] = {'S', 'Q', '3', 'E', 'T', ' ', ' ', 'S', 'P', '3', 'W', 'A', 'M', ' ', 0x03, 0xF0, ':', 'B', 'L', 'N', '0', ' ', ' ', ' ', ' ', ' ', ':', 'H', 'e', 'l', 'l', 'o', ' ', 'f', 'r', 'o', 'm', ' ', 'H', 'C', '1', '2', '#', '#'};
     
-    minimalFrame[6]=0b01110000; // C=1, RR=1, SSID=0
+    minimalFrame[6]=0b01111001; // C=1, RR=1, SSID=9
     minimalFrame[13] = 0b00110000; // C=0, RR=1, SSID=0
     
     // shift address bytes one bit to the left
@@ -95,8 +95,8 @@ void loop()
     // stop transmition
     fsk_stop_tx();
     
-    // wait until the whole second passes
-    delay(1000);
+    // wait a bit
+    delay(10000);
 }
 
 uint16_t crc_ccitt_update(uint16_t crc, uint8_t data)
