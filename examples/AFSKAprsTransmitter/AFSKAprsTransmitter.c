@@ -65,7 +65,8 @@ void loop()
     fsk_start_tx(0);
 
     char minimalFrame[] = {'S', 'Q', '3', 'E', 'T', ' ', ' ', 'S', 'P', '3', 'W', 'A', 'M', ' ', 0x03, 0xF0, ':', 'B', 'L', 'N', '0', ' ', ' ', ' ', ' ', ' ', ':', 'H', 'e', 'l', 'l', 'o', ' ', 'f', 'r', 'o', 'm', ' ', 'H', 'C', '1', '2', '#', '#'};
-    
+    uint8_t frameLength = sizeof(minimalFrame);
+
     minimalFrame[6]=0b01111001; // C=1, RR=1, SSID=9
     minimalFrame[13] = 0b00110000; // C=0, RR=1, SSID=0
     
@@ -79,18 +80,18 @@ void loop()
 
     // Frame Check Sequence - CRC-16-CCITT (0xFFFF)
     uint16_t crc = 0xFFFF;
-    for(uint16_t i = 0; i < 42; i++)
+    for(uint16_t i = 0; i < frameLength - 2; i++)
     {
         crc = crc_ccitt_update(crc, minimalFrame[i]);
     }
     crc = ~crc;                              // flip the bits
-    minimalFrame[42] = crc & 0xFF;           // FCS is sent low-byte first
-    minimalFrame[43] = (crc >> 8) & 0xFF;
+    minimalFrame[frameLength - 2] = crc & 0xFF;           // FCS is sent low-byte first
+    minimalFrame[frameLength - 1] = (crc >> 8) & 0xFF;
 
     // init APRS transmition
     afsk_send_aprs_init();
     // send APRS packet
-    afsk_send_aprs_packet(minimalFrame, 44);
+    afsk_send_aprs_packet(minimalFrame, frameLength);
 
     // stop transmition
     fsk_stop_tx();
