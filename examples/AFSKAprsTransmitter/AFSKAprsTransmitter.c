@@ -64,7 +64,7 @@ void loop()
     // Enter the Tx state on channel 0
     fsk_start_tx(0);
 
-    char minimalFrame[] = {'S', 'Q', '3', 'E', 'T', ' ', ' ', 'S', 'P', '3', 'W', 'A', 'M', ' ', 'W', 'I', 'D', 'E', '1', ' ', ' ', 0x03, 0xF0, ':', 'B', 'L', 'N', '0', ' ', ' ', ' ', ' ', ' ', ':', 'H', 'e', 'l', 'l', 'o', ' ', 'f', 'r', 'o', 'm', ' ', 'H', 'C', '1', '2', '#', '#'};
+    char minimalFrame[] = {'S', 'Q', '3', 'E', 'T', ' ', ' ', 'S', 'P', '3', 'W', 'A', 'M', ' ', 'W', 'I', 'D', 'E', '2', ' ', ' ', 0x03, 0xF0, ':', 'B', 'L', 'N', '0', ' ', ' ', ' ', ' ', ' ', ':', 'H', 'e', 'l', 'l', 'o', ' ', 'f', 'r', 'o', 'm', ' ', 'H', 'C', '1', '2', '#', '#'};
     uint8_t frameLength = sizeof(minimalFrame);
 
     minimalFrame[6]=0b01111001; // C=1, RR=1, SSID=9
