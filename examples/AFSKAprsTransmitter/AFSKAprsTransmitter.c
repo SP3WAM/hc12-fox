@@ -64,19 +64,20 @@ void loop()
     // Enter the Tx state on channel 0
     fsk_start_tx(0);
 
-    char minimalFrame[] = {'S', 'Q', '3', 'E', 'T', ' ', ' ', 'S', 'P', '3', 'W', 'A', 'M', ' ', 0x03, 0xF0, ':', 'B', 'L', 'N', '0', ' ', ' ', ' ', ' ', ' ', ':', 'H', 'e', 'l', 'l', 'o', ' ', 'f', 'r', 'o', 'm', ' ', 'H', 'C', '1', '2', '#', '#'};
+    char minimalFrame[] = {'S', 'Q', '3', 'E', 'T', ' ', ' ', 'S', 'P', '3', 'W', 'A', 'M', ' ', 'W', 'I', 'D', 'E', '1', ' ', ' ', 0x03, 0xF0, ':', 'B', 'L', 'N', '0', ' ', ' ', ' ', ' ', ' ', ':', 'H', 'e', 'l', 'l', 'o', ' ', 'f', 'r', 'o', 'm', ' ', 'H', 'C', '1', '2', '#', '#'};
     uint8_t frameLength = sizeof(minimalFrame);
 
     minimalFrame[6]=0b01111001; // C=1, RR=1, SSID=9
     minimalFrame[13] = 0b00110000; // C=0, RR=1, SSID=0
+    minimalFrame[20] = 0b00110001; // C=0, RR=1, SSID=1
     
     // shift address bytes one bit to the left
-    for(uint8_t q = 0 ; q < 14 ; q ++)
+    for(uint8_t q = 0 ; q < 21 ; q ++)
     {
         minimalFrame[q] = minimalFrame[q] << 1;
     }
     // set the LSB of the last address byte
-    minimalFrame[13] |= 0x01;
+    minimalFrame[20] |= 0x01;
 
     // Frame Check Sequence - CRC-16-CCITT (0xFFFF)
     uint16_t crc = 0xFFFF;
