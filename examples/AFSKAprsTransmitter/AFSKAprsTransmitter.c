@@ -67,9 +67,12 @@ void loop()
     char minimalFrame[] = {'S', 'Q', '3', 'E', 'T', ' ', ' ', 'S', 'P', '3', 'W', 'A', 'M', ' ', 'W', 'I', 'D', 'E', '2', ' ', ' ', 0x03, 0xF0, ':', 'B', 'L', 'N', '0', ' ', ' ', ' ', ' ', ' ', ':', 'H', 'e', 'l', 'l', 'o', ' ', 'f', 'r', 'o', 'm', ' ', 'H', 'C', '1', '2', '#', '#'};
     uint8_t frameLength = sizeof(minimalFrame);
 
-    minimalFrame[6]=0b01111001; // C=1, RR=1, SSID=9
-    minimalFrame[13] = 0b00110000; // C=0, RR=1, SSID=0
-    minimalFrame[20] = 0b00110001; // C=0, RR=1, SSID=1
+    // The SSID in the Destination Address field of all packets is coded to specify
+    // the APRS digipeater path. See APRS101.pdf page 15.
+    minimalFrame[6] = 0b00110000; // C=0, RR=11, SSID=0, it uses digipiter "VIA"
+    minimalFrame[13] = 0b00110000; // C=0, RR=11, SSID=0
+    // define "VIA" as 'W', 'I', 'D', 'E', '2', ' ' with a correct SSID of 2 (means to use WIDE2-2)
+    minimalFrame[20] = 0b00110010; // C=0, RR=11, SSID=2
     
     // shift address bytes one bit to the left
     for(uint8_t q = 0 ; q < 21 ; q ++)
