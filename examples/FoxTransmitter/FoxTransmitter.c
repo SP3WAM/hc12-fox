@@ -4,6 +4,7 @@
 #include <services/modulations/afsk/afsk.h>
 #include <services/modulations/cw/cw.h>
 #include <services/morse/morse_afsk.h>
+#include <radio_config_channels.h>
 
 /*
  * FOX CONFIGURATION SECTION BEGIN
@@ -11,21 +12,8 @@
 // Defines the additional SNR level (added to the current average noise level) to wake the fox up
 #define RSSI_ADDITIONAL_TRESHOLD_SNR 6
 
-// Communication channel:
-// The step between single channels is 12.5 kHz, but foxes communicate on channels with 50 kHz step.
-// The channel 0 defined in the radio_config_si4438_432_500.h file is based on the 432.500 MHz. 
-// Channel step is there defined as 12.5 kHz, so this gives us the following channel numbers:
-// 128 434.100 MHz this is the base channel of all foxes (see correct radio_config_Si4438_xxx_xxx.h)
-// 132 434.150 MHz
-// 136 434.200 MHz
-// 140 434.250 MHz
-// 144 434.300 MHz
-// 148 434.350 MHz
-// 152 434.400 MHz
-// 156 434.450 MHz
-// 160 434.500 MHz
-// 164 434.550 MHz this is the last possible channel according to IARU Region 1 UHF band plan
-#define COMMUNICATION_CHANNEL 128
+// Basic communication channels are defined in radio_config_channels.h
+#define COMMUNICATION_CHANNEL CHANNEL_FOX_0
 
 // Uncomment below line to have more debugs around RSSI calculations
 #define DEBUG_RSSI

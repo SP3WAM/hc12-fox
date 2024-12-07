@@ -1,7 +1,11 @@
 #include <Arduino.h>
 #include <drivers/si4438.h>
 #include <services/modulations/cw/cw.h>
-#include <services/terminal/terminal.h>
+#include <radio_config_channels.h>
+
+// Basic communication channels are defined in radio_config_channels.h
+#define COMMUNICATION_CHANNEL CHANNEL_FOX_0
+
 
 bool chipConnected = false;
 unsigned long lastTxStartMillis = 0;
@@ -52,15 +56,11 @@ void setup()
     }
     Serial_println_s(" OK");
 
-    terminal_init();
-
-    cw_start_tx(0);
+    cw_start_tx(COMMUNICATION_CHANNEL);
 }
 
 void loop()
 {
-    terminal_loop();
-
     // WARNING: entering the TX state constantly has impact to the transmitter:
     // it generates something but it is not hearable in the receiver
     // cw_start_tx();

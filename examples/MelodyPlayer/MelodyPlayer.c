@@ -2,6 +2,10 @@
 #include <drivers/si4438.h>
 #include <services/modulations/fsk/fsk.h>
 #include <services/modulations/afsk/afsk.h>
+#include <radio_config_channels.h>
+
+// Basic communication channels are defined in radio_config_channels.h
+#define COMMUNICATION_CHANNEL CHANNEL_FOX_0
 
 bool chipConnected = false;
 unsigned long lastTxStartMillis = 0;
@@ -196,7 +200,7 @@ void loop()
     // Start the Tx mode, it will generate the carrier during the whole melody time,
     // which will make nice sound hearable in the receiver (no squelch involved during
     // whole time) 
-     fsk_start_tx(0);
+     fsk_start_tx(COMMUNICATION_CHANNEL);
 
     // iterate over the notes of the melody. 
     // Remember, the array is twice the number of notes (notes + durations)

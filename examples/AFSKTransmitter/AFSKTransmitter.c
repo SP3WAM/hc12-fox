@@ -2,6 +2,10 @@
 #include <drivers/si4438.h>
 #include <services/modulations/fsk/fsk.h>
 #include <services/modulations/afsk/afsk.h>
+#include <radio_config_channels.h>
+
+// Basic communication channels are defined in radio_config_channels.h
+#define COMMUNICATION_CHANNEL CHANNEL_FOX_0
 
 bool chipConnected = false;
 unsigned long lastTxStartMillis = 0;
@@ -52,7 +56,7 @@ void setup()
 
 void loop()
 {
-    fsk_start_tx(0);
+    fsk_start_tx(COMMUNICATION_CHANNEL);
 
     afsk_tone(1000, 2000000L);
 

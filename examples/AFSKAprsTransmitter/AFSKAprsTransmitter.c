@@ -2,9 +2,10 @@
 #include <drivers/si4438.h>
 #include <services/modulations/fsk/fsk.h>
 #include <services/modulations/afsk/afsk.h>
+#include <radio_config_channels.h>
 
-// Based on the radio_config_Si4438_432_500.h file the channel 0 starts at 432.500 MHz
-#define APRS_CHANNEL 0
+// Basic communication channels are defined in radio_config_channels.h
+#define COMMUNICATION_CHANNEL CHANNEL_FOX_0
 
 #define lo8(x) ((x)&0xff)
 #define hi8(x) ((x)>>8)
@@ -65,7 +66,7 @@ void loop()
 
 
     // Enter the Tx state on channel 0
-    fsk_start_tx(APRS_CHANNEL);
+    fsk_start_tx(COMMUNICATION_CHANNEL);
 
     char minimalFrame[] = {'S', 'Q', '3', 'E', 'T', ' ', '0', 'S', 'P', '3', 'W', 'A', 'M', '0', 'W', 'I', 'D', 'E', '2', ' ', '2', 0x03, 0xF0, ':', 'B', 'L', 'N', '0', ' ', ' ', ' ', ' ', ' ', ':', 'H', 'e', 'l', 'l', 'o', ' ', 'f', 'r', 'o', 'm', ' ', 'H', 'C', '1', '2', '#', '#'};
     uint8_t frameLength = sizeof(minimalFrame);

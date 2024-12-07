@@ -1,6 +1,10 @@
 #include <Arduino.h>
 #include <drivers/si4438.h>
 #include <services/modulations/ook/ook.h>
+#include <radio_config_channels.h>
+
+// Basic communication channels are defined in radio_config_channels.h
+#define COMMUNICATION_CHANNEL CHANNEL_FOX_0
 
 bool chipConnected = false;
 unsigned long lastTxStartMillis = 0;
@@ -52,7 +56,7 @@ void setup()
 void loop()
 {
     // Enter the Tx state. It is implemented in the way that it blocks the CPU for 2 seconds.
-    ook_start_tx(0);
+    ook_start_tx(COMMUNICATION_CHANNEL);
 }
 
 /*
