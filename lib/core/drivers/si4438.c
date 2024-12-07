@@ -2,7 +2,7 @@
 #include <SPI.h>
 #include <stdint.h>
 #include "si4438.h"
-//#include "../radio_config_Si4438.h"
+//#include "../radio_config_Si4438_434_100.h"
 #include "../radio_config_Si4438_432_500.h"
 
 #define NEW_HC_12 //new version of HC-12 has different pin setting
