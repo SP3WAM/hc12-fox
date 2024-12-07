@@ -15,6 +15,9 @@
 // Basic communication channels are defined in radio_config_channels.h
 #define COMMUNICATION_CHANNEL CHANNEL_FOX_0
 
+// Basic power levels are defined in si4438.h
+#define TRANSMISSION_POWER SI4438_17DBM_TX_POWER
+
 // Uncomment below line to have more debugs around RSSI calculations
 #define DEBUG_RSSI
 
@@ -85,7 +88,7 @@ void setup()
 
     // configure the TX power
     Serial_print_s("Si4438 setting TX power...");
-    if(si4438_set_tx_power(SI4438_17DBM_TX_POWER) == false)
+    if(si4438_set_tx_power(TRANSMISSION_POWER) == false)
     {
         Serial_println_s(" failed");
     }
