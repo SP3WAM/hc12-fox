@@ -13,17 +13,19 @@
 
 // Communication channel:
 // The step between single channels is 12.5 kHz, but foxes communicate on channels with 50 kHz step.
-//  0 434.100 MHz this is the base channel of all foxes (see also radio_config_Si4438.h)
-//  4 434.150 MHz
-//  8 434.200 MHz
-// 12 434.250 MHz
-// 16 434.300 MHz
-// 20 434.350 MHz
-// 24 434.400 MHz
-// 28 434.450 MHz
-// 32 434.500 MHz
-// 36 434.550 MHz this is the last possible channel according to IARU Region 1 UHF band plan
-#define COMMUNICATION_CHANNEL 0
+// The channel 0 defined in the radio_config_si4438_432_500.h file is based on the 432.500 MHz. 
+// Channel step is there defined as 12.5 kHz, so this gives us the following channel numbers:
+// 128 434.100 MHz this is the base channel of all foxes (see correct radio_config_Si4438_xxx_xxx.h)
+// 132 434.150 MHz
+// 136 434.200 MHz
+// 140 434.250 MHz
+// 144 434.300 MHz
+// 148 434.350 MHz
+// 152 434.400 MHz
+// 156 434.450 MHz
+// 160 434.500 MHz
+// 164 434.550 MHz this is the last possible channel according to IARU Region 1 UHF band plan
+#define COMMUNICATION_CHANNEL 128
 
 // Uncomment below line to have more debugs around RSSI calculations
 #define DEBUG_RSSI
