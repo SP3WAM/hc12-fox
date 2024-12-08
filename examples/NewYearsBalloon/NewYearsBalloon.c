@@ -185,14 +185,12 @@ int melody[] =
   NOTE_F5,2, REST,4
 };
 
-// sizeof gives the number of bytes, each int value is composed of two bytes (16 bits)
-// there are two values per note (pitch and duration), so for each note there are four bytes
-int notes = sizeof(melody) / sizeof(melody[0]) / 2;
-
 // duration of a whole note in ms
 int wholenote = 0;
 int divider = 0;
 int noteDuration = 0;
+
+void play_melody(int* notes, int length);
 
 void setup()
 {
@@ -247,6 +245,23 @@ void loop()
     // whole time) 
      fsk_start_tx(COMMUNICATION_CHANNEL);
 
+    // sizeof gives the number of bytes, each int value is composed of two bytes (16 bits)
+    // there are two values per note (pitch and duration), so for each note there are four bytes
+    int notes = sizeof(melody) / sizeof(melody[0]) / 2;
+    play_melody(melody, notes);
+
+    // Disable Tx mode, carriere not generated anymore
+    fsk_stop_tx();
+
+    // Enter si4438 into sleep state
+    si4438_enter_sleep_state();
+
+    // Just wait for some time before pleying it again
+    delay(5000);
+}
+
+void play_melody(int* melody, int notes)
+{
     // iterate over the notes of the melody. 
     // Remember, the array is twice the number of notes (notes + durations)
     for (int thisNote = 0; thisNote < notes * 2; thisNote = thisNote + 2)
@@ -271,14 +286,6 @@ void loop()
         // wait for the 10% of the note duration before playing the next note.
         delay(noteDuration * 0.1);
     }
-    // Disable Tx mode, carriere not generated anymore
-    fsk_stop_tx();
-
-    // Enter si4438 into sleep state
-    si4438_enter_sleep_state();
-
-    // Just wait for some time before pleying it again
-    delay(5000);
 }
 
 /*
