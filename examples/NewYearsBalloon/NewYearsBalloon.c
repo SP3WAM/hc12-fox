@@ -7,6 +7,7 @@
 #include <services/player/songs/we_wish_you.h>
 #include <services/player/songs/last_christmas.h>
 #include <services/player/songs/final_countdown.h>
+#include <services/player/songs/never_gonna_give_you_up.h>
 
 // Basic communication channels are defined in radio_config_channels.h
 #define COMMUNICATION_CHANNEL CHANNEL_FOX_0
@@ -98,8 +99,16 @@ void loop()
     finalCountdownNotesCount = sizeof(final_countdown_2) / sizeof(final_countdown_2[0]) / 2;
     play_melody(final_countdown_2, finalCountdownNotesCount);
     delay(1000);
+
+    // int neverGonnaGiveYouUpNotesCount = sizeof(never_gonna_give_you_up_1) / sizeof(never_gonna_give_you_up_1[0]) / 2;
+    // play_melody(never_gonna_give_you_up_1, neverGonnaGiveYouUpNotesCount);
+    int neverGonnaGiveYouUpNotesCount = sizeof(never_gonna_give_you_up_2) / sizeof(never_gonna_give_you_up_2[0]) / 2;
+    play_melody(never_gonna_give_you_up_2, neverGonnaGiveYouUpNotesCount);
+    neverGonnaGiveYouUpNotesCount = sizeof(never_gonna_give_you_up_3) / sizeof(never_gonna_give_you_up_3[0]) / 2;
+    play_melody(never_gonna_give_you_up_3, neverGonnaGiveYouUpNotesCount);
+    delay(1000);
     
-    // Disable Tx mode, carriere not generated anymore
+    // Disable Tx mode, carrier not generated anymore
     fsk_stop_tx();
 
     // Enter si4438 into sleep state
