@@ -82,25 +82,23 @@ void loop()
 
     // sizeof gives the number of bytes, each int value is composed of two bytes (16 bits)
     // there are two values per note (pitch and duration), so for each note there are four bytes
-    // int notesCount = sizeof(we_wish_you_1) / sizeof(we_wish_you_1[0]) / 2;
-    // play_melody(we_wish_you_1, notesCount);
-    // play_melody(we_wish_you_1, notesCount);
-    // notesCount = sizeof(we_wish_you_2) / sizeof(we_wish_you_2[0]) / 2;
-    // play_melody(we_wish_you_2, notesCount);
-    // delay(1000);
+    int weWishYouNotesCount = sizeof(we_wish_you_1) / sizeof(we_wish_you_1[0]) / 2;
+    play_melody(we_wish_you_1, weWishYouNotesCount);
+    weWishYouNotesCount = sizeof(we_wish_you_2) / sizeof(we_wish_you_2[0]) / 2;
+    play_melody(we_wish_you_2, weWishYouNotesCount);
+    delay(1000);
 
-    // notesCount = sizeof(last_christmas) / sizeof(last_christmas[0]) / 2;
-    // play_melody(last_christmas, notesCount);
-    // delay(1000);
+    int lastChristmasNotesCount = sizeof(last_christmas) / sizeof(last_christmas[0]) / 2;
+    play_melody(last_christmas, lastChristmasNotesCount);
+    delay(1000);
 
-    int notesCount = sizeof(final_countdown_1) / sizeof(final_countdown_1[0]) / 2;
-    play_melody(final_countdown_1, notesCount);
-    play_melody(final_countdown_1, notesCount);
-    notesCount = sizeof(final_countdown_2) / sizeof(final_countdown_2[0]) / 2;
-    play_melody(final_countdown_2, notesCount);
+    int finalCountdownNotesCount = sizeof(final_countdown_1) / sizeof(final_countdown_1[0]) / 2;
+    play_melody(final_countdown_1, finalCountdownNotesCount);
+    play_melody(final_countdown_1, finalCountdownNotesCount);
+    finalCountdownNotesCount = sizeof(final_countdown_2) / sizeof(final_countdown_2[0]) / 2;
+    play_melody(final_countdown_2, finalCountdownNotesCount);
     delay(1000);
     
-
     // Disable Tx mode, carriere not generated anymore
     fsk_stop_tx();
 
