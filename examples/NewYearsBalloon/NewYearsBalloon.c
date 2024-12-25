@@ -102,6 +102,12 @@ void loop()
     play_melody(last_christmas, lastChristmasNotesCount);
     delay(1000);
 
+    int takeOnMeNotesCount = sizeof(take_on_me) / sizeof(take_on_me[0]);
+    play_melody(take_on_me, takeOnMeNotesCount);
+    play_melody(take_on_me, takeOnMeNotesCount);
+    play_melody(take_on_me, takeOnMeNotesCount);
+    delay(1000);
+
     int finalCountdownNotesCount = sizeof(final_countdown_1) / sizeof(final_countdown_1[0]);
     play_melody(final_countdown_1, finalCountdownNotesCount);
     play_melody(final_countdown_1, finalCountdownNotesCount);
