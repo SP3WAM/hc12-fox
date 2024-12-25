@@ -98,9 +98,9 @@ void loop()
     play_melody(never_gonna_give_you_up_3, neverGonnaGiveYouUpNotesCount);
     delay(1000);
 
-    // int lastChristmasNotesCount = sizeof(last_christmas) / sizeof(last_christmas[0]) / 2;
-    // play_melody(last_christmas, lastChristmasNotesCount);
-    // delay(1000);
+    int lastChristmasNotesCount = sizeof(last_christmas) / sizeof(last_christmas[0]);
+    play_melody(last_christmas, lastChristmasNotesCount);
+    delay(1000);
 
     // int finalCountdownNotesCount = sizeof(final_countdown_1) / sizeof(final_countdown_1[0]) / 2;
     // play_melody(final_countdown_1, finalCountdownNotesCount);
