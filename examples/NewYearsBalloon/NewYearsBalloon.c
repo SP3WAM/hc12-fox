@@ -8,6 +8,7 @@
 #include <services/player/songs/last_christmas.h>
 #include <services/player/songs/final_countdown.h>
 #include <services/player/songs/never_gonna_give_you_up.h>
+#include <services/player/songs/take_one_me.h>
 
 // Basic communication channels are defined in radio_config_channels.h
 #define COMMUNICATION_CHANNEL CHANNEL_FOX_0
@@ -25,7 +26,7 @@ int wholenote = 0;
 int divider = 0;
 int noteDuration = 0;
 
-void play_melody(int* notes, int length);
+void play_melody(Note* notes, int notesCount);
 
 void setup()
 {
@@ -83,30 +84,30 @@ void loop()
 
     // sizeof gives the number of bytes, each int value is composed of two bytes (16 bits)
     // there are two values per note (pitch and duration), so for each note there are four bytes
-    int weWishYouNotesCount = sizeof(we_wish_you_1) / sizeof(we_wish_you_1[0]) / 2;
+    int weWishYouNotesCount = sizeof(we_wish_you_1) / sizeof(we_wish_you_1[0]);
     play_melody(we_wish_you_1, weWishYouNotesCount);
-    weWishYouNotesCount = sizeof(we_wish_you_2) / sizeof(we_wish_you_2[0]) / 2;
+    weWishYouNotesCount = sizeof(we_wish_you_2) / sizeof(we_wish_you_2[0]);
     play_melody(we_wish_you_2, weWishYouNotesCount);
     delay(1000);
 
-    // int neverGonnaGiveYouUpNotesCount = sizeof(never_gonna_give_you_up_1) / sizeof(never_gonna_give_you_up_1[0]) / 2;
-    // play_melody(never_gonna_give_you_up_1, neverGonnaGiveYouUpNotesCount);
-    int neverGonnaGiveYouUpNotesCount = sizeof(never_gonna_give_you_up_2) / sizeof(never_gonna_give_you_up_2[0]) / 2;
-    play_melody(never_gonna_give_you_up_2, neverGonnaGiveYouUpNotesCount);
-    neverGonnaGiveYouUpNotesCount = sizeof(never_gonna_give_you_up_3) / sizeof(never_gonna_give_you_up_3[0]) / 2;
-    play_melody(never_gonna_give_you_up_3, neverGonnaGiveYouUpNotesCount);
-    delay(1000);
-    
-    int lastChristmasNotesCount = sizeof(last_christmas) / sizeof(last_christmas[0]) / 2;
-    play_melody(last_christmas, lastChristmasNotesCount);
-    delay(1000);
+    // // int neverGonnaGiveYouUpNotesCount = sizeof(never_gonna_give_you_up_1) / sizeof(never_gonna_give_you_up_1[0]) / 2;
+    // // play_melody(never_gonna_give_you_up_1, neverGonnaGiveYouUpNotesCount);
+    // int neverGonnaGiveYouUpNotesCount = sizeof(never_gonna_give_you_up_2) / sizeof(never_gonna_give_you_up_2[0]) / 2;
+    // play_melody(never_gonna_give_you_up_2, neverGonnaGiveYouUpNotesCount);
+    // neverGonnaGiveYouUpNotesCount = sizeof(never_gonna_give_you_up_3) / sizeof(never_gonna_give_you_up_3[0]) / 2;
+    // play_melody(never_gonna_give_you_up_3, neverGonnaGiveYouUpNotesCount);
+    // delay(1000);
 
-    int finalCountdownNotesCount = sizeof(final_countdown_1) / sizeof(final_countdown_1[0]) / 2;
-    play_melody(final_countdown_1, finalCountdownNotesCount);
-    play_melody(final_countdown_1, finalCountdownNotesCount);
-    finalCountdownNotesCount = sizeof(final_countdown_2) / sizeof(final_countdown_2[0]) / 2;
-    play_melody(final_countdown_2, finalCountdownNotesCount);
-    delay(1000);
+    // int lastChristmasNotesCount = sizeof(last_christmas) / sizeof(last_christmas[0]) / 2;
+    // play_melody(last_christmas, lastChristmasNotesCount);
+    // delay(1000);
+
+    // int finalCountdownNotesCount = sizeof(final_countdown_1) / sizeof(final_countdown_1[0]) / 2;
+    // play_melody(final_countdown_1, finalCountdownNotesCount);
+    // play_melody(final_countdown_1, finalCountdownNotesCount);
+    // finalCountdownNotesCount = sizeof(final_countdown_2) / sizeof(final_countdown_2[0]) / 2;
+    // play_melody(final_countdown_2, finalCountdownNotesCount);
+    // delay(1000);
     
     // Disable Tx mode, carrier not generated anymore
     fsk_stop_tx();
@@ -118,14 +119,14 @@ void loop()
     delay(5000);
 }
 
-void play_melody(int* melody, int notes)
+void play_melody(Note* melody, int notesCount)
 {
     // iterate over the notes of the melody. 
     // Remember, the array is twice the number of notes (notes + durations)
-    for (int thisNote = 0; thisNote < notes * 2; thisNote = thisNote + 2)
+    for (int thisNote = 0; thisNote < notesCount; thisNote ++)
     {
         // calculates the duration of each note
-        divider = melody[thisNote + 1];
+        divider = melody[thisNote].duration;
         if (divider > 0)
         {
             // regular note, just proceed
@@ -139,7 +140,7 @@ void play_melody(int* melody, int notes)
         }
 
         // we only play the note for 90% of the duration, leaving 10% as a pause
-        afsk_tone(melody[thisNote], noteDuration * 0.9 * 1000);
+        afsk_tone(melody[thisNote].note, noteDuration * 0.9 * 1000);
 
         // wait for the 10% of the note duration before playing the next note.
         delay(noteDuration * 0.1);
