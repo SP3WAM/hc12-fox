@@ -102,12 +102,12 @@ void loop()
     play_melody(last_christmas, lastChristmasNotesCount);
     delay(1000);
 
-    // int finalCountdownNotesCount = sizeof(final_countdown_1) / sizeof(final_countdown_1[0]) / 2;
-    // play_melody(final_countdown_1, finalCountdownNotesCount);
-    // play_melody(final_countdown_1, finalCountdownNotesCount);
-    // finalCountdownNotesCount = sizeof(final_countdown_2) / sizeof(final_countdown_2[0]) / 2;
-    // play_melody(final_countdown_2, finalCountdownNotesCount);
-    // delay(1000);
+    int finalCountdownNotesCount = sizeof(final_countdown_1) / sizeof(final_countdown_1[0]);
+    play_melody(final_countdown_1, finalCountdownNotesCount);
+    play_melody(final_countdown_1, finalCountdownNotesCount);
+    finalCountdownNotesCount = sizeof(final_countdown_2) / sizeof(final_countdown_2[0]);
+    play_melody(final_countdown_2, finalCountdownNotesCount);
+    delay(1000);
     
     // Disable Tx mode, carrier not generated anymore
     fsk_stop_tx();
