@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include "../notes.h"
 
 // Europe - Final Countdown

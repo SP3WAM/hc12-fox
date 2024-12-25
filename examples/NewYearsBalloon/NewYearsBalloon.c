@@ -89,6 +89,14 @@ void loop()
     play_melody(we_wish_you_2, weWishYouNotesCount);
     delay(1000);
 
+    // int neverGonnaGiveYouUpNotesCount = sizeof(never_gonna_give_you_up_1) / sizeof(never_gonna_give_you_up_1[0]) / 2;
+    // play_melody(never_gonna_give_you_up_1, neverGonnaGiveYouUpNotesCount);
+    int neverGonnaGiveYouUpNotesCount = sizeof(never_gonna_give_you_up_2) / sizeof(never_gonna_give_you_up_2[0]) / 2;
+    play_melody(never_gonna_give_you_up_2, neverGonnaGiveYouUpNotesCount);
+    neverGonnaGiveYouUpNotesCount = sizeof(never_gonna_give_you_up_3) / sizeof(never_gonna_give_you_up_3[0]) / 2;
+    play_melody(never_gonna_give_you_up_3, neverGonnaGiveYouUpNotesCount);
+    delay(1000);
+    
     int lastChristmasNotesCount = sizeof(last_christmas) / sizeof(last_christmas[0]) / 2;
     play_melody(last_christmas, lastChristmasNotesCount);
     delay(1000);
@@ -98,14 +106,6 @@ void loop()
     play_melody(final_countdown_1, finalCountdownNotesCount);
     finalCountdownNotesCount = sizeof(final_countdown_2) / sizeof(final_countdown_2[0]) / 2;
     play_melody(final_countdown_2, finalCountdownNotesCount);
-    delay(1000);
-
-    // int neverGonnaGiveYouUpNotesCount = sizeof(never_gonna_give_you_up_1) / sizeof(never_gonna_give_you_up_1[0]) / 2;
-    // play_melody(never_gonna_give_you_up_1, neverGonnaGiveYouUpNotesCount);
-    int neverGonnaGiveYouUpNotesCount = sizeof(never_gonna_give_you_up_2) / sizeof(never_gonna_give_you_up_2[0]) / 2;
-    play_melody(never_gonna_give_you_up_2, neverGonnaGiveYouUpNotesCount);
-    neverGonnaGiveYouUpNotesCount = sizeof(never_gonna_give_you_up_3) / sizeof(never_gonna_give_you_up_3[0]) / 2;
-    play_melody(never_gonna_give_you_up_3, neverGonnaGiveYouUpNotesCount);
     delay(1000);
     
     // Disable Tx mode, carrier not generated anymore

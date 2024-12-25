@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include "../notes.h"
 
 const int16_t last_christmas[] = {
