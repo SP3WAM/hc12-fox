@@ -26,6 +26,8 @@ int wholenote = 0;
 int divider = 0;
 int noteDuration = 0;
 
+void stm8s_sleep(uint8_t tbr, uint8_t apr);
+#define STM8_S_SLEEP_20_SEC() stm8s_sleep(15, 41)
 void play_melody(Note* notes, int notesCount);
 
 void setup()
@@ -46,7 +48,7 @@ void setup()
     {
         Serial_println_s(" failed");
     }
-    Serial_println_s(" OK");
+    //Serial_println_s(" OK");
 
     // sending startup config is mandatory (especially POWER_UP which should 
     // be the first command of this config) 
@@ -55,7 +57,7 @@ void setup()
     {
         Serial_println_s(" failed");
     }
-    Serial_println_s(" OK");
+    //Serial_println_s(" OK");
 
     // configure the TX power
     Serial_print_s("Si4438 setting TX power...");
@@ -63,7 +65,7 @@ void setup()
     {
         Serial_println_s(" failed");
     }
-    Serial_println_s(" OK");
+    //Serial_println_s(" OK");
 
     // Init fake F3E transmission mode
     Serial_print_s("Si4438 setting fake F3E mode...");
@@ -71,7 +73,7 @@ void setup()
     {
         Serial_println_s(" failed");
     }
-    Serial_println_s(" OK");
+    //Serial_println_s(" OK");
 }
 
 void loop()
@@ -79,50 +81,66 @@ void loop()
     // Start the Tx mode, it will generate the carrier during the whole melody time,
     // which will make nice sound hearable in the receiver (no squelch involved during
     // whole time) 
-     fsk_start_tx(COMMUNICATION_CHANNEL);
-     delay(1000); // a small delay to let the squelch open RX
-
-    // sizeof gives the number of bytes, each int value is composed of two bytes (16 bits)
-    // there are two values per note (pitch and duration), so for each note there are four bytes
+    fsk_start_tx(COMMUNICATION_CHANNEL);
+    delay(500); // a small delay to let the squelch open RX
     int weWishYouNotesCount = sizeof(we_wish_you_1) / sizeof(we_wish_you_1[0]);
     play_melody(we_wish_you_1, weWishYouNotesCount);
     weWishYouNotesCount = sizeof(we_wish_you_2) / sizeof(we_wish_you_2[0]);
     play_melody(we_wish_you_2, weWishYouNotesCount);
-    delay(1000);
+    delay(500);
+    si4438_enter_sleep_state();
+    STM8_S_SLEEP_20_SEC();
+    STM8_S_SLEEP_20_SEC();
+    STM8_S_SLEEP_20_SEC();
 
+    fsk_start_tx(COMMUNICATION_CHANNEL);
+    delay(500); // a small delay to let the squelch open RX
     // int neverGonnaGiveYouUpNotesCount = sizeof(never_gonna_give_you_up_1) / sizeof(never_gonna_give_you_up_1[0]);
     // play_melody(never_gonna_give_you_up_1, neverGonnaGiveYouUpNotesCount);
     int neverGonnaGiveYouUpNotesCount = sizeof(never_gonna_give_you_up_2) / sizeof(never_gonna_give_you_up_2[0]);
     play_melody(never_gonna_give_you_up_2, neverGonnaGiveYouUpNotesCount);
     neverGonnaGiveYouUpNotesCount = sizeof(never_gonna_give_you_up_3) / sizeof(never_gonna_give_you_up_3[0]);
     play_melody(never_gonna_give_you_up_3, neverGonnaGiveYouUpNotesCount);
-    delay(1000);
+    delay(500);
+    si4438_enter_sleep_state();
+    STM8_S_SLEEP_20_SEC();
+    STM8_S_SLEEP_20_SEC();
+    STM8_S_SLEEP_20_SEC();
 
+    fsk_start_tx(COMMUNICATION_CHANNEL);
+    delay(500); // a small delay to let the squelch open RX
     int lastChristmasNotesCount = sizeof(last_christmas) / sizeof(last_christmas[0]);
     play_melody(last_christmas, lastChristmasNotesCount);
-    delay(1000);
+    delay(500);
+    si4438_enter_sleep_state();
+    STM8_S_SLEEP_20_SEC();
+    STM8_S_SLEEP_20_SEC();
+    STM8_S_SLEEP_20_SEC();
 
+    fsk_start_tx(COMMUNICATION_CHANNEL);
+    delay(500); // a small delay to let the squelch open RX
     int takeOnMeNotesCount = sizeof(take_on_me) / sizeof(take_on_me[0]);
     play_melody(take_on_me, takeOnMeNotesCount);
     play_melody(take_on_me, takeOnMeNotesCount);
     play_melody(take_on_me, takeOnMeNotesCount);
-    delay(1000);
+    delay(500);
+    si4438_enter_sleep_state();
+    STM8_S_SLEEP_20_SEC();
+    STM8_S_SLEEP_20_SEC();
+    STM8_S_SLEEP_20_SEC();
 
+    fsk_start_tx(COMMUNICATION_CHANNEL);
+    delay(500); // a small delay to let the squelch open RX
     int finalCountdownNotesCount = sizeof(final_countdown_1) / sizeof(final_countdown_1[0]);
     play_melody(final_countdown_1, finalCountdownNotesCount);
     play_melody(final_countdown_1, finalCountdownNotesCount);
     finalCountdownNotesCount = sizeof(final_countdown_2) / sizeof(final_countdown_2[0]);
     play_melody(final_countdown_2, finalCountdownNotesCount);
-    delay(1000);
-    
-    // Disable Tx mode, carrier not generated anymore
-    fsk_stop_tx();
-
-    // Enter si4438 into sleep state
+    delay(500);
     si4438_enter_sleep_state();
-
-    // Just wait for some time before pleying it again
-    delay(5000);
+    STM8_S_SLEEP_20_SEC();
+    STM8_S_SLEEP_20_SEC();
+    STM8_S_SLEEP_20_SEC();
 }
 
 void play_melody(Note* melody, int notesCount)
@@ -153,10 +171,36 @@ void play_melody(Note* melody, int notesCount)
     }
 }
 
-/*
- * Empty interrupt handler.
- */
+void stm8s_sleep(uint8_t tbr, uint8_t apr)
+{
+    // How to calculate the register values:
+    // RM0016_STM8S_and_STM8AF.pdf page 116 Table 25
+
+    // Set the TimeBase
+    AWU->TBR &= (uint8_t)(~AWU_TBR_AWUTB);
+    AWU->TBR |= tbr;
+    // Set the APR divider
+    AWU->APR &= (uint8_t)(~AWU_APR_APR);
+    AWU->APR |= apr;
+
+    // Enable AWU peripheral
+    AWU->CSR |= AWU_CSR_AWUEN;
+
+    //... and enter halt mode. AWU will wake it up after specific amount of time.
+    halt();
+
+    // Disable AWU peripheral
+    AWU->CSR &= (uint8_t)(~AWU_CSR_AWUEN);
+    // No AWU timebase
+    AWU->TBR = (uint8_t)(~AWU_TBR_AWUTB);
+}
+
+/**
+  * @brief Auto Wake Up Interrupt routine.
+  * @param  None
+  * @retval None
+  */
 INTERRUPT_HANDLER(AWU_IRQHandler, 1)
 {
-
+    AWU->CSR &= (uint8_t)(~AWU_CSR_AWUF);
 }
