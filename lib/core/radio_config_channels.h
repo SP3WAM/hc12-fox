@@ -3,6 +3,7 @@
 // Channel step is there defined as 12.5 kHz, so this gives us the following channels:
 
 #define CHANNEL_APRS    0 // 432.500 MHz for APRS service on 70cm band
+#define CHANNEL_433_500 80 // one of the direct channels on 70cm band
 #define CHANNEL_FOX_0 128 // 434.100 MHz this is the base channel of all foxes (see correct radio_config_Si4438_xxx_xxx.h)
 #define CHANNEL_FOX_1 132 // 434.150 MHz fox channels are seperated by 50 kHz
 #define CHANNEL_FOX_2 136 // 434.200 MHz
