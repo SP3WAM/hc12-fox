@@ -11,10 +11,10 @@
 #include <services/player/songs/take_one_me.h>
 
 // Basic communication channels are defined in radio_config_channels.h
-#define COMMUNICATION_CHANNEL CHANNEL_FOX_0
+#define COMMUNICATION_CHANNEL CHANNEL_433_500
 
 // Basic power levels are defined in si4438.h
-#define TRANSMISSION_POWER SI4438_MIN_TX_POWER
+#define TRANSMISSION_POWER SI4438_16DBM_TX_POWER
 
 bool chipConnected = false;
 
