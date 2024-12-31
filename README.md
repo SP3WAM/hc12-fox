@@ -27,7 +27,7 @@ where four pins are required during programming: VCC, GND, SWM and RST. VCC and 
 from HC-12, while SWM and RST are available only as a pads on the PCB so you need at least to solder two additional pins
 to those pads for easily attaching the programmer.
 I will not describe in details on how to program STM8 with ST-LINK V2, as there is a lot of tutorials already available, 
-however take a look at [st-link-v2](../st-link-v2/README.md) project to learn about some issues that I've faced during my first experiments with 
+however take a look at [st-link-v2](https://github.com/wmarkow/arduino-sandbox/tree/master/st-link-v2/README.md) project to learn about some issues that I've faced during my first experiments with 
 HC-12, especially on how to unlock the device in order to flash your own firmware.
 
 
