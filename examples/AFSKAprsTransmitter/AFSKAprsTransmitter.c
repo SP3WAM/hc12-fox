@@ -62,10 +62,6 @@ void setup()
 
 void loop()
 {
-    // RS41 sonde sends frame with max 320 bytes
-    // The frame which it leads is 320* bytes long and thus counts just over 533 ms
-
-
     // Enter the Tx state on channel 0
     fsk_start_tx(COMMUNICATION_CHANNEL);
 
@@ -74,25 +70,11 @@ void loop()
     //   RR - reserved, should be 0b11
     // SSSS - four bits of SSID (Sub Station ID)
     // 1. Call sign must always be 6 bytes long. If it is shorter then padd it with spaces characters
-    // 2. According to Understanding-APRS-Packets.pdf page 6, modern digipiters doesn't respond to destination SSID different than 0
-    // 3. we have a Command when source C bit is 0 and destination C bit is 1 (AX25.2.2-Jul_98-2.pdf page 38 section 6.1.2
-    //    and TT7_High_Altitude_Balloon_APRS.pdf page 3)
-    // The SSID in the Destination Address field of all packets is coded to specify
-    // the APRS digipeater path. See APRS101.pdf page 15.
-    // Sending a COMMAND:
-    // DESTINATION last byte:
-    // 0b01110000; C=1, RR=11, SSID=0, ASCII 'p' Path: use VIA path
-    // 0b01110001; C=1, RR=11, SSID=1, ASCII 'q' Path: WIDE1-1
-    // 0b01110010; C=1, RR=11, SSID=2, ASCII 'r' Path: WIDE2-2
-    // 0b01110011; C=1, RR=11, SSID=3, ASCII 's' Path: WIDE3-3
-    // 0b01110100; C=1, RR=11, SSID=4, ASCII 't' Path: WIDE4-4
-    // 0b01110101; C=1, RR=11, SSID=5, ASCII 'u' Path: WIDE5-5
-    // 0b01110110; C=1, RR=11, SSID=6, ASCII 'v' Path: WIDE6-6
-    // 0b01110111; C=1, RR=11, SSID=7, ASCII 'w' Path: WIDE7-7
-    // 0b01111000; C=1, RR=11, SSID=8, ASCII 'x' Path: North path
-    // 0b01111001; C=1, RR=11, SSID=9, ASCII 'y' Path: South path; this was working when sending a direct test message to SQ3ET
+    // 2. Modern digipiters doesn't respond to destination SSID different than 0 (doc/aprs/wb2osz/Understanding-APRS-Packets.pdf page 6)
+    // 3. Destination Adress in ham APRS is more like source system type or source device id. It is not a call sign of destination station! (doc/aprs/wb2osz/Understanding-APRS-Packets.pdf page 5)
+    // 4. For tests purposes can use APZxxx (xxx = <000,999>) as destination address (doc/aprs/aprs.org/tocalls.txt). SSID is not used.
     // SOURCE last byte:
-    // 0b00110000; C=0, RR=11, SSID=0,  ASCII '0' no icon;         this was working when sending a direct test message to SQ3ET
+    // 0b00110000; C=0, RR=11, SSID=0,  ASCII '0' no icon;
     // 0b00110001; C=0, RR=11, SSID=1,  ASCII '1' ambulance
     // 0b00110010; C=0, RR=11, SSID=2,  ASCII '2' bus
     // 0b00110011; C=0, RR=11, SSID=3,  ASCII '3' fire track
@@ -109,14 +91,10 @@ void loop()
     // 0b00111110; C=0, RR=11, SSID=14, ASCII '>' truck
     // 0b00111111; C=0, RR=11, SSID=15, ASCII '?' van
 
-    //uint8_t lastAddressIndex = 13;
-    //char minimalFrame[] = {'A', 'P', 'Y', '4', '0', '0', ' ', 'S', 'P', '3', 'W', 'A', 'M', '0', 0x03, 0xF0, ':', 'B', 'L', 'N', '0', ' ', ' ', ' ', ' ', ' ', ':', 'H', 'e', 'l', 'l', 'c', ' ', 'f', 'r', 'o', 'm', ' ', 'H', 'C', '1', '2', '#', '#'};
-    
     uint8_t lastAddressIndex = 20;
-    char minimalFrame[] = {'A', 'P', 'Z', '0', '0', '1', ' ', 'S', 'P', '3', 'W', 'A', 'M', '0', 'W', 'I', 'D', 'E', '2', ' ', '1', 0x03, 0xF0, ':', 'B', 'L', 'N', '0', ' ', ' ', ' ', ' ', ' ', ':', 'T', 'e', 's', 't', ' ', 'H', 'C', '1', '2', '#', '#'};
+    char minimalFrame[] = {'A', 'P', 'Z', '0', '0', '0', ' ', 'S', 'P', '3', 'W', 'A', 'M', '0', 'W', 'I', 'D', 'E', '2', ' ', '1', 0x03, 0xF0, ':', 'B', 'L', 'N', '0', ' ', ' ', ' ', ' ', ' ', ':', 'T', 'e', 's', 't', ' ', 'H', 'C', '1', '2', '#', '#'};
     uint8_t frameLength = sizeof(minimalFrame);
 
-      
     // shift address bytes one bit to the left
     for(uint8_t q = 0 ; q <= lastAddressIndex ; q ++)
     {
