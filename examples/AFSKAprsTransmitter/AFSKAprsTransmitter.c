@@ -5,7 +5,8 @@
 #include <radio_config_channels.h>
 
 // Basic communication channels are defined in radio_config_channels.h
-#define COMMUNICATION_CHANNEL CHANNEL_FOX_0
+//#define COMMUNICATION_CHANNEL CHANNEL_FOX_0
+#define COMMUNICATION_CHANNEL CHANNEL_APRS
 
 #define lo8(x) ((x)&0xff)
 #define hi8(x) ((x)>>8)
@@ -68,23 +69,61 @@ void loop()
     // Enter the Tx state on channel 0
     fsk_start_tx(COMMUNICATION_CHANNEL);
 
-    char minimalFrame[] = {'S', 'Q', '3', 'E', 'T', ' ', '0', 'S', 'P', '3', 'W', 'A', 'M', '0', 'W', 'I', 'D', 'E', '2', ' ', '2', 0x03, 0xF0, ':', 'B', 'L', 'N', '0', ' ', ' ', ' ', ' ', ' ', ':', 'H', 'e', 'l', 'l', 'o', ' ', 'f', 'r', 'o', 'm', ' ', 'H', 'C', '1', '2', '#', '#'};
-    uint8_t frameLength = sizeof(minimalFrame);
-
+    // 0b0CRRSSSS
+    //    C - command/response bit
+    //   RR - reserved, should be 0b11
+    // SSSS - four bits of SSID (Sub Station ID)
+    // 1. Call sign must always be 6 bytes long. If it is shorter then padd it with spaces characters
+    // 2. According to Understanding-APRS-Packets.pdf page 6, modern digipiters doesn't respond to destination SSID different than 0
+    // 3. we have a Command when source C bit is 0 and destination C bit is 1 (AX25.2.2-Jul_98-2.pdf page 38 section 6.1.2
+    //    and TT7_High_Altitude_Balloon_APRS.pdf page 3)
     // The SSID in the Destination Address field of all packets is coded to specify
     // the APRS digipeater path. See APRS101.pdf page 15.
-    // minimalFrame[6] = 0b00110000; // C=0, RR=11, SSID=0, it uses digipiter "VIA". That's the same as using ASCII of character '0'.
-    // minimalFrame[13] = 0b00110000; // C=0, RR=11, SSID=0. That's the same as using ASCII of character '0'.
-    // define "VIA" as 'W', 'I', 'D', 'E', '2', ' ' with a correct SSID of 2 (means to use WIDE2-2). 
-    // minimalFrame[20] = 0b00110010; // C=0, RR=11, SSID=2. That's the same as using ASCII of character '2'.
+    // Sending a COMMAND:
+    // DESTINATION last byte:
+    // 0b01110000; C=1, RR=11, SSID=0, ASCII 'p' Path: use VIA path
+    // 0b01110001; C=1, RR=11, SSID=1, ASCII 'q' Path: WIDE1-1
+    // 0b01110010; C=1, RR=11, SSID=2, ASCII 'r' Path: WIDE2-2
+    // 0b01110011; C=1, RR=11, SSID=3, ASCII 's' Path: WIDE3-3
+    // 0b01110100; C=1, RR=11, SSID=4, ASCII 't' Path: WIDE4-4
+    // 0b01110101; C=1, RR=11, SSID=5, ASCII 'u' Path: WIDE5-5
+    // 0b01110110; C=1, RR=11, SSID=6, ASCII 'v' Path: WIDE6-6
+    // 0b01110111; C=1, RR=11, SSID=7, ASCII 'w' Path: WIDE7-7
+    // 0b01111000; C=1, RR=11, SSID=8, ASCII 'x' Path: North path
+    // 0b01111001; C=1, RR=11, SSID=9, ASCII 'y' Path: South path; this was working when sending a direct test message to SQ3ET
+    // SOURCE last byte:
+    // 0b00110000; C=0, RR=11, SSID=0,  ASCII '0' no icon;         this was working when sending a direct test message to SQ3ET
+    // 0b00110001; C=0, RR=11, SSID=1,  ASCII '1' ambulance
+    // 0b00110010; C=0, RR=11, SSID=2,  ASCII '2' bus
+    // 0b00110011; C=0, RR=11, SSID=3,  ASCII '3' fire track
+    // 0b00110100; C=0, RR=11, SSID=4,  ASCII '4' bicycle
+    // 0b00110101; C=0, RR=11, SSID=5,  ASCII '5' yacht
+    // 0b00110110; C=0, RR=11, SSID=6,  ASCII '6' helicopter
+    // 0b00110111; C=0, RR=11, SSID=7,  ASCII '7' small aircratf
+    // 0b00111000; C=0, RR=11, SSID=8,  ASCII '8' ship
+    // 0b00111001; C=0, RR=11, SSID=9,  ASCII '9' car
+    // 0b00111010; C=0, RR=11, SSID=10, ASCII ':' motorcycle
+    // 0b00111011; C=0, RR=11, SSID=11, ASCII ';' balloon
+    // 0b00111100; C=0, RR=11, SSID=12, ASCII '<' jeep
+    // 0b00111101; C=0, RR=11, SSID=13, ASCII '=' recreational vehicle
+    // 0b00111110; C=0, RR=11, SSID=14, ASCII '>' truck
+    // 0b00111111; C=0, RR=11, SSID=15, ASCII '?' van
+
+    //uint8_t lastAddressIndex = 13;
+    //char minimalFrame[] = {'A', 'P', 'Y', '4', '0', '0', ' ', 'S', 'P', '3', 'W', 'A', 'M', '0', 0x03, 0xF0, ':', 'B', 'L', 'N', '0', ' ', ' ', ' ', ' ', ' ', ':', 'H', 'e', 'l', 'l', 'c', ' ', 'f', 'r', 'o', 'm', ' ', 'H', 'C', '1', '2', '#', '#'};
     
+    uint8_t lastAddressIndex = 20;
+    char minimalFrame[] = {'A', 'P', 'Z', '0', '0', '1', ' ', 'S', 'P', '3', 'W', 'A', 'M', '0', 'W', 'I', 'D', 'E', '2', ' ', '1', 0x03, 0xF0, ':', 'B', 'L', 'N', '0', ' ', ' ', ' ', ' ', ' ', ':', 'T', 'e', 's', 't', ' ', 'H', 'C', '1', '2', '#', '#'};
+    uint8_t frameLength = sizeof(minimalFrame);
+
+      
     // shift address bytes one bit to the left
-    for(uint8_t q = 0 ; q < 21 ; q ++)
+    for(uint8_t q = 0 ; q <= lastAddressIndex ; q ++)
     {
         minimalFrame[q] = minimalFrame[q] << 1;
     }
     // set the LSB of the last address byte
-    minimalFrame[20] |= 0x01;
+    minimalFrame[lastAddressIndex] |= 0x01;
 
     // Frame Check Sequence - CRC-16-CCITT (0xFFFF)
     uint16_t crc = 0xFFFF;
@@ -105,7 +144,7 @@ void loop()
     fsk_stop_tx();
     
     // wait a bit
-    delay(10000);
+    delay(35000);
 }
 
 uint16_t crc_ccitt_update(uint16_t crc, uint8_t data)
