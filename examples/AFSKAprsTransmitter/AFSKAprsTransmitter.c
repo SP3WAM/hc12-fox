@@ -92,7 +92,7 @@ void loop()
     // 0b00111111; C=0, RR=11, SSID=15, ASCII '?' van
 
     uint8_t lastAddressIndex = 20;
-    char minimalFrame[] = "APZ000 SP3WAM0WIDE2 1\x03\xF0:BLN1     :Test HC123##";
+    char minimalFrame[] = "APZ000 SP3WAM0WIDE2 1\x03\xF0:SP3IZN   :Co jest?##";
     uint8_t frameLength = sizeof(minimalFrame);
 
     // shift address bytes one bit to the left
