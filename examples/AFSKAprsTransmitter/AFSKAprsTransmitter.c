@@ -1,4 +1,4 @@
-#include <Arduino.h>
+#include <Arduino.h>    
 #include <drivers/si4438.h>
 #include <services/modulations/fsk/fsk.h>
 #include <services/modulations/afsk/afsk.h>
@@ -92,7 +92,10 @@ void loop()
     // 0b00111111; C=0, RR=11, SSID=15, ASCII '?' van
 
     uint8_t lastAddressIndex = 20;
-    char minimalFrame[] = "APZ000 SP3WAM0WIDE2 1\x03\xF0:SP3IZN   :Co jest?##";
+
+    // there is a \0 at the end appended to the char table
+    // The checksumm will be injected at the end of the string into #\0 
+    char minimalFrame[] = "APZ000 SP3YOR0WIDE2 1\x03\xF0:ALL      :Klub SP3YOR zaprasza na spotkanie klubowe.#";
     uint8_t frameLength = sizeof(minimalFrame);
 
     // shift address bytes one bit to the left
