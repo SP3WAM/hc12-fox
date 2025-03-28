@@ -16,7 +16,7 @@
 #define COMMUNICATION_CHANNEL CHANNEL_FOX_0
 
 // Basic power levels are defined in si4438.h
-#define TRANSMISSION_POWER SI4438_17DBM_TX_POWER
+#define TRANSMISSION_POWER SI4438_15DBM_TX_POWER
 
 // Uncomment below line to have more debugs around RSSI calculations
 #define DEBUG_RSSI

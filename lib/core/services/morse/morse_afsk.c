@@ -2,7 +2,7 @@
 #include "morse_afsk.h"
 #include "../modulations/afsk/afsk.h"
 
-#define WPM 12
+#define WPM 14
 
 #define DIT_DURATION_MILLIS  (1200 / WPM)   // dot duration in milliseconds
 #define DAH_DURATION_MILLIS 3 * DIT_DURATION_MILLIS // dash duration
