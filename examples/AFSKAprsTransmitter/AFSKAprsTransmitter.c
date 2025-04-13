@@ -96,6 +96,7 @@ void loop()
     // there is a \0 at the end appended to the char table
     // The checksumm will be injected at the end of the string into #\0 
     char minimalFrame[] = "APZ000 SP3YOR0WIDE2 1\x03\xF0:ALL      :Klub SP3YOR zaprasza na spotkanie klubowe.#";
+    //!4903.50N/07201.75Wr
     uint8_t frameLength = sizeof(minimalFrame);
 
     // shift address bytes one bit to the left
