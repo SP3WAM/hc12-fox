@@ -10,7 +10,7 @@
  * FOX CONFIGURATION SECTION BEGIN
  */
 // Defines the additional SNR level (added to the current average noise level) to wake the fox up
-#define RSSI_ADDITIONAL_TRESHOLD_SNR 6
+#define RSSI_ADDITIONAL_TRESHOLD_SNR 12
 
 // Basic communication channels are defined in radio_config_channels.h
 #define COMMUNICATION_CHANNEL CHANNEL_FOX_0
