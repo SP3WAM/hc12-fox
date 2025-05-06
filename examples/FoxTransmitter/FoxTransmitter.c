@@ -19,7 +19,7 @@
 #define TRANSMISSION_POWER SI4438_MAX_TX_POWER //SI4438_15DBM_TX_POWER
 
 // Uncomment below line to have more debugs around RSSI calculations
-#define DEBUG_RSSI
+//#define DEBUG_RSSI
 
 char CALL_SIGN[] = "... .--. ...-- .-- .- --";
 char QRT[] = "--.- .-. -";
@@ -44,6 +44,7 @@ typedef struct
 uint8_t sqrt(uint16_t value);
 void update_rssi_treshold(average_rssi* averageRssi);
 void get_average_rssi(uint8_t span_millis, uint8_t samples_count, average_rssi* result);
+uint8_t get_ctcss();
 void stm8s_sleep(uint8_t tbr, uint8_t apr);
 #define STM8_S_SLEEP_250_MILLISEC() stm8s_sleep(10, 62)
 #define STM8_S_SLEEP_500_MILLISEC() stm8s_sleep(11, 62)
@@ -119,7 +120,17 @@ void loop()
         Serial_print_s("RSSI treshold is ");
         Serial_println_i(rssiTreshold);
 
-        foxState = FOX_STATE_RX;
+        // 5. check for CTCSS tone
+
+        fsk_init_rx_raw_direct_async();
+        fsk_start_rx(COMMUNICATION_CHANNEL);
+        uint32_t ctcss = afsk_read_ctcss();
+        Serial_print_s("CTCSS is ");
+        Serial_println_i(ctcss);
+
+        // stay in the FOX_STATE_RSSI forever - just for tests
+        //foxState = FOX_STATE_RX;
+        delay(500);
         return;
     }
 
@@ -214,7 +225,7 @@ void loop()
                 morse_afsk_send_word(QRT);
                 delay(500);
 
-                fsk_stop_tx();
+                fsk_stop_txrx();
 
                 // don't sleep after the last transmition cycle 
             }
@@ -234,7 +245,7 @@ void loop()
                     delay(500);
                 }
 
-                fsk_stop_tx();
+                fsk_stop_txrx();
 
                 // sleep for 40 seconds
                 si4438_enter_sleep_state();
@@ -303,6 +314,20 @@ void get_average_rssi(uint8_t span_millis, uint8_t samples_count, average_rssi* 
 
     result->rssi = averageRssi;
     result->deviation = deviation;
+}
+
+uint8_t get_ctcss()
+{
+    // enter 2FSK RX
+    fsk_init_rx_raw_direct_async();
+
+    // get CTCSS
+    uint8_t ctcss = afsk_read_ctcss();
+
+    // enter ready mode
+    fsk_stop_txrx();
+
+    return ctcss;
 }
 
 uint8_t sqrt(uint16_t value)

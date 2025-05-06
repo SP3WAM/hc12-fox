@@ -4,6 +4,8 @@
 #include "si4438.h"
 //#include "../radio_config_Si4438_434_100.h"
 #include "../radio_config_Si4438_432_500.h"
+//#include "../radio_config_Si4438_432_500_dev_1kHz.h"
+//#include "../radio_config_Si4438_432_500_dev_750Hz.h"
 
 #define NEW_HC_12 //new version of HC-12 has different pin setting
 

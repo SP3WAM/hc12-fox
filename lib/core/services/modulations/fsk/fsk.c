@@ -43,7 +43,7 @@ bool fsk_init_tx_pseudo_sync_2fsk()
         return false;
     }
 
-    return fsk_stop_tx();
+    return fsk_stop_txrx();
 }
 
 bool fsk_init_tx_direct_sync_2fsk()
@@ -84,7 +84,7 @@ bool fsk_init_tx_direct_sync_2fsk()
         return false;
     }
 
-    return fsk_stop_tx();
+    return fsk_stop_txrx();
 }
 
 bool fsk_init_tx_direct_sync_2gfsk()
@@ -125,7 +125,54 @@ bool fsk_init_tx_direct_sync_2gfsk()
         return false;
     }
 
-    return fsk_stop_tx();
+    return fsk_stop_txrx();
+}
+
+bool fsk_init_rx_raw_direct_async()
+{
+    // configure GPIO of STM8
+    // Configure both GPIOs as input pull up.
+    // GPIO1 -> PC3 as input pull up
+    pinMode(PC3, INPUT_PULLUP);
+    //digitalWrite(PC3, HIGH);
+    // GPIO0 <- PB4 as input pull up
+    pinMode(PB4, INPUT_PULLUP);
+    digitalWrite(PB4, HIGH);
+
+    // configure GPIO of Si44xx
+    uint8_t gpioCmd[8];
+    gpioCmd[0] = SI4438_CMD_GPIO_PIN_CFG;
+    gpioCmd[1] = 0b00010101; // GPIO0: RX_RAW_DATA Outputs the demodulated RX Raw Data stream, prior to synchronization and re-timing by the local RX Data Clock.
+    
+    // to działa kiepsko do rozpoznania CTCSS - nie rozpoznanje za dużo zmian na pinie
+    // gpioCmd[1] = 0b00010100; // GPIO0: RX_DATA Outputs the demodulated RX Data stream, after synchronization and re-timing by the local RX Data Clock.
+
+    // z pull upem to kiepsko rozpoznaje, normalnie jest ok 10000 a jak wcisne PTT to spada do < 5
+    //gpioCmd[1] = 0b01010101; // GPIO0: pull up enabled, RX_RAW_DATA Outputs the demodulated RX Raw Data stream, prior to synchronization and re-timing by the local RX Data Clock.
+    gpioCmd[2] = 0b00000001; // GPIO1: TRISTATE Input and output drivers disabled.
+    gpioCmd[3] = 0b00000010; // GPIO2: CMOS output driven low, pull up disabled. Sets the RF switch into RX mode.
+    gpioCmd[4] = 0b00000011; // GPIO3: CMOS output driven high, pull up disabled. Sets the RF switch into RX mode.
+    gpioCmd[5] = 0x00; // NIRQ
+    gpioCmd[6] = 0x00; // SDO
+    gpioCmd[7] = 0x00; // GEN_CONFIG
+
+    if(si4438_doAPI(gpioCmd, sizeof(gpioCmd), NULL, 0) == false)
+    {
+        return false;
+    }
+
+    // configure 2FSK Tx Synchronous DIRECT mode
+    //   TX_DIRECT_MODE_TYPE[0] = 0b0;   SYNC Direct mode operates in synchronous mode, applies to TX only.
+    // TX_DIRECT_MODE_GPIO[1:0] = 0b00;  GPIO0 RX direct mode uses GPIO0 as data source.
+    //          MOD_SOURCE[1:0] = 0b01;  DIRECT The modulation is sourced in real-time from a GPIO pin. Applies to TX or RX.
+    //            MOD_TYPE[2:0] = 0b011; 2GFSK
+    uint8_t value = 0b00001011;
+    if(si4438_setProperty(SI44338_PROPERTY_MODEM_MOD_TYPE, value) == false)
+    {
+        return false;
+    }
+
+    return fsk_stop_txrx();
 }
 
 bool fsk_start_tx(uint8_t channel)
@@ -135,7 +182,12 @@ bool fsk_start_tx(uint8_t channel)
     return si4438_enter_tx_state(channel);
 }
 
-bool fsk_stop_tx()
+bool fsk_start_rx(uint8_t channel)
+{
+    return si4438_enter_rx_state(channel);
+}
+
+bool fsk_stop_txrx()
 {
     digitalWrite(PB4, LOW);
 

@@ -24,15 +24,22 @@ bool fsk_init_tx_direct_sync_2fsk();
  */
 bool fsk_init_tx_direct_sync_2gfsk();
 
+bool fsk_init_rx_raw_direct_async();
+
 /*
  * Starts the FSK transmition on specific channel.
  */
 bool fsk_start_tx(uint8_t channel);
 
 /*
+ * Starts the FSK reception on specific channel.
+ */
+bool fsk_start_rx(uint8_t channel);
+
+/*
  * Stops the FSK transmition.
  */
-bool fsk_stop_tx();
+bool fsk_stop_txrx();
 
 /*
  * Transmits bit HIGH.

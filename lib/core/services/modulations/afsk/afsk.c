@@ -32,6 +32,108 @@ bool afsk_tone(uint16_t freqHz, unsigned long durationUs)
     while(micros() - start < durationUs);
 }
 
+volatile uint32_t afsk_data_in_rising_counter = 0;
+void afsk_data_in_rising_interrupt() 
+{
+    afsk_data_in_rising_counter ++;
+}
+
+uint32_t afsk_read_ctcss()
+{
+    afsk_data_in_rising_counter = 0;
+
+    // // attach and enable the interrupt
+    // attachInterrupt(PB4, afsk_data_in_rising_interrupt, RISING);
+    // sim();
+    // EXTI->CR1 |= 0b1000;
+    // ITC->ISPR2 |= 0b01;
+    // GPIOB->CR2 |= (1 < PB4);
+    // rim();
+    // // count and wait 500ms
+    // delay(500);
+    // // detach and disable the interrupt
+    // GPIOB->CR2 &= ~(1 < PB4);
+    // detachInterrupt(PB4);
+
+    // to poniżej nie dziuała
+    // pinMode(PB5, INPUT_PULLUP);
+    // attachInterrupt(PB5, afsk_data_in_rising_interrupt, RISING);
+    // sim();
+    // EXTI->CR1 |= 0b1000; // falling edge for entire port B
+    // ITC->ISPR2 |= 0b01; // priority 1 for entire port Vector 4
+    // GPIOB->CR2 |= (1 < PB5); // enable interrupt for PB5
+    // rim();
+    // // count and wait 500ms
+    // delay(500);
+    // // detach and disable the interrupt
+    // GPIOB->CR2 &= ~(1 < PB5);
+    // detachInterrupt(PB5);
+
+    // inne podejscie
+    // pinMode(PB5, INPUT_PULLUP);
+    // GPIO_Init(GPIOB, GPIO_PIN_5, GPIO_MODE_IN_FL_IT);
+    // disableInterrupts();
+    // EXTI_SetExtIntSensitivity( EXTI_PORT_GPIOB, EXTI_SENSITIVITY_RISE_ONLY);
+    // enableInterrupts();
+    // attachInterrupt(INT_PORTB & 0xFF, afsk_data_in_rising_interrupt, 0);
+
+    // to działa poprawnie (jest LOW na wyjsciu):
+    // pinMode(PB5, OUTPUT);
+    // digitalWrite(PB5, LOW);
+    
+    // to działa poprawnie (jest HIGH na wyjsciu):
+    // pinMode(PB5, OUTPUT);
+    // digitalWrite(PB5, LOW);
+    
+    // to działa poprawnie (jest HIGH na wyjściu)
+    // GPIO_Init(GPIOB, GPIO_PIN_5, GPIO_MODE_OUT_OD_LOW_FAST);
+    // digitalWrite(PB5, HIGH);
+    
+    // to działa poprawnie (jest LOW na wyjsciu)
+    // GPIO_Init(GPIOB, GPIO_PIN_5, GPIO_MODE_OUT_OD_LOW_FAST);
+    // digitalWrite(PB5, LOW);
+
+    // to działa poprawnie (jest LOW na wyjściu)
+    //GPIO_Init(GPIOB, GPIO_PIN_5, GPIO_MODE_OUT_OD_LOW_FAST);
+
+    // to działa poprawnie (jest HIGH na wyjściu)
+    //GPIO_Init(GPIOB, GPIO_PIN_5, GPIO_MODE_OUT_PP_HIGH_SLOW);
+
+    // to też działa ()
+    // GPIO_Init(GPIOB, GPIO_PIN_5, GPIO_MODE_IN_PU_NO_IT);
+    // digitalRead(PB5);
+
+    // to też działa
+    // pinMode(PB5, INPUT);
+    // digitalWrite(PB5, HIGH);
+
+    // trzecie podejscie działa na PB5
+    pinMode(PB4, INPUT);
+    digitalWrite(PB4, HIGH);
+    //GPIO_Init(GPIOB, GPIO_PIN_5, GPIO_MODE_IN_FL_IT); // dziwne, program sie zatrzymuje jak zewrę pin do masy
+    GPIO_Init(GPIOB, GPIO_PIN_4, GPIO_MODE_IN_PU_IT); // tu też się jakby program blokował przy zwarciu pinu do masy
+    disableInterrupts();
+    EXTI_SetExtIntSensitivity( EXTI_PORT_GPIOB, EXTI_SENSITIVITY_RISE_ONLY);  
+    enableInterrupts();
+    attachInterrupt(INT_PORTB & 0xFF, afsk_data_in_rising_interrupt, 0);
+
+    int val = digitalRead(PB5);
+    if(val == 0)
+    {
+       Serial_println_s("0");
+    }
+    else
+    {
+       Serial_println_s("1");
+    }
+    // meassure the CTSS counter in the interrupt routine
+    delay(500);
+    detachInterrupt(INT_PORTB & 0xFF);
+
+    // return the value
+    return 2 * afsk_data_in_rising_counter;
+}
+
 void afsk_send_aprs_init()
 {
     lastSentSymbol = 0;
