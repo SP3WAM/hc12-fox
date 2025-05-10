@@ -1,14 +1,17 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define SI4438_MAX_TX_POWER 127
+#define SI4438_MIN_TX_POWER     0  // -35dBm (~0.0003mW)
+#define SI4438_MAX_TX_POWER   127  //  20dBm (100mW)
+#define SI4438_NEG10DBM_TX_POWER 3 // 0.1mW
+#define SI4438_00DBM_TX_POWER   6  // 1mW
 #define SI4438_10DBM_TX_POWER  20  // 10mW
 #define SI4438_13DBM_TX_POWER  28  // 20mW
 #define SI4438_15DBM_TX_POWER  35  // 30mW
 #define SI4438_16DBM_TX_POWER  40  // 40mW
 #define SI4438_17DBM_TX_POWER  48  // 50mW
 #define SI4438_20DBM_TX_POWER  SI4438_MAX_TX_POWER  // 100mW
-#define SI4438_MIN_TX_POWER 0
+
 
 #define SI4438_CMD_PART_INFO 0x01
 #define SI4438_CMD_POWER_UP 0x02
