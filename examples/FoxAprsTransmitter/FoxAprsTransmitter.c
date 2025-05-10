@@ -13,13 +13,15 @@
 #define RSSI_ADDITIONAL_TRESHOLD_SNR 12
 
 // Basic communication channels are defined in radio_config_channels.h
-#define COMMUNICATION_CHANNEL CHANNEL_FOX_0
+#define COMMUNICATION_CHANNEL CHANNEL_FOX_2
 
 // Basic power levels are defined in si4438.h
 #define TRANSMISSION_POWER SI4438_15DBM_TX_POWER
 
+#define TRANSMISSION_APRS_POWER SI4438_NEG10DBM_TX_POWER // Yaesu-FT2D radio decodes APRS message from the distance lower than 200m
+
 // Uncomment below line to have more debugs around RSSI calculations
-#define DEBUG_RSSI
+//#define DEBUG_RSSI
 
 char CALL_SIGN[] = "... .--. ...-- .-- .- --";
 char QRT[] = "--.- .-. -";
@@ -189,14 +191,19 @@ void loop()
         {
             fsk_start_tx(COMMUNICATION_CHANNEL);
             delay(500); // so the squelch on receiver could be opened
-
-            // send APRS message
-            send_aprs_message();
-            delay(500);
+            
+            si4438_set_tx_power(TRANSMISSION_POWER);
 
             // at first send call sign
             morse_afsk_send_word(CALL_SIGN);
             delay(500);
+
+            // send APRS message begin
+            si4438_set_tx_power(TRANSMISSION_APRS_POWER);
+            send_aprs_message();
+            delay(500);
+            si4438_set_tx_power(TRANSMISSION_POWER);
+            // send APRS message end
 
             // transmit beeps for 20 seconds and sleep for 40 seconds
             if(w == maxMinutes - 1)
