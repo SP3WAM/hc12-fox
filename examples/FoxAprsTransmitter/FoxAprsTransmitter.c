@@ -16,7 +16,7 @@
 #define COMMUNICATION_CHANNEL CHANNEL_FOX_0
 
 // Basic power levels are defined in si4438.h
-#define TRANSMISSION_POWER SI4438_MAX_TX_POWER //SI4438_15DBM_TX_POWER
+#define TRANSMISSION_POWER SI4438_15DBM_TX_POWER
 
 // Uncomment below line to have more debugs around RSSI calculations
 #define DEBUG_RSSI
@@ -44,6 +44,12 @@ typedef struct
 uint8_t sqrt(uint16_t value);
 void update_rssi_treshold(average_rssi* averageRssi);
 void get_average_rssi(uint8_t span_millis, uint8_t samples_count, average_rssi* result);
+// APRS begin
+void send_aprs_message();
+uint16_t crc_ccitt_update(uint16_t crc, uint8_t data);
+#define lo8(x) ((x)&0xff)
+#define hi8(x) ((x)>>8)
+// APRS end
 void stm8s_sleep(uint8_t tbr, uint8_t apr);
 #define STM8_S_SLEEP_250_MILLISEC() stm8s_sleep(10, 62)
 #define STM8_S_SLEEP_500_MILLISEC() stm8s_sleep(11, 62)
@@ -184,6 +190,10 @@ void loop()
             fsk_start_tx(COMMUNICATION_CHANNEL);
             delay(500); // so the squelch on receiver could be opened
 
+            // send APRS message
+            send_aprs_message();
+            delay(500);
+
             // at first send call sign
             morse_afsk_send_word(CALL_SIGN);
             delay(500);
@@ -317,6 +327,44 @@ uint8_t sqrt(uint16_t value)
     }
     
     return 20;
+}
+
+void send_aprs_message()
+{
+    uint8_t lastAddressIndex = 20;
+    char minimalFrame[] = "APZ000 SP3YOR0WIDE2 1\x03\xF0:ALL      :Klub SP3YOR zaprasza na spotkanie klubowe.#";
+    uint8_t frameLength = sizeof(minimalFrame);
+    
+    // shift address bytes one bit to the left
+    for(uint8_t q = 0 ; q <= lastAddressIndex ; q ++)
+    {
+        minimalFrame[q] = minimalFrame[q] << 1;
+    }
+    // set the LSB of the last address byte
+    minimalFrame[lastAddressIndex] |= 0x01;
+
+    // Frame Check Sequence - CRC-16-CCITT (0xFFFF)
+    uint16_t crc = 0xFFFF;
+    for(uint16_t i = 0; i < frameLength - 2; i++)
+    {
+        crc = crc_ccitt_update(crc, minimalFrame[i]);
+    }
+    crc = ~crc;                              // flip the bits
+    minimalFrame[frameLength - 2] = crc & 0xFF;           // FCS is sent low-byte first
+    minimalFrame[frameLength - 1] = (crc >> 8) & 0xFF;
+
+    // init APRS transmition
+    afsk_send_aprs_init();
+    // send APRS packet
+    afsk_send_aprs_packet(minimalFrame, frameLength);
+}
+
+uint16_t crc_ccitt_update(uint16_t crc, uint8_t data)
+{
+	data ^= lo8 (crc);
+	data ^= data << 4;
+	
+	return ((((uint16_t)data << 8) | hi8 (crc)) ^ (uint8_t)(data >> 4) ^ ((uint16_t)data << 3));
 }
 
 void stm8s_sleep(uint8_t tbr, uint8_t apr)
