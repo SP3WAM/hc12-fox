@@ -13,10 +13,10 @@
 #define RSSI_ADDITIONAL_TRESHOLD_SNR 12
 
 // Basic communication channels are defined in radio_config_channels.h
-#define COMMUNICATION_CHANNEL CHANNEL_FOX_0
+#define COMMUNICATION_CHANNEL CHANNEL_FOX_2
 
 // Basic power levels are defined in si4438.h
-#define TRANSMISSION_POWER SI4438_MAX_TX_POWER //SI4438_15DBM_TX_POWER
+#define TRANSMISSION_POWER SI4438_16DBM_TX_POWER
 
 // Uncomment below line to have more debugs around RSSI calculations
 #define DEBUG_RSSI
@@ -177,9 +177,8 @@ void loop()
         // 1. go to TX state
         fsk_init_tx_direct_sync_2gfsk();
 
-        // 2. transmition cycle: 10 minutes
-        uint8_t maxMinutes = 10;
-        for(uint8_t w = 0 ; w < maxMinutes ; w ++)
+        // 2. nine transmition cycles (around 9 minutes in total): standard beeps
+        for(uint8_t w = 0 ; w < 9 ; w ++)
         {
             fsk_start_tx(COMMUNICATION_CHANNEL);
             delay(500); // so the squelch on receiver could be opened
@@ -188,62 +187,60 @@ void loop()
             morse_afsk_send_word(CALL_SIGN);
             delay(500);
 
-            // transmit beeps for 20 seconds and sleep for 40 seconds
-            if(w == maxMinutes - 1)
+            // standard beeps in the cycle
+            for(uint8_t q = 0 ; q < 8 ; q ++)
             {
-                // the last beeps in the whole cycle
-                // make it beep faster to signalise
-                // it will go to sleep
-                for(uint8_t q = 0 ; q < 8 ; q ++)
-                {
-                    Serial_print_s("TX beep no. ");
-                    Serial_println_i(q);
+                Serial_print_s("TX beep no. ");
+                Serial_println_i(q);
 
-                    afsk_tone(900, 500000ul);
-                    delay(250);
-                    afsk_tone(900, 500000ul);
-                    delay(250);
-                    afsk_tone(900, 500000ul);
-                    delay(250);
-                    afsk_tone(900, 500000ul);
-                    delay(250);
-                }
-
-                // send QRT signal
+                afsk_tone(700, 500000ul);
+                delay(250);
+                afsk_tone(800, 500000ul);
+                delay(250);
+                afsk_tone(900, 500000ul);
                 delay(500);
-                morse_afsk_send_word(QRT);
-                delay(500);
-
-                fsk_stop_tx();
-
-                // don't sleep after the last transmition cycle 
             }
-            else
-            {
-                // standard beeps in the cycle
-                for(uint8_t q = 0 ; q < 8 ; q ++)
-                {
-                    Serial_print_s("TX beep no. ");
-                    Serial_println_i(q);
 
-                    afsk_tone(700, 500000ul);
-                    delay(250);
-                    afsk_tone(800, 500000ul);
-                    delay(250);
-                    afsk_tone(900, 500000ul);
-                    delay(500);
-                }
+            fsk_stop_tx();
 
-                fsk_stop_tx();
-
-                // sleep for 40 seconds
-                si4438_enter_sleep_state();
-                STM8_S_SLEEP_20_SEC();
-                STM8_S_SLEEP_20_SEC();
-            }
+            // sleep for 40 seconds
+            si4438_enter_sleep_state();
+            STM8_S_SLEEP_20_SEC();
+            STM8_S_SLEEP_20_SEC();
         }
 
-        // 3. go to FOX_STATE_RSSI state
+        // 3. last transmition (around 1 minute in total): fast beeps
+        fsk_start_tx(COMMUNICATION_CHANNEL);
+        delay(500); // so the squelch on receiver could be opened
+        // at first send call sign
+        morse_afsk_send_word(CALL_SIGN);
+        delay(500);
+        // beep faster to signalise it will go to sleep
+        for(uint8_t q = 0 ; q < 8 ; q ++)
+        {
+            Serial_print_s("TX beep no. ");
+            Serial_println_i(q);
+
+            afsk_tone(900, 500000ul);
+            delay(250);
+            afsk_tone(900, 500000ul);
+            delay(250);
+            afsk_tone(900, 500000ul);
+            delay(250);
+            afsk_tone(900, 500000ul);
+            delay(250);
+        }
+
+        // send QRT signal
+        delay(500);
+        morse_afsk_send_word(QRT);
+        delay(500);
+
+        fsk_stop_tx();
+
+        // don't sleep after the last transmition cycle 
+
+        // 4. go to FOX_STATE_RSSI state
         foxState = FOX_STATE_RSSI;
 
         return;

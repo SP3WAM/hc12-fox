@@ -4,5 +4,5 @@
 //#include "../examples/AFSKAprsTransmitter/AFSKAprsTransmitter.c"
 //#include "../examples/MelodyPlayer/MelodyPlayer.c"
 //#include "../examples/NewYearsBalloon/NewYearsBalloon.c"
-//#include "../examples/FoxTransmitter/FoxTransmitter.c"
-#include "../examples/FoxAprsTransmitter/FoxAprsTransmitter.c"
+#include "../examples/FoxTransmitter/FoxTransmitter.c"
+//#include "../examples/FoxAprsTransmitter/FoxAprsTransmitter.c"
