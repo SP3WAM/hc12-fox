@@ -13,10 +13,13 @@
 #define RSSI_ADDITIONAL_TRESHOLD_SNR 12
 
 // Basic communication channels are defined in radio_config_channels.h
-#define COMMUNICATION_CHANNEL CHANNEL_FOX_2
+#define COMMUNICATION_CHANNEL CHANNEL_FOX_0
 
-// Basic power levels are defined in si4438.h
+// Basic transmission power; allows to locate the fox from far distance
 #define TRANSMISSION_POWER SI4438_16DBM_TX_POWER
+
+// Nearby transmission power; helps for fine fox locating when the receiver is nearby the fox
+#define TRANSMISSION_NEARBY_POWER SI4438_NEG8DBM_TX_POWER
 
 // Uncomment below line to have more debugs around RSSI calculations
 #define DEBUG_RSSI
@@ -177,17 +180,18 @@ void loop()
         // 1. go to TX state
         fsk_init_tx_direct_sync_2gfsk();
 
-        // 2. nine transmition cycles (around 9 minutes in total): standard beeps
+        // 2. nine transmition cycles (around 9 * 65s = 585s = 9m45s in total): standard beeps
         for(uint8_t w = 0 ; w < 9 ; w ++)
         {
             fsk_start_tx(COMMUNICATION_CHANNEL);
+            si4438_set_tx_power(TRANSMISSION_POWER);
             delay(500); // so the squelch on receiver could be opened
 
-            // at first send call sign
+            // at first send call sign (around 5 seconds)
             morse_afsk_send_word(CALL_SIGN);
             delay(500);
 
-            // standard beeps in the cycle
+            // standard beeps in the cycle (around 20 seconds)
             for(uint8_t q = 0 ; q < 8 ; q ++)
             {
                 Serial_print_s("TX beep no. ");
@@ -201,16 +205,20 @@ void loop()
                 delay(500);
             }
 
+            // transmit with low power (around 20 seconds)
+            si4438_set_tx_power(TRANSMISSION_NEARBY_POWER);
+            afsk_tone(800, 20000000ul);
+
             fsk_stop_tx();
 
-            // sleep for 40 seconds
+            // sleep for 20 seconds
             si4438_enter_sleep_state();
-            STM8_S_SLEEP_20_SEC();
             STM8_S_SLEEP_20_SEC();
         }
 
-        // 3. last transmition (around 1 minute in total): fast beeps
+        // 3. last transmition (around 30 seconds in total): fast beeps
         fsk_start_tx(COMMUNICATION_CHANNEL);
+        si4438_set_tx_power(TRANSMISSION_POWER);
         delay(500); // so the squelch on receiver could be opened
         // at first send call sign
         morse_afsk_send_word(CALL_SIGN);
