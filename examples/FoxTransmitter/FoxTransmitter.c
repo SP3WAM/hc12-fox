@@ -16,15 +16,15 @@
 #define COMMUNICATION_CHANNEL CHANNEL_FOX_0
 
 // Basic transmission power; allows to locate the fox from far distance
-#define TRANSMISSION_POWER SI4438_16DBM_TX_POWER
+#define TRANSMISSION_POWER SI4438_17DBM_TX_POWER
 
 // Nearby transmission power; helps for fine fox locating when the receiver is nearby the fox
-#define TRANSMISSION_NEARBY_POWER SI4438_NEG8DBM_TX_POWER
+#define TRANSMISSION_NEARBY_POWER SI4438_NEG21DBM_TX_POWER
 
 // Uncomment below line to have more debugs around RSSI calculations
 #define DEBUG_RSSI
 
-char CALL_SIGN[] = "... .--. ...-- .-- .- --";
+char CALL_SIGN[] = "... .--. ...-- .. --.. -.";
 char QRT[] = "--.- .-. -";
 /*
  * FOX CONFIGURATION SECTION END
