@@ -14,3 +14,13 @@
 #define CHANNEL_FOX_7 156 // 434.450 MHz
 #define CHANNEL_FOX_8 160 // 434.500 MHz
 #define CHANNEL_FOX_9 164 // 434.550 MHz this is the last possible channel according to IARU Region 1 UHF band plan
+
+// Additional fox subchannels available between the main channels
+#define CHANNEL_FOX_1s0 CHANNEL_FOX_1 // subchannel with index 0
+#define CHANNEL_FOX_1s1 133 // 434.1625 subchannel with index 1
+#define CHANNEL_FOX_1s2 134 // 434.175  subchannel with index 2
+#define CHANNEL_FOX_1s3 135 // 434.1875 subchannel with index 3
+#define CHANNEL_FOX_4s0 CHANNEL_FOX_4 // ubchannel with index 0
+#define CHANNEL_FOX_4s1 145 // 434.3125 // subchannel with index 1
+#define CHANNEL_FOX_4s2 146 // 434.325  // subchannel with index 2
+#define CHANNEL_FOX_4s3 147 // 434.3375 // subchannel with index 3
