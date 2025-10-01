@@ -24,7 +24,7 @@
 // Uncomment below line to have more debugs around RSSI calculations
 #define DEBUG_RSSI
 
-char CALL_SIGN[] = "... .--. ...-- .. --.. -.";
+char CALL_SIGN[] = "... .--. ...-- .-- .- --";
 char QRT[] = "--.- .-. -";
 /*
  * FOX CONFIGURATION SECTION END
