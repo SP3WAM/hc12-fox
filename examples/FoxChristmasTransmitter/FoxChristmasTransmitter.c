@@ -6,6 +6,9 @@
 #include <services/morse/morse_afsk.h>
 #include <radio_config_channels.h>
 
+#include <services/player/melody_player.h>
+#include <services/player/songs/last_christmas.h>
+
 /*
  * FOX CONFIGURATION SECTION BEGIN
  */
@@ -190,6 +193,14 @@ void loop()
             // at first send call sign (around 5 seconds)
             morse_afsk_send_word(CALL_SIGN);
             delay(500);
+
+            if(w == 0)
+            {
+                int lastChristmasNotesCount = sizeof(last_christmas) / sizeof(last_christmas[0]);
+                play_melody(last_christmas, lastChristmasNotesCount);
+
+                continue;
+            }
 
             // standard beeps in the cycle (around 20 seconds)
             for(uint8_t q = 0 ; q < 8 ; q ++)
