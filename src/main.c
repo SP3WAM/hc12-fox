@@ -6,4 +6,5 @@
 //#include "../examples/NewYearsBalloon/NewYearsBalloon.c"
 //#include "../examples/FoxTransmitter/FoxTransmitter.c"
 //#include "../examples/FoxAprsTransmitter/FoxAprsTransmitter.c"
-#include "../examples/FoxConstantTransmitter/FoxConstantTransmitter.c"
+//#include "../examples/FoxConstantTransmitter/FoxConstantTransmitter.c"
+#include "../examples/FoxChristmasTransmitter/FoxChristmasTransmitter.c"
