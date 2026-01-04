@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include "morse_afsk.h"
-#include "../modulations/afsk/afsk.h"
+#include "../modulations/afsk/afsk_tone.h"
 
 #define WPM 20
 

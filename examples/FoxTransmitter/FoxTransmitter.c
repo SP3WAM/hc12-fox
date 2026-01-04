@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <drivers/si4438.h>
 #include <services/modulations/fsk/fsk.h>
-#include <services/modulations/afsk/afsk.h>
+#include <services/modulations/afsk/afsk_tone.h>
 #include <services/modulations/cw/cw.h>
 #include <services/morse/morse_afsk.h>
 #include <radio_config_channels.h>

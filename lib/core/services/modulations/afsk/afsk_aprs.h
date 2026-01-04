@@ -1,4 +1,3 @@
-bool afsk_tone(uint16_t freqHz, unsigned long durationUs);
 
 /*
  * Prepares the state machine to send APRS packet
