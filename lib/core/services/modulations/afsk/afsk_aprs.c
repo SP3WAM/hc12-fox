@@ -186,6 +186,7 @@ inline void afsk_aprs_send_mark()
 
 bool bitToSend0 = false;
 
+#define TIM2_UPD_OVF_BRK_ISR_DEFINED
 INTERRUPT_HANDLER(TIM2_UPD_OVF_BRK_IRQHandler, ITC_IRQ_TIM1_OVF)
 {
     // Clear Timer 2 Status Register 1 Update Interrupt Flag (UIF) (bit 0)
