@@ -353,7 +353,7 @@ void stm8s_sleep(uint8_t tbr, uint8_t apr)
   * @param  None
   * @retval None
   */
-#define AWU_ISR_DEFINED
+#define AWU_IRQHandler_DEFINED
 INTERRUPT_HANDLER(AWU_IRQHandler, 1)
 {
     AWU->CSR &= (uint8_t)(~AWU_CSR_AWUF);

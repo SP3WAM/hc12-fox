@@ -1,3 +1,7 @@
+#ifndef SERVICES_MODULATIONS_AFSK_AFSK_APRS_H
+#define SERVICES_MODULATIONS_AFSK_AFSK_APRS_H
+
+#define TIM2_UPD_OVF_BRK_IRQHandler_DEFINED
 
 /*
  * Prepares the state machine to send APRS packet
@@ -15,3 +19,5 @@ void afsk_send_aprs_init();
  * 3. sending the flags after the packet
  */
 void afsk_send_aprs_packet(char* packet, uint8_t length);
+
+#endif
