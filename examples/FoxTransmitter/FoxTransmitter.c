@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <drivers/stm8_sleep.h>
 #include <drivers/si4438.h>
 #include <services/modulations/fsk/fsk.h>
 #include <services/modulations/afsk/afsk_tone.h>
@@ -47,12 +48,6 @@ typedef struct
 uint8_t sqrt(uint16_t value);
 void update_rssi_treshold(average_rssi* averageRssi);
 void get_average_rssi(uint8_t span_millis, uint8_t samples_count, average_rssi* result);
-void stm8s_sleep(uint8_t tbr, uint8_t apr);
-#define STM8_S_SLEEP_250_MILLISEC() stm8s_sleep(10, 62)
-#define STM8_S_SLEEP_500_MILLISEC() stm8s_sleep(11, 62)
-#define STM8_S_SLEEP_2_25_SEC() stm8s_sleep(14, 28)
-#define STM8_S_SLEEP_5_SEC() stm8s_sleep(14, 62)
-#define STM8_S_SLEEP_20_SEC() stm8s_sleep(15, 41)
 
 void setup()
 {
@@ -322,39 +317,4 @@ uint8_t sqrt(uint16_t value)
     }
     
     return 20;
-}
-
-void stm8s_sleep(uint8_t tbr, uint8_t apr)
-{
-    // How to calculate the register values:
-    // RM0016_STM8S_and_STM8AF.pdf page 116 Table 25
-
-    // Set the TimeBase
-    AWU->TBR &= (uint8_t)(~AWU_TBR_AWUTB);
-    AWU->TBR |= tbr;
-    // Set the APR divider
-    AWU->APR &= (uint8_t)(~AWU_APR_APR);
-    AWU->APR |= apr;
-
-    // Enable AWU peripheral
-    AWU->CSR |= AWU_CSR_AWUEN;
-
-    //... and enter halt mode. AWU will wake it up after specific amount of time.
-    halt();
-
-    // Disable AWU peripheral
-    AWU->CSR &= (uint8_t)(~AWU_CSR_AWUEN);
-    // No AWU timebase
-    AWU->TBR = (uint8_t)(~AWU_TBR_AWUTB);
-}
-
-/**
-  * @brief Auto Wake Up Interrupt routine.
-  * @param  None
-  * @retval None
-  */
-#define AWU_IRQHandler_DEFINED
-INTERRUPT_HANDLER(AWU_IRQHandler, 1)
-{
-    AWU->CSR &= (uint8_t)(~AWU_CSR_AWUF);
 }
