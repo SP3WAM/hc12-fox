@@ -3,7 +3,7 @@
 #include "si4438.h"
 
 // Uncomment below line to have more debugs around RSSI calculations
-#define DEBUG_RSSI
+// #define DEBUG_RSSI
 
 uint8_t sqrt(uint16_t value);
 
