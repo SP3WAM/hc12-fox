@@ -96,7 +96,7 @@ void loop()
 
         // 2. meassure average RSSI
         average_rssi averageRssi;
-        get_average_rssi(1, 32, &averageRssi);
+        si4438_get_average_rssi(1, 32, &averageRssi);
         // 3. display average RSSI
         Serial_print_s("RSSI average is ");
         Serial_println_i(averageRssi.rssi);
@@ -124,7 +124,7 @@ void loop()
         // especially deviation goes drastically low (i.e. from value of 11 to 4) 
         delay(5);
         average_rssi averageRssi;
-        get_average_rssi(1, 32, &averageRssi);
+        si4438_get_average_rssi(1, 32, &averageRssi);
         Serial_print_s("RX avgRSSI = ");
         Serial_print_i(averageRssi.rssi);
         Serial_print_s("  current trshRSSI = ");
@@ -138,7 +138,7 @@ void loop()
             do
             {
                 delay(500);
-                get_average_rssi(1, 32, &averageRssi);
+                si4438_get_average_rssi(1, 32, &averageRssi);
             } while ((millis() - start < 10000) && (averageRssi.rssi >= rssiTreshold));
             
             foxState = FOX_STATE_TX;

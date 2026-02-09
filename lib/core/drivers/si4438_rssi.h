@@ -10,8 +10,6 @@ typedef struct
 } average_rssi;
 
 
-void get_average_rssi(uint8_t span_millis, uint8_t samples_count, average_rssi* result);
-
-uint8_t sqrt(uint16_t value);
+void si4438_get_average_rssi(uint8_t span_millis, uint8_t samples_count, average_rssi* result);
 
 #endif

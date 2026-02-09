@@ -5,7 +5,9 @@
 // Uncomment below line to have more debugs around RSSI calculations
 #define DEBUG_RSSI
 
-void get_average_rssi(uint8_t span_millis, uint8_t samples_count, average_rssi* result)
+uint8_t sqrt(uint16_t value);
+
+void si4438_get_average_rssi(uint8_t span_millis, uint8_t samples_count, average_rssi* result)
 {
     #ifdef DEBUG_RSSI
     Serial_println_s("D get_average_rssi begin");
