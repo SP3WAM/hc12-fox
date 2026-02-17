@@ -1,5 +1,5 @@
 
-// The channel 0 - defined in the radio_config_si4438_432_500.h file - has the freq 432.500 MHz. 
+// The channel 0 has the freq 432.500 MHz. 
 // Channel step is there defined as 12.5 kHz, so this gives us the following channels:
 
 #define CHANNEL_APRS    0 // 432.500 MHz for APRS service on 70cm band

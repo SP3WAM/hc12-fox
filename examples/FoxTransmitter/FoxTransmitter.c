@@ -6,8 +6,8 @@
 #include <services/modulations/afsk/afsk_tone.h>
 #include <services/modulations/cw/cw_rx.h>
 #include <services/morse/morse_afsk.h>
-#include <radio_config_channels.h>
 #include <radio_config_Si4438_432_500.h>
+#include <radio_config_Si4438_432_500_channels.h>
 
 /*
  * FOX CONFIGURATION SECTION BEGIN
