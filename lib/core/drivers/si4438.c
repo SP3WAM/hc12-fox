@@ -2,8 +2,6 @@
 #include <SPI.h>
 #include <stdint.h>
 #include "si4438.h"
-//#include "../radio_config_Si4438_434_100.h"
-#include "../radio_config_Si4438_432_500.h"
 
 #define NEW_HC_12 //new version of HC-12 has different pin setting
 
@@ -14,8 +12,6 @@
 #endif
 #define SI4438_SDN  PD4
 #define SI4438_DIRECT_MODE_TX_PIN PB4 // connected to GPIO0 of Si4438
-
-static const uint8_t STARTUP_CONFIG[] PROGMEM = RADIO_CONFIGURATION_DATA_ARRAY;
 
 void si4438_cs_low()
 {
@@ -145,16 +141,16 @@ bool si4438_init_hw()
     return true;
 }
 
-bool si4438_apply_startup_config()
+bool si4438_apply_startup_config(const uint8_t PROGMEM *config, uint16_t config_length)
 {
     bool result = true;
     uint8_t buff[17];
-	for(uint16_t i = 0 ; i < sizeof(STARTUP_CONFIG) ; i++)
-	{
-		memcpy(buff, &STARTUP_CONFIG[i], sizeof(buff));
-		result &= si4438_doAPI(&buff[1], buff[0], NULL, 0);
-		i += buff[0];
-	}
+    for(uint16_t i = 0 ; i < config_length ; i++)
+    {
+        memcpy(buff, &config[i], sizeof(buff));
+        result &= si4438_doAPI(&buff[1], buff[0], NULL, 0);
+        i += buff[0];
+    }
 
     return result;
 }

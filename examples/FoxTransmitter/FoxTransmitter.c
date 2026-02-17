@@ -7,6 +7,7 @@
 #include <services/modulations/cw/cw_rx.h>
 #include <services/morse/morse_afsk.h>
 #include <radio_config_channels.h>
+#include <radio_config_Si4438_432_500.h>
 
 /*
  * FOX CONFIGURATION SECTION BEGIN
@@ -25,6 +26,9 @@
 
 char CALL_SIGN[] = "... .--. ...-- .-- .- --";
 char QRT[] = "--.- .-. -";
+
+static const uint8_t RADIO_STARTUP_CONFIG[] PROGMEM = RADIO_CONFIGURATION_DATA_ARRAY;
+uint16_t RADIO_STARTUP_CONFIG_LENGTH = sizeof(RADIO_STARTUP_CONFIG);
 /*
  * FOX CONFIGURATION SECTION END
 */
@@ -65,7 +69,7 @@ void setup()
     // sending startup config is mandatory (especially POWER_UP which should 
     // be the first command of this config) 
     Serial_print_s("Si4438 apply startup config... ");
-    if(si4438_apply_startup_config() == false)
+    if(si4438_apply_startup_config(RADIO_STARTUP_CONFIG, RADIO_STARTUP_CONFIG_LENGTH) == false)
     {
         Serial_println_s(" failed");
     }

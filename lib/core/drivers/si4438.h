@@ -45,7 +45,7 @@ bool si4438_get_property(uint16_t prop, uint8_t* value);
 
 bool si4438_setProperty(uint16_t prop, uint8_t value);
 
-bool si4438_apply_startup_config();
+bool si4438_apply_startup_config(const uint8_t PROGMEM *config, uint16_t config_length);
 
 /*
  * PA Power Level Configuration.
