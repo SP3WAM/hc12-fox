@@ -1,8 +1,7 @@
 #include <Arduino.h>
-#include "afsk.h"
+#include "afsk_aprs.h"
 #include "../fsk/fsk.h"
 
-#define MICROS_DURATIN_US 43
 #define AFSK1200_SPACE_HALF_DURATION_US (227 - 33 + 10)
 #define AFSK1200_SPACE_HALF_SHORT_DURATION_US (227 - 33 - 76 + 50)
 #define AFSK1200_MARK_HALF_DURATION_US (417 - 37 + 20)
@@ -15,22 +14,6 @@ void afsk_send_aprs_byte_no_bit_stuffing(char byte);
 void afsk_send_aprs_byte_bit_stuffing(char byte);
 void afsk_aprs_send_space();
 void afsk_aprs_send_mark();
-
-bool afsk_tone(uint16_t freqHz, unsigned long durationUs)
-{
-    unsigned long delayUs = 1000000L / freqHz / 2;
-    unsigned long secondDelayUs = delayUs - MICROS_DURATIN_US;
-    unsigned long start = micros();
-
-    do
-    {
-        fsk_tx_direct_bit_high();
-        delayMicroseconds(delayUs);
-        fsk_tx_direct_bit_low();
-        delayMicroseconds(secondDelayUs);
-    }
-    while(micros() - start < durationUs);
-}
 
 void afsk_send_aprs_init()
 {
@@ -258,4 +241,3 @@ INTERRUPT_HANDLER(TIM2_UPD_OVF_BRK_IRQHandler, ITC_IRQ_TIM1_OVF)
         intCount = 0;
     }
 }
-

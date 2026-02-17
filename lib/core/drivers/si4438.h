@@ -1,3 +1,6 @@
+#ifndef DRIVERS_SI4438_H
+#define DRIVERS_SI4438_H
+
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -76,3 +79,5 @@ bool si4438_get_func_info(uint8_t* func_info);
  * It is not a dBm meassure.
  */
 bool si4438_get_rssi(uint8_t* rssi);
+
+#endif

@@ -1,8 +1,10 @@
 #include <Arduino.h>
+#include <drivers/stm8_sleep.h>
 #include <drivers/si4438.h>
-#include <services/modulations/fsk/fsk.h>
-#include <services/modulations/afsk/afsk.h>
-#include <services/modulations/cw/cw.h>
+#include <drivers/si4438_rssi.h>
+#include <services/modulations/fsk/fsk_direct_2gfsk.h>
+#include <services/modulations/afsk/afsk_tone.h>
+#include <services/modulations/cw/cw_rx.h>
 #include <services/morse/morse_afsk.h>
 #include <radio_config_channels.h>
 
@@ -21,9 +23,6 @@
 // Nearby transmission power; helps for fine fox locating when the receiver is nearby the fox
 #define TRANSMISSION_NEARBY_POWER SI4438_NEG21DBM_TX_POWER
 
-// Uncomment below line to have more debugs around RSSI calculations
-#define DEBUG_RSSI
-
 char CALL_SIGN[] = "... .--. ...-- .-- .- --";
 char QRT[] = "--.- .-. -";
 /*
@@ -38,21 +37,7 @@ char QRT[] = "--.- .-. -";
 uint8_t foxState;
 uint16_t rssiTreshold;
 
-typedef struct
-{
-    uint8_t rssi;
-    uint8_t deviation;
-} average_rssi;
-
-uint8_t sqrt(uint16_t value);
 void update_rssi_treshold(average_rssi* averageRssi);
-void get_average_rssi(uint8_t span_millis, uint8_t samples_count, average_rssi* result);
-void stm8s_sleep(uint8_t tbr, uint8_t apr);
-#define STM8_S_SLEEP_250_MILLISEC() stm8s_sleep(10, 62)
-#define STM8_S_SLEEP_500_MILLISEC() stm8s_sleep(11, 62)
-#define STM8_S_SLEEP_2_25_SEC() stm8s_sleep(14, 28)
-#define STM8_S_SLEEP_5_SEC() stm8s_sleep(14, 62)
-#define STM8_S_SLEEP_20_SEC() stm8s_sleep(15, 41)
 
 void setup()
 {
@@ -111,7 +96,7 @@ void loop()
 
         // 2. meassure average RSSI
         average_rssi averageRssi;
-        get_average_rssi(1, 32, &averageRssi);
+        si4438_get_average_rssi(1, 32, &averageRssi);
         // 3. display average RSSI
         Serial_print_s("RSSI average is ");
         Serial_println_i(averageRssi.rssi);
@@ -139,7 +124,7 @@ void loop()
         // especially deviation goes drastically low (i.e. from value of 11 to 4) 
         delay(5);
         average_rssi averageRssi;
-        get_average_rssi(1, 32, &averageRssi);
+        si4438_get_average_rssi(1, 32, &averageRssi);
         Serial_print_s("RX avgRSSI = ");
         Serial_print_i(averageRssi.rssi);
         Serial_print_s("  current trshRSSI = ");
@@ -153,7 +138,7 @@ void loop()
             do
             {
                 delay(500);
-                get_average_rssi(1, 32, &averageRssi);
+                si4438_get_average_rssi(1, 32, &averageRssi);
             } while ((millis() - start < 10000) && (averageRssi.rssi >= rssiTreshold));
             
             foxState = FOX_STATE_TX;
@@ -263,97 +248,4 @@ void update_rssi_treshold(average_rssi* averageRssi)
     {
         rssiTreshold = 127;
     }
-}
-
-void get_average_rssi(uint8_t span_millis, uint8_t samples_count, average_rssi* result)
-{
-    #ifdef DEBUG_RSSI
-    Serial_println_s("D get_average_rssi begin");
-    #endif
-
-    uint32_t rssiSumm = 0;
-    uint32_t rssiSqSumm = 0;
-    for(uint8_t q = 0 ; q < samples_count; q++)
-    {
-        uint8_t rssi;
-        si4438_get_rssi(&rssi);
-
-        rssiSumm += rssi;
-        rssiSqSumm += ((uint16_t)rssi) * ((uint16_t)rssi);
-
-        #ifdef DEBUG_RSSI
-        Serial_print_s("D RSSI is ");
-        Serial_println_i(rssi);
-        #endif
-
-        delay(span_millis);
-    }
-    uint8_t averageRssi = rssiSumm / samples_count;
-    // https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Na%C3%AFve_algorithm
-    uint16_t variance = (rssiSqSumm - rssiSumm * rssiSumm / samples_count ) / (samples_count - 1);
-    uint8_t deviation = sqrt(variance);
-
-    #ifdef DEBUG_RSSI
-    Serial_print_s("D avgRSSI= ");
-    Serial_print_i(averageRssi);
-    Serial_print_s(" variance= ");
-    Serial_print_i(variance);
-    Serial_print_s(" deviation= ");
-    Serial_println_i(deviation);
-    #endif
-
-    #ifdef DEBUG_RSSI
-    Serial_println_s("D get_average_rssi end");
-    #endif
-
-    result->rssi = averageRssi;
-    result->deviation = deviation;
-}
-
-uint8_t sqrt(uint16_t value)
-{
-    for(uint16_t q = 0; q < 20 ; q ++)
-    {
-        uint16_t square = q * q;
-        if(square >= value)
-        {
-            return q;
-        }
-    }
-    
-    return 20;
-}
-
-void stm8s_sleep(uint8_t tbr, uint8_t apr)
-{
-    // How to calculate the register values:
-    // RM0016_STM8S_and_STM8AF.pdf page 116 Table 25
-
-    // Set the TimeBase
-    AWU->TBR &= (uint8_t)(~AWU_TBR_AWUTB);
-    AWU->TBR |= tbr;
-    // Set the APR divider
-    AWU->APR &= (uint8_t)(~AWU_APR_APR);
-    AWU->APR |= apr;
-
-    // Enable AWU peripheral
-    AWU->CSR |= AWU_CSR_AWUEN;
-
-    //... and enter halt mode. AWU will wake it up after specific amount of time.
-    halt();
-
-    // Disable AWU peripheral
-    AWU->CSR &= (uint8_t)(~AWU_CSR_AWUEN);
-    // No AWU timebase
-    AWU->TBR = (uint8_t)(~AWU_TBR_AWUTB);
-}
-
-/**
-  * @brief Auto Wake Up Interrupt routine.
-  * @param  None
-  * @retval None
-  */
-INTERRUPT_HANDLER(AWU_IRQHandler, 1)
-{
-    AWU->CSR &= (uint8_t)(~AWU_CSR_AWUF);
 }
