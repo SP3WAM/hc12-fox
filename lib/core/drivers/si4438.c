@@ -3,24 +3,26 @@
 #include <stdint.h>
 #include "si4438.h"
 
-#define NEW_HC_12 //new version of HC-12 has different pin setting
+// Various HC-12 modules are found on the market with a different pin being used to drive nSEL of SI4438:
+// On modules where PD2 is used, pin PD3 is left floating.
+// On modules where PD3 is used, pin PD2 is left floating.
+// Because of that, the library can drive both pins at the same time to cover different HC-12 modules.
+#define SI4438_nSEL_1 PD2
+#define SI4438_nSEL_2 PD3
 
-#ifdef NEW_HC_12
-  #define SI4438_nSEL PD3
-#else
-  #define SI4438_nSEL PD2
-#endif
 #define SI4438_SDN  PD4
 #define SI4438_DIRECT_MODE_TX_PIN PB4 // connected to GPIO0 of Si4438
 
 void si4438_cs_low()
 {
-    digitalWrite(SI4438_nSEL, LOW);
+    digitalWrite(SI4438_nSEL_1, LOW);
+    digitalWrite(SI4438_nSEL_2, LOW);
 }
 
 void si4438_cs_high()
 {
-    digitalWrite(SI4438_nSEL, HIGH);
+    digitalWrite(SI4438_nSEL_1, HIGH);
+    digitalWrite(SI4438_nSEL_2, HIGH);
 }
 
 uint8_t si4438_get_response(void* buff, uint8_t len)
@@ -127,7 +129,8 @@ bool si4438_is_chip_connected()
 
 bool si4438_init_hw()
 {   
-    pinMode(SI4438_nSEL, OUTPUT);
+    pinMode(SI4438_nSEL_1, OUTPUT);
+    pinMode(SI4438_nSEL_2, OUTPUT);
     si4438_cs_high();
 
     SPI_begin();
