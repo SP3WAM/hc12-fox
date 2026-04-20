@@ -3,7 +3,8 @@
 #include <stdint.h>
 #include "si4438.h"
 //#include "../radio_config_Si4438_434_100.h"
-#include "../radio_config_Si4438_432_500.h"
+//#include "../radio_config_Si4438_432_500.h"
+#include "../radio_config_Si4438_432_500_IZN.h"
 //#include "../radio_config_Si4438_432_500_dev_1kHz.h"
 //#include "../radio_config_Si4438_432_500_dev_750Hz.h"
 
