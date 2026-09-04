@@ -40,8 +40,13 @@ uint16_t RADIO_STARTUP_CONFIG_LENGTH = sizeof(RADIO_STARTUP_CONFIG);
 
 uint8_t foxState;
 uint16_t rssiTreshold;
-
 void update_rssi_treshold(average_rssi* averageRssi);
+
+#define SI44xx_REVISION_C2A 0x06
+#define SI44xx_REVISION_B1 0x03
+uint8_t romId = SI44xx_REVISION_C2A;
+uint8_t readRomId();
+uint8_t fixChannel(uint8_t channel, uint8_t romId);
 
 void setup()
 {
@@ -88,6 +93,12 @@ void setup()
     {
         Serial_println_s(" OK");
     }
+
+    // read ROM ID
+    romId = readRomId();
+    Serial_print_s("Si4438 ROM ID is ");
+    Serial_print_i(romId);
+    Serial_println_s("");
 }
 
 void loop()
@@ -96,7 +107,7 @@ void loop()
     {
         // 1. go to RX state
         cw_init_rx();
-        cw_start_rx(COMMUNICATION_CHANNEL);
+        cw_start_rx(fixChannel(COMMUNICATION_CHANNEL, romId));
 
         // 2. meassure average RSSI
         average_rssi averageRssi;
@@ -119,7 +130,7 @@ void loop()
     {
         // 1. go to RX state
         cw_init_rx();
-        cw_start_rx(COMMUNICATION_CHANNEL);
+        cw_start_rx(fixChannel(COMMUNICATION_CHANNEL, romId));
 
         // 2. check for carrier presence (PTT pressed)
         // Wait additional small delay so give the radio chip a bit of time
@@ -172,7 +183,7 @@ void loop()
         // 2. nine transmition cycles (around 9 * 65s = 585s = 9m45s in total): standard beeps
         for(uint8_t w = 0 ; w < 9 ; w ++)
         {
-            fsk_start_tx(COMMUNICATION_CHANNEL);
+            fsk_start_tx(fixChannel(COMMUNICATION_CHANNEL, romId));
             si4438_set_tx_power(TRANSMISSION_POWER);
             delay(500); // so the squelch on receiver could be opened
 
@@ -206,7 +217,7 @@ void loop()
         }
 
         // 3. last transmition (around 30 seconds in total): fast beeps
-        fsk_start_tx(COMMUNICATION_CHANNEL);
+        fsk_start_tx(fixChannel(COMMUNICATION_CHANNEL, romId));
         si4438_set_tx_power(TRANSMISSION_POWER);
         delay(500); // so the squelch on receiver could be opened
         // at first send call sign
@@ -252,4 +263,48 @@ void update_rssi_treshold(average_rssi* averageRssi)
     {
         rssiTreshold = 127;
     }
+}
+
+uint8_t readRomId()
+{
+    // printout the chip info
+    Serial_print_s("Si4438 reading part info...");
+    uint8_t part_info[8];
+    if(si4438_get_part_info(part_info) == false)
+    {
+        Serial_println_s(" failed");
+
+        return SI44xx_REVISION_C2A;
+    }
+
+    for(uint8_t q = 0 ; q < 8 ; q++)
+    {
+        // don't use sprintf here as it consumes 20% of flash memory
+        // sprintf(valueAsHexString, "%02X", part_info[q]);
+        Serial_print_i(part_info[q]);
+        Serial_print_s(" ");
+    }
+
+    Serial_println_s("");
+
+    // ROM ID is the seventh byte
+    return part_info[7];
+}
+
+uint8_t fixChannel(uint8_t channel, uint8_t romId)
+{
+    if(romId == SI44xx_REVISION_C2A)
+    {
+        // for revision C2 return original channel number
+        return channel;
+    }
+
+    // for other revisions return shifted channel number
+    if(channel < 3)
+    {
+        // ... but unfortunatelly not for the first three channels as we would go out of configured band
+        return channel;
+    }
+  
+    return channel - 3;
 }
