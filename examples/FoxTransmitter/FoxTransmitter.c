@@ -6,8 +6,8 @@
 #include <services/modulations/afsk/afsk_tone.h>
 #include <services/modulations/cw/cw_rx.h>
 #include <services/morse/morse_afsk.h>
-#include <radio_config_Si4438_434_000_625.h>
-#include <radio_config_Si4438_434_000_625_channels.h>
+#include <radio_config_Si4438_434_000.h>
+#include <radio_config_Si4438_434_000_channels.h>
 
 /*
  * FOX CONFIGURATION SECTION BEGIN
@@ -19,7 +19,7 @@
 #define COMMUNICATION_CHANNEL CHANNEL_FOX_0
 
 // Channel offset for bad clones of Si4438
-#define COMMUNICATION_CHANNEL_OFFSET 5
+#define COMMUNICATION_CHANNEL_OFFSET 0
 
 // Basic transmission power; allows to locate the fox from far distance
 #define TRANSMISSION_POWER SI4438_17DBM_TX_POWER
