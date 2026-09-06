@@ -40,6 +40,7 @@ uint16_t RADIO_STARTUP_CONFIG_LENGTH = sizeof(RADIO_STARTUP_CONFIG);
 #define FOX_STATE_RX 0
 #define FOX_STATE_TX 1
 #define FOX_STATE_RSSI 2
+#define FOX_STATE_STARTUP 3
 
 uint8_t foxState;
 uint16_t rssiTreshold;
@@ -55,7 +56,7 @@ void setup()
 {
     delay(3000);
 
-    foxState = FOX_STATE_RSSI;
+    foxState = FOX_STATE_STARTUP;
     rssiTreshold = 0x7f;
 
     Serial_begin(115200);
@@ -106,6 +107,30 @@ void setup()
 
 void loop()
 {
+    if(foxState == FOX_STATE_STARTUP)
+    {
+        // 1. go to TX state
+        fsk_init_tx_direct_sync_2gfsk();
+
+        // 2. set communication channel and power
+        fsk_start_tx(fixChannel(COMMUNICATION_CHANNEL, romId));
+        si4438_set_tx_power(SI4438_00DBM_TX_POWER);
+
+        // 3. transmit tone by 15 seconds
+        afsk_tone(800, 15000000ul);
+
+        // 4. send QRT signal
+        delay(500);
+        morse_afsk_send_word(QRT);
+        delay(500);
+
+        // 5. stop transmition
+        fsk_stop_tx();
+
+        foxState = FOX_STATE_RSSI;
+        return;
+    }
+
     if(foxState == FOX_STATE_RSSI)
     {
         // 1. go to RX state
