@@ -1,8 +1,8 @@
 
 // The channel 0 has the freq 432.500 MHz. 
-// Channel step is there defined as 12.5 kHz, so this gives us the following channels:
+// Channel step is there defined as 6.25 kHz, so this gives us the following channels:
 
-#define CHANNEL_FOX_0 16 // 434.100 MHz this is the base channel of all foxes (see correct radio_config_Si4438_xxx_xxx.h)
+#define CHANNEL_FOX_0 16 // 434.100 MHz this is the base channel of all foxes
 #define CHANNEL_FOX_1 24 // 434.150 MHz fox channels are seperated by 50 kHz
 #define CHANNEL_FOX_2 32 // 434.200 MHz
 #define CHANNEL_FOX_3 40 // 434.250 MHz

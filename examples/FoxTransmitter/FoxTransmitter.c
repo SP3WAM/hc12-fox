@@ -296,18 +296,25 @@ uint8_t readRomId()
 
 uint8_t fixChannel(uint8_t channel, uint8_t romId)
 {
-    if(romId == SI44xx_REVISION_C2A)
+    int16_t result = channel;
+
+    if(romId == SI44xx_REVISION_B1 && channel >= 3)
     {
-        // for revision C2 return original channel number
-        return channel - COMMUNICATION_CHANNEL_OFFSET;
+        // for revision B1 return original channel shifted by three
+        result = channel - 3;
     }
 
-    // for other revisions return shifted channel number
-    if(channel < 3)
+    result += COMMUNICATION_CHANNEL_OFFSET;
+
+    if(result < 0)
     {
-        // ... but unfortunatelly not for the first three channels as we would go out of configured band
-        return channel;
+        return 0;
     }
-  
-    return channel - 3;
+
+    if(result > 255)
+    {
+        return 255;
+    }
+
+    return (uint8_t)result;
 }
