@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <drivers/stm8_sleep.h>
 #include <drivers/si4438.h>
+#include <drivers/si4438_power.h>
 #include <drivers/si4438_rssi.h>
 #include <services/modulations/fsk/fsk_direct_2gfsk.h>
 #include <services/modulations/afsk/afsk_tone.h>

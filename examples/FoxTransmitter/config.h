@@ -1,5 +1,5 @@
 #include <radio_config_Si4438_434_000_channels.h>
-#include <drivers/si4438.h>
+#include <drivers/si4438_power.h>
 
 // Define your call sign here 
 // default: SP3WAM
