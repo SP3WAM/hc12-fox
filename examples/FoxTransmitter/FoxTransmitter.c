@@ -8,33 +8,12 @@
 #include <services/morse/morse_afsk.h>
 #include <radio_config_Si4438_434_000.h>
 #include <radio_config_Si4438_434_000_channels.h>
+#include "config.h"
 
-/*
- * FOX CONFIGURATION SECTION BEGIN
- */
-// Defines the additional SNR level (added to the current average noise level) to wake the fox up
-#define RSSI_ADDITIONAL_TRESHOLD_SNR 12
-
-// Basic communication channels are defined in radio_config_channels.h
-#define COMMUNICATION_CHANNEL CHANNEL_FOX_0
-
-// Channel offset for bad clones of Si4438
-#define COMMUNICATION_CHANNEL_OFFSET 0
-
-// Basic transmission power; allows to locate the fox from far distance
-#define TRANSMISSION_POWER SI4438_17DBM_TX_POWER
-
-// Nearby transmission power; helps for fine fox locating when the receiver is nearby the fox
-#define TRANSMISSION_NEARBY_POWER SI4438_NEG21DBM_TX_POWER
-
-char CALL_SIGN[] = "... .--. ...-- .-- .- --";
 char QRT[] = "--.- .-. -";
 
 static const uint8_t RADIO_STARTUP_CONFIG[] PROGMEM = RADIO_CONFIGURATION_DATA_ARRAY;
 uint16_t RADIO_STARTUP_CONFIG_LENGTH = sizeof(RADIO_STARTUP_CONFIG);
-/*
- * FOX CONFIGURATION SECTION END
-*/
 
 
 #define FOX_STATE_RX 0
