@@ -1,6 +1,6 @@
-
-// The channel 0 has the freq 432.500 MHz. 
-// Channel step is there defined as 6.25 kHz, so this gives us the following channels:
+// The first physical available channel is at 434.000MHz and has a number 0
+// FOX_0 is defined to operate at physical channel 16
+// Channel width is 6.25kHz
 
 #define CHANNEL_FOX_0 16 // 434.100 MHz this is the base channel of all foxes
 #define CHANNEL_FOX_1 24 // 434.150 MHz fox channels are seperated by 50 kHz
